@@ -1,0 +1,37 @@
+\documentclass[10pt,english]{article}
+\usepackage[margin=0.8in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{natbib}
+\usepackage{multicol}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+
+\bibliographystyle{plainnat}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+\setlength{\bibsep}{0pt}
+\renewcommand{\bibsection}{\vspace{0.25em}\noindent\textbf{References.}}
+
+\title{\vspace{-2em}Experiments, Observational Studies, and Specification Search}
+\author{Théo Voldoire and Nic Fishman}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1.6em}
+
+The published version of an empirical result usually shows a single path through the data: one outcome, one sample, one adjustment set, one standard error, and one reported coefficient. The reader rarely observes the larger set of analyses that could have been run, or that were run and set aside. This gap between the disclosed analysis and the available analysis space is the central concern behind the literatures on p-hacking, questionable research practices, researcher degrees of freedom, HARKing, and the garden of forking paths \citep{simmonsFalsePositivePsychologyUndisclosed2011,johnMeasuringPrevalenceQuestionable2012,kerr1998harking,gelmanLoken2013,head2015extent,wicherts2016degrees}. Empirical work reinforces the concern by documenting missing studies, bunching near significance thresholds, and sensitivity of conclusions to specification choices, while p-curve and econometric selection methods try to infer selective reporting from the published record \citep{franco2014publication,brodeur2016star,brodeur2020methods,vivalt2019specification,jerke2025publication,simonsohnPCurveKeyFileDrawer2014,brunsIoannidis2016pcurve,andrews2019identification,elliott2022detecting}.
+
+How dangerous this gap is depends on what the research design fixes before the analyst begins to search. At one extreme, a randomized experiment with a pre-specified average treatment effect gives the analyst a target before any modeling choices are made: compare mean outcomes in the treated and control arms. Random assignment supplies the identifying variation, gives the null distribution its interpretation, and makes pre-treatment covariates unnecessary for identification. Covariate adjustment may still be valuable, especially for precision, but it is not what makes the comparison credible \citep{lin2013agnostic}. The difficulty begins as the analysis moves away from this single design-given contrast. Researchers may search over outcomes, exclusions, transformations, subgroups, or moderators; they may discover a pattern of treatment-effect heterogeneity and then decide which version of it to emphasize. Randomization identifies any pre-specified subgroup contrast, but it does not choose the subgroup, the moderator, or the functional form. Once those choices are made after seeing the data, the analyst is again navigating a family of possible claims.
+
+Observational research lies farther along the same continuum. The unadjusted treated-minus-control comparison is generally confounded, so controls are part of the identifying argument rather than optional precision variables. Adding, dropping, or transforming covariates can change the estimand, the bias, and the apparent significance of the treatment coefficient. Applied, simulation, causal, and sensitivity-analysis work all emphasize this point \citep{lenz2021achieving,sturman2022uncontrolled,yu2024misstatements,oster2019unobservable,cinelliHazlett2020sensitivity,cinelliForneyPearl2022crash,cinelliHazlett2025iv,tsao2025minimum}. A complementary literature makes this model dependence visible: classic specification-search and model-uncertainty work, together with multiverse, specification-curve, and many-analysts designs, shows how conclusions vary across reasonable analyses \citep{leamer1983con,salaimartin1997twoMillion,young2009modelUncertainty,youngModelUncertaintyRobustness2017,steegenIncreasingTransparencyMultiverse2016,simonsohnSpecificationCurveDescriptive2019,silberzahn2018many,breznau2022hidden,rohrer2026multiverse}. These approaches reveal the specification space hidden by a single reported model, but they do not by themselves characterize the best result attainable by searching it.
+
+This paper studies that search problem directly. Given a treatment, outcome, and many candidate covariates, how large a coefficient or $t$-statistic can be obtained by searching over regression specifications? The answer depends not only on how many covariates are available, but on how those covariates sit relative to the treatment and the outcome, and on how much freedom the analyst has to transform them. This perspective separates two forms of discretion that are often discussed together. In the first, the analyst chooses among many conventional adjustments, so the size and dependence structure of the menu determine how much selective reporting can buy. In the second, specification choice becomes a form of data processing: the analyst can construct projections from the information in the covariates rather than merely selecting variables from a list. That more permissive regime is deliberately stylized, but it isolates the substantive lesson that restrictions on the admissible specification space do real inferential work. Once those restrictions are relaxed, the nominal number of measured covariates is no longer the right measure of how much researcher discretion is available.
+
+{\scriptsize
+\begin{multicols}{2}
+\bibliography{bibliography.bib}
+\end{multicols}
+}
+
+\end{document}
