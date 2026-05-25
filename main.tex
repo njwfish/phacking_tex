@@ -1,0 +1,72 @@
+\documentclass[a4paper,10pt,english]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{natbib}
+
+\bibliographystyle{plainnat}
+\setcitestyle{authoryear,round,citesep={;},aysep={,},yysep={;}}
+
+\theoremstyle{definition}
+\newtheorem{question}{Question}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+% Expectation, probability, variance
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Var}{\operatorname{Var}}
+\DeclareMathOperator{\Cov}{Cov}
+
+% Linear algebra operators
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\diag}{diag}
+
+% Norms
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\op}{\operatorname{op}}
+
+% Indicator and sets
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+
+% Asymptotics
+\newcommand{\as}{\asymp}
+\newcommand{\toP}{\xrightarrow{\mathbb{P}}}
+
+\title{The Geometry of p-hacking}
+\author{Théo Voldoire and Nic Fishman}
+\date{}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\input{sections/introduction}
+\input{sections/literature_review}
+\input{sections/setup}
+\input{sections/sparse_search}
+\input{sections/continuous_relaxation}
+\input{sections/observational_extensions}
+\input{sections/discussion}
+
+\bibliography{bibliography.bib}
+
+\end{document}

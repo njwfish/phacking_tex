@@ -1,0 +1,19 @@
+.DS_Store
+
+# LaTeX build products
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.toc
+*.synctex.gz
+/main.pdf
+/main_curr.pdf
+/literature_review.pdf
+
+# Local source cache
+/sources/
+/sources.zip
