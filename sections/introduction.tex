@@ -1,18 +1,136 @@
 \section{Introduction}
+\label{sec:introduction}
 
-% Scope:
-% State the paper's main problem in plain language: published empirical claims
-% reveal one selected specification, while the analyst may have had access to a
-% large search space of outcomes, controls, transformations, and estimators.
-%
-% The introduction should make the core contribution legible before the
-% technical machinery appears: characterize how much searching over regression
-% specifications can inflate coefficients and t-statistics, and explain why the
-% answer depends on the geometry of treatment, covariates, and outcomes.
-%
-% Preview the manuscript architecture:
-% - the setup and notation for the canonical regression/search problem;
-% - sparse/discrete support search below and at the critical regime;
-% - studentized search and implications for significance claims;
-% - continuous projector relaxation;
-% - observational extensions.
+Applied papers in the social sciences typically ask readers to interpret a
+main specification. A table may add controls column by column, report
+alternative samples, or include a long appendix of robustness checks. But the
+substantive claim is usually organized around a preferred estimate: the
+coefficient, standard error, and $p$-value in the specification the paper treats
+as central.
+
+This convention is statistically innocuous when the central specification is
+fixed independently of the data. It becomes harder to interpret when the path
+to that specification is itself part of the empirical work. Researchers choose
+outcomes, samples, transformations, controls, estimators, and standard errors;
+many of these choices are defensible, and many are made while learning from the
+data. These choices are often called researcher degrees of freedom. When they
+are used, deliberately or not, to make the central estimate larger, more stable,
+or more statistically significant, we will call the resulting problem
+specification search or p-hacking.
+
+Gelman and Loken's garden of forking paths emphasizes that this multiplicity
+can arise even when the researcher runs a single data-contingent analysis.
+Specification-curve, multiverse, model-uncertainty, and many-analysts
+approaches make the same problem visible by replacing the usual
+main-specification-plus-robustness format with a more systematic display of
+many reasonable analyses
+\citep{gelmanLoken2013,steegenIncreasingTransparencyMultiverse2016,simonsohnSpecificationCurveDescriptive2019,silberzahn2018many,youngModelUncertaintyRobustness2017}.
+This paper takes the next step for a canonical class of regression
+specifications: it asks how large the interpreted coefficient or $t$-statistic
+can become when the central specification is chosen from an admissible menu.
+
+The answer is not determined by the number of specifications alone. It depends
+on which choices move the identifying variation, which move the outcome, which
+change studentization, and which merely relabel equivalent projections of the
+same data. We study these degrees of freedom in a regression problem with a
+focal regressor or treatment $x_0$, an outcome $y$, and a matrix of candidate
+covariates $X=(x_1,\ldots,x_p)$. A researcher may report the largest
+coefficient or largest $t$-statistic obtainable after adjusting for a subset
+$S$ of at most $s$ controls. The object of interest is the searched process
+\[
+        \sup_{|S|\le s}\hat\beta_{0,S}
+        \qquad\text{or}\qquad
+        \sup_{|S|\le s}\hat t_{0,S}.
+\]
+It represents the statistical price of allowing the central reported
+specification to be selected after seeing the data. The central question is how
+this price depends on the geometry of $(x_0,X,y)$ and on the class of
+specifications the analyst is allowed to use.
+
+The first organizing distinction is between experimental and observational
+geometry. In a randomized experiment, the treatment direction is fixed by the
+design and is essentially external to the covariate span. Covariates can still
+be searched, and such search can strongly inflate a conventional $t$-statistic;
+but the inflation is primarily a high-dimensional noise supremum. Conditional
+on the covariates and outcome, random assignment makes accidental
+treatment-covariate alignments the relevant degrees of freedom. This is the
+regime in which a reduced-form Gaussian approximation to the searched
+coordinate process is natural.
+
+Observational designs are different even when all confounding is observed. If
+$x_0$ has a systematic component in the span of $X$, then choosing controls
+changes the residualized treatment $M_Sx_0$. If the outcome also has structure
+in the same covariate directions, then the same choice changes both the
+numerator $x_0^\top M_Sy$ and the denominators that define the coefficient and
+the $t$-statistic. The analyst is no longer only searching over accidental
+correlations. The search can exploit deterministic treatment-covariate and
+outcome-covariate geometry. Thus observed confounding alone is enough to make
+the specification-search problem qualitatively harder; no appeal to unobserved
+confounding is needed.
+
+This distinction appears explicitly in the decomposition developed below. For a
+support $S$, the population part of the adjusted coefficient contains a sparse
+drift term
+\[
+        b_C(S)
+        =
+        \frac{
+        \beta_{-0,S^c}^{\top}
+        \bigl(d_{S^c}-C_{S^cS}C_{SS}^{-1}d_S\bigr)
+        }{
+        v_{00}-d_S^\top C_{SS}^{-1}d_S
+        },
+\]
+where $d$ records treatment-covariate covariance, $C$ records covariate
+covariance, and $\beta_{-0}$ records outcome signal on the controls. In an
+experimental benchmark, $d=0$, and this center collapses to the target effect.
+In an observational benchmark, the same term is a primitive part of the search
+problem. It measures the degree to which a choice of controls can change the
+estimand by changing the residual treatment direction.
+
+Studentization introduces a second kind of active degree of freedom. A search
+over coefficients is driven by residualized inner products. A search over
+$t$-statistics can also exploit changes in residual treatment energy
+$x_0^\top M_Sx_0$ and residual outcome energy $y^\top M_Sy$. The manuscript
+therefore separates numerator linearization from denominator flatness. When
+sparse projections of treatment and outcome onto the searched covariates are
+small, the $t$-statistic is well approximated by an additive reduced-form
+coordinate process. When these projections are large, the exact finite-sample
+$t$-statistic has degrees of freedom that the reduced form deliberately leaves
+out. This is precisely why experimental and observational regimes need to be
+kept separate.
+
+The second organizing distinction is the admissible specification class. Most
+applied robustness checks search over a sparse discrete menu of conventional
+adjustment sets. The size of this menu is combinatorial, but its geometry is
+constrained by the observed columns of $X$. We analyze this problem below and
+at the critical scale $n\asymp s\log(ep/s)$, where the number of searchable
+models is large enough to matter but the analyst is still choosing actual
+coordinates. We also study a continuous relaxation in which the analyst may
+choose arbitrary rank-$\le s$ projectors inside the covariate span. This
+relaxation is not a literal model of ordinary robustness checks. Its role is to
+show what happens when the admissible degrees of freedom are enlarged from
+coordinate selection to unrestricted low-rank data processing.
+
+The results have three main implications. First, the nominal number of
+covariates is not the right measure of researcher discretion. What matters is
+the interaction between the search budget, the covariance geometry of the
+covariates, and the positions of treatment and outcome relative to that
+geometry. Second, experiments are special not because specification search is
+harmless, but because randomization turns much of the problem into a
+calibratable noise supremum. Third, observational specification search is
+harder in a precise sense: once treatment is correlated with observed
+covariates, the same degrees of freedom can change the residual treatment
+direction, the omitted-variable drift, and the studentizing denominator.
+
+The rest of the paper develops this program. Section~\ref{sec:setup} introduces
+the regression/search notation and the geometric primitives.
+Section~\ref{sec:sparse-search} proves comparison results for discrete
+covariate search below the critical regime and at the critical scale, then
+transfers them to studentized statistics under explicit denominator conditions.
+Section~\ref{sec:continuous-relaxation} studies unrestricted low-rank projector
+search as a benchmark for the largest possible effect of specification freedom
+inside the covariate span. Section~\ref{sec:observational-extensions} extends
+the same perspective to regression adjustment, inverse probability weighting,
+and augmented inverse probability weighting, where the searched nuisance models
+create additional model-based degrees of freedom.
