@@ -24,7 +24,54 @@ pre-processing propagates to downstream estimates, with current contributions
 largely confined to covariate selection. Existing methods further lack smooth
 adaptivity across low- and high-dimensional settings.
 
-This work
+Consider the following statistical model with independent observations 
+\begin{equation}\label{eq:model1}
+        y^{(i)} = x^{(i)}_0 \beta_0 + {X^{(i)}_{-0}}^\top \beta_{-0} + \varepsilon^{(i)} \qquad i = 1, \dots, n,
+\end{equation}
+where $y^{(i)}$ is an outcome of interest, $x^{(i)}_0$ is a treatment of interest, $\varepsilon^{(i)}$ is 
+an independent noise term, and $X^{(i)}_{-0}$ is a vector of potential control covariates. A researcher having access
+to the dataset $\{x^{(i)}_0, {X^{(i)}_{-0}}, y^{(i)}\}_{i = 1}^n$ may present an estimator $\hat \beta_{0, [p]}$ for $\beta_0$ leveraging 
+the full configuration as shown in \eqref{eq:model1}, but may also choose to present an estimator $\hat \beta_{0, S}$ only based on a subset $S \subseteq [p]$ of the available covariates. This may either be motivated by proper model selection considerations, leaving out covariates without a significant effect, or by a desire to showcase a configuration with stronger estimated coefficient $|\hat \beta_0|$, which is typically associated to a more scientifically relevant effect (this work also applies to t-statistics for a testing principle, but this aspect is only presenter after). For any fixed $S \subseteq [p]$, statistical model selection theory provides a complete characterization of 
+\begin{equation}
+        \hat \beta_{0, S} = (X_S^\top X_S)^{-1} X_S^\top y,
+\end{equation}
+with omitted variable bias when a covariate $j \in [p]$ such that $\beta_j \neq 0$ is not present in $S$, and variance inflation when a covariate such that $\beta_j = 0$ is present in $S$. On the other hand, our work provides a characterization of this quantity \textit{jointly} on \textit{all subselections} $S \subseteq [p]$, which is a much more difficult problem and requires radically different mathematical theorems. Our results are notably adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. 
+
+Our contributions are X-fold: 
+\begin{itemize}
+        \item Under very general assumptions on $x_0, X_{-0}$, y, $\beta_0$, we provide a precise characterization 
+        \begin{equation}
+                \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
+        \end{equation}
+        which is described as the supremum of a stochastic process that is not in general Gaussian. Our key assumption is that we assume that $X$ is a random matrix, which, under mild conditions on the population covariance profile, satisfy a certain kind of restricted isometry property. 
+        \item More precisely, in the case 
+\end{itemize}
+
+
+the full configuration as shown in \eqref{eq:model1}, 
+
+
+
+Assume, instead of presenting 
+an estimator computed including all control 
+
+Under general assumptions 
+on the covariance structure of 
+
+
+Consider a reseacher having access to a dataset of $n$ observations, with treatment 
+observations and 
+
+represented by a vector $x_0 \in \mathbb{R}^n$ 
+
+treatment 
+$x_0 \in \mathbb{R}^n$
+
+some dataset $(x_0, X_{-0}, y)$ where 
+$x_0 \in \mathbb{R}^p$ is a 
+
+This work focuses on the effect of covariate selection 
+
 
 %% PREVIOUS INTRODUCTION (commented out) %%
 %
