@@ -30,12 +30,22 @@ Consider the following statistical model with independent observations
 \end{equation}
 where $y^{(i)}$ is an outcome of interest, $x^{(i)}_0$ is a treatment of interest, $\varepsilon^{(i)}$ is 
 an independent noise term, and $X^{(i)}_{-0}$ is a vector of potential control covariates. A researcher having access
-to the dataset $\{x^{(i)}_0, {X^{(i)}_{-0}}, y^{(i)}\}_{i = 1}^n$ may present an estimator $\hat \beta_{0, [p]}$ for $\beta_0$ leveraging 
-the full configuration as shown in \eqref{eq:model1}, but may also choose to present an estimator $\hat \beta_{0, S}$ only based on a subset $S \subseteq [p]$ of the available covariates. This may either be motivated by proper model selection considerations, leaving out covariates without a significant effect, or by a desire to showcase a configuration with stronger estimated coefficient $|\hat \beta_0|$, which is typically associated to a more scientifically relevant effect (this work also applies to t-statistics for a testing principle, but this aspect is only presenter after). For any fixed $S \subseteq [p]$, statistical model selection theory provides a complete characterization of 
+to the dataset $\{x^{(i)}_0, {X^{(i)}_{-0}}, y^{(i)}\}_{i = 1}^n$ may present an estimator $\hat \beta_{0, [p]}$ for $\beta_0$  
+with the full configuration corresponding to \eqref{eq:model1}, but may also choose to present an estimator $\hat \beta_{0, S}$ only based on a subset $S \subseteq [p]$ of the available covariates. This may either be motivated by proper model selection considerations, leaving out covariates without a significant effect, or by a desire to showcase a configuration with stronger estimated coefficient $|\hat \beta_0|$, which is typically associated to a more scientifically relevant effect. On the one hand, for any fixed $S \subseteq [p]$, classical statistical model selection theory provides a complete characterization of 
 \begin{equation}
         \hat \beta_{0, S} = (X_S^\top X_S)^{-1} X_S^\top y,
 \end{equation}
-with omitted variable bias when a covariate $j \in [p]$ such that $\beta_j \neq 0$ is not present in $S$, and variance inflation when a covariate such that $\beta_j = 0$ is present in $S$. On the other hand, our work provides a characterization of this quantity \textit{jointly} on \textit{all subselections} $S \subseteq [p]$, which is a much more difficult problem and requires radically different mathematical theorems. Our results are notably adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. 
+with omitted variable bias when a covariate $j \in [p]$ is omitted despite contributing to the outcome ($\beta_j \neq 0$), and variance inflation when a covariate $j \in [p]$ is included despite not contributing to the outcome ($\beta_j = 0$). On the other hand, our work provides a characterization of this quantity \textit{jointly all subselections} $S \subseteq [p]$, which is a more difficult problem and requires different mathematics. In particular, we provide a precise characterization of the following supremum of stochastic process 
+\begin{equation}
+                \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
+\end{equation}
+under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(X_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize simply, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, a
+
+and general regularity conditions for the rest. 
+
+
+Our results hold under very general assumptions on the covariance structure of matrix 
+Our results are notably adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. 
 
 Our contributions are X-fold: 
 \begin{itemize}
