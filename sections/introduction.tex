@@ -39,13 +39,47 @@ with omitted variable bias when a covariate $j \in [p]$ is omitted despite contr
 \begin{equation}
                 \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
 \end{equation}
-under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(X_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize simply, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, a
+under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(X_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property (RIP), which holds when the population covariance satisfies RIP and under a random design assumption (with subgaussian random variables).
 
-and general regularity conditions for the rest. 
+\paragraph{Pure case: matching bounds and stochastic comparator.} This work proceeds in multiple steps. It first studies a ``pure probability model'' with the simplifying assumption $d = \beta_{-0} = 0$, where matching upper and lower bounds are provided as 
+\begin{equation}
+    \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp c_C s \sqrt{\frac{\log p/s}{n}},
+\end{equation}
+where $c_C$ is a constant depending on $C$. The reduction of the maximal bias quantity to this RIP scaling is a new result.
+
+Furthermore, under the case $n \gtrsim s \sqrt{\log p / s} / \sqrt{p}$, this work provides a plug-in approximator to the target supremum in the form of the supremum of a linearly separable stochastic process with vanishing relative error. This secondary process does not take the form of a Gaussian sum as in prior works on Gaussian supremum approximation (cite Chernozhukov), but rather the sum of the product of two independent Gaussians, which exhibits a higher kurtosis and explains why surprisingly few $s$ substitutions can greatly influence the outcome of an experiment, despite the absence of confounding. 
+
+This plug-in can easily be computed in applications and is a concrete contribution to make our results helpful to improve transparency in statistical reporting of results. They can informally be understood as a rigorous mathematical foundation for significance curves. 
 
 
-Our results hold under very general assumptions on the covariance structure of matrix 
-Our results are notably adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. 
+\paragraph{General case: upper and lower bounds} Results are then transfered to the general case, the following upper bound is derived 
+\begin{equation}
+        1
+\end{equation}
+A lower bound is also provided, but it generally does not match when there is a coordinate overlap between non-zero $d$ and $\beta_{-0}$, which is also the situation when confounding is not made easy by a population correlation with confounders, which has been the focus of other past works. We believe this is a regime that requires a more problem-specific analysis, and we hypothesize that the high dimensional probability tools used will not yield more results without additional assumptions. 
+
+Still, these results are highly relevant in how they show that (i) variations from pre-registred plans for randomized experiments ($d = 0$) is fundamentally less prone to manipulation than fully confounded observational studies; and (ii) characterizing with matching bound the bias for the first case. Further, criteria for when the plug-in has vanishing error are also provided along similar lines, leading to relevant tools for auditing published results that followed variations from a pre-registred randomized experiment. 
+
+\paragraph{The extended hacking problem: pre-processing.} Our first approach, while practically important and leading to many actionable insights, and while mathematically important to understand the scope of entropy methods for studying model selection, suffers from two other problems alongside being less predictive for confounded observational data. First, they do not apply to the proportional asymptotic regime where $p$ and $n$ are of comparable size, which is generally thought as being phenomenologically important when working with high-dimensional data. Second, they are basis dependent, and depend on the original basis for observing the data --- more concretely, then are not robust to the most trivial form of pre-processing, that is, linear changes of covariates, which may be an important source bias from researcher's degrees of freedom. 
+
+To solve these issues, we study a second highly general model of a researcher optimizing the size of the reported coefficient, this time allowing the selection of any linear combination of control covariates of rank at most $s$.
+\begin{equation}
+        \sup_{P \subseteq \text{ span}{(X_{-0})}, \text{rank}(P) = s} \hat \beta_0^{(P)}, \qquad \hat \beta_0^{(P)} = X.
+\end{equation}
+Surprisingly, while this larger search space is infinitely larger than the coordinate selection space, this new problem admits, as a continuous relaxation, a much more complete characterization in the proportional asymptotic regime; and the maximum bias quantity is still controled.  We notably show 
+\begin{equation}
+        11
+\end{equation}
+
+
+
+The strength of our results depening on the specific geometry of $d$ and $\beta_{-0}$. When either is null, we provide matching upper and lower bounds and an essentially complete characterization of the process that is adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. When that is not the case, a gap between upper and lower bounds is observed, and it is hypothesied that the mathematical techniques used (chaining, the entropy method). However, this case is when there exists a strong positive bias even in the low-dimensional regime, which makes hacking trivially easy, problem specific, and is not the core contribution of this theory, which rather discovers a general geometry applicable to many problems in an intermediate regime. In addition, it is hypothesized that the mathematical tools used for this first part cannot yield matching upper and lower bounds. 
+
+Our substantive results are two-fold here. First, 
+
+
+
+
 
 Our contributions are X-fold: 
 \begin{itemize}
