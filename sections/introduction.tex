@@ -11,6 +11,7 @@ varied methodological literatures \citep{simmonsFalsePositivePsychologyUndisclos
 Field-level diagnostics, such as aggregations across studies, p-value
 distributions, and econometric selection methods, document widespread evidence
 of selective reporting and p-hacking \citep{franco2014publication,brodeur2016star,brodeur2020methods,vivalt2019specification,jerke2025publication,andrews2019identification,elliott2022detecting}.
+
 Within a single study, however, few theoretical tools are available to
 characterize how much a determined analyst can extract from a given dataset by
 searching over regression specifications. Pre-registration improves
@@ -24,6 +25,8 @@ pre-processing propagates to downstream estimates, with current contributions
 largely confined to covariate selection. Existing methods further lack smooth
 adaptivity across low- and high-dimensional settings.
 
+\subsection{Main contributions} 
+
 Consider the following statistical model with independent observations 
 \begin{equation}\label{eq:model1}
         y^{(i)} = x^{(i)}_0 \beta_0 + {X^{(i)}_{-0}}^\top \beta_{-0} + \varepsilon^{(i)} \qquad i = 1, \dots, n,
@@ -31,90 +34,91 @@ Consider the following statistical model with independent observations
 where $y^{(i)}$ is an outcome of interest, $x^{(i)}_0$ is a treatment of interest, $\varepsilon^{(i)}$ is 
 an independent noise term, and $X^{(i)}_{-0}$ is a vector of potential control covariates. A researcher having access
 to the dataset $\{x^{(i)}_0, {X^{(i)}_{-0}}, y^{(i)}\}_{i = 1}^n$ may present an estimator $\hat \beta_{0, [p]}$ for $\beta_0$  
-with the full configuration corresponding to \eqref{eq:model1}, but may also choose to present an estimator $\hat \beta_{0, S}$ only based on a subset $S \subseteq [p]$ of the available covariates. This may either be motivated by proper model selection considerations, leaving out covariates without a significant effect, or by a desire to showcase a configuration with stronger estimated coefficient $|\hat \beta_0|$, which is typically associated to a more scientifically relevant effect. On the one hand, for any fixed $S \subseteq [p]$, classical statistical model selection theory provides a complete characterization of 
+with the full configuration corresponding to \eqref{eq:model1}, but may also choose to present an estimator $\hat \beta_{0, S}$ only based on a subset $S \subseteq [p]$ of the available covariates. This may either be motivated by proper model selection considerations, leaving out covariates without a significant effect, or by a desire to showcase a configuration with stronger estimated coefficient $|\hat \beta_0|$, which is typically associated to a more scientifically relevant effect. 
+
+On the one hand, for any fixed $S \subseteq [p]$, classical statistical model selection theory provides a complete characterization of 
 \begin{equation}
-        \hat \beta_{0, S} = (X_S^\top X_S)^{-1} X_S^\top y,
+        \hat \beta_{0, S} = \frac{x_0^\top M_S\, y}{x_0^\top M_S\, x_0},
 \end{equation}
-with omitted variable bias when a covariate $j \in [p]$ is omitted despite contributing to the outcome ($\beta_j \neq 0$), and variance inflation when a covariate $j \in [p]$ is included despite not contributing to the outcome ($\beta_j = 0$). On the other hand, our work provides a characterization of this quantity \textit{jointly all subselections} $S \subseteq [p]$, which is a more difficult problem and requires different mathematics. In particular, we provide a precise characterization of the following supremum of stochastic process 
+where $M_S := I - P_S$ residualizes out the chosen controls, with $P_S$ the orthogonal projector onto $\operatorname{span}(X_S)$ and $I$ the $n \times n$ identity. This estimator carries omitted variable bias when a covariate $j \in [p]$ is omitted despite contributing to the outcome ($\beta_j \neq 0$), and variance inflation when a covariate $j \in [p]$ is included despite not contributing to the outcome ($\beta_j = 0$). 
+
+On the other hand, our work provides a characterization of this quantity \textit{jointly all subselections} $S \subseteq [p]$, which is a more difficult problem and requires different mathematics. In particular, we provide a precise characterization of the following supremum of stochastic process 
 \begin{equation}
                 \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
 \end{equation}
-under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(X_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property (RIP), which holds when the population covariance satisfies RIP and under a random design assumption (with subgaussian random variables).
+under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(x_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property (RIP), which holds when the population covariance satisfies RIP and under a random design assumption (with subgaussian random variables).
 
-\paragraph{Pure case: matching bounds and stochastic comparator.} This work proceeds in multiple steps. It first studies a ``pure probability model'' with the simplifying assumption $d = \beta_{-0} = 0$, where matching upper and lower bounds are provided as 
-\begin{equation}
-    \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp c_C s \sqrt{\frac{\log p/s}{n}},
+\paragraph{Experimental and observational settings bounds.} Our mathematical tools enable to derive upper and lower bounds for all values of $d$. In the case $d = 0$, when there is no correlation between treatment and control covariates (which holds under treatment randomization) the maching bounds 
+\begin{equation}\label{eq:experimental}
+    \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp \beta_0+\frac{\sqrt{\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2}}{\sigma_0}\, \frac{s \sqrt{\log (ep/s)}}{n},
 \end{equation}
-where $c_C$ is a constant depending on $C$. The reduction of the maximal bias quantity to this RIP scaling is a new result.
-
-Furthermore, under the case $n \gtrsim s \sqrt{\log p / s} / \sqrt{p}$, this work provides a plug-in approximator to the target supremum in the form of the supremum of a linearly separable stochastic process with vanishing relative error. This secondary process does not take the form of a Gaussian sum as in prior works on Gaussian supremum approximation (cite Chernozhukov), but rather the sum of the product of two independent Gaussians, which exhibits a higher kurtosis and explains why surprisingly few $s$ substitutions can greatly influence the outcome of an experiment, despite the absence of confounding. 
-
-This plug-in can easily be computed in applications and is a concrete contribution to make our results helpful to improve transparency in statistical reporting of results. They can informally be understood as a rigorous mathematical foundation for significance curves. 
-
-
-\paragraph{General case: upper and lower bounds} Results are then transfered to the general case, the following upper bound is derived 
-\begin{equation}
-        1
+are rigorously proved using entropy techniques. The reduction of the maximal bias quantity to the RIP scaling is a new result, which is thus robust to the geometry of $C$ and $\beta_{-0}$ when $d = 0$. Under the more general case $d \neq 0$, which concerns most observational settings, the upper bound 
+\begin{equation}\label{eq:general-discrete}
+        \sup_{|S|=s}\hat\beta_{0,S}
+        \;\lesssim\;
+        \beta_0+\sup_{|S|=s} b_C(S)
+        + \sqrt{\kappa_s(C)}\;\frac{\Xi}{\eta_s}\;\frac{s\sqrt{\log(ep/s)}}{n}, \qquad \kappa_s(C)=\sup_{|J|\le 2s}\frac{\lambda_{\max}(C_{JJ})}{\lambda_{\min}(C_{JJ})},
 \end{equation}
-A lower bound is also provided, but it generally does not match when there is a coordinate overlap between non-zero $d$ and $\beta_{-0}$, which is also the situation when confounding is not made easy by a population correlation with confounders, which has been the focus of other past works. We believe this is a regime that requires a more problem-specific analysis, and we hypothesize that the high dimensional probability tools used will not yield more results without additional assumptions. 
+is proved, alongside a lower bound where the only change is the absence of the constant $\sqrt{\kappa_s(C)}$, and where $b_C, \Xi, \eta_s$ are three scalars depending only on population quantities that in general are much larger than for Equation \eqref{eq:experimental}. It is believed the entropic tools used for proofs may not provide matching bounds without further, more problem-specific, assumptions. 
 
-Still, these results are highly relevant in how they show that (i) variations from pre-registred plans for randomized experiments ($d = 0$) is fundamentally less prone to manipulation than fully confounded observational studies; and (ii) characterizing with matching bound the bias for the first case. Further, criteria for when the plug-in has vanishing error are also provided along similar lines, leading to relevant tools for auditing published results that followed variations from a pre-registred randomized experiment. 
+More substantively, the comparison between the experimental and the observational settings showcases that simple randomization is not only linked to an absence of bias for one given configuration (as is already known), but is also more robust to coordinate search: departure from pre-analysis plans is thus less problematic and easier to account for when there was initial randomization.  
 
-\paragraph{The extended hacking problem: pre-processing.} Our first approach, while practically important and leading to many actionable insights, and while mathematically important to understand the scope of entropy methods for studying model selection, suffers from two other problems alongside being less predictive for confounded observational data. First, they do not apply to the proportional asymptotic regime where $p$ and $n$ are of comparable size, which is generally thought as being phenomenologically important when working with high-dimensional data. Second, they are basis dependent, and depend on the original basis for observing the data --- more concretely, then are not robust to the most trivial form of pre-processing, that is, linear changes of covariates, which may be an important source bias from researcher's degrees of freedom. 
+%\paragraph{Observational setting.} The same analysis transfers to general $d$ \tc{(observational designs, the treatment now correlated with the controls)} and $\beta_{-0}$. Let $b_C(S)$ be the omitted-variable drift of the $S$-adjusted coefficient, $\kappa_s(C):=\sup_{|J|\le 2s}\lambda_{\max}(C_{JJ})/\lambda_{\min}(C_{JJ})$ the order-$s$ restricted condition number of $C$ ($=1$ at a restricted isometry), \tc{$\eta_s:=\inf_{|S|=s}(\sigma_0^2-d_S^\top C_{SS}^{-1}d_S)$ the residual treatment variance, and $\Xi:=\big[(\sigma_0^2-d^\top C^{-1}d)(\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2)+(d^\top\beta_{-0})^2\big]^{1/2}$ the fluctuation scale}. The search bias obeys the upper bound
+%\begin{equation}\label{eq:general-discrete}
+%        \sup_{|S|=s}\hat\beta_{0,S}
+%        \;\lesssim\;
+%        \beta_0+\sup_{|S|=s} b_C(S)
+%        +\tc{\sqrt{\kappa_s(C)}\;\frac{\Xi}{\eta_s}\;\frac{s\sqrt{\log(ep/s)}}{n}} .
+%\end{equation}
+%\tc{The matching lower bound is the same expression with the factor $\sqrt{\kappa_s(C)}$ removed, so the two coincide in order when $\kappa_s(C)=O(1)$ and exactly at a restricted isometry; this is informative as long as the treatment keeps variance off the controls ($\eta_s$ bounded below), near-perfect confounding being a separate low-dimensional phenomenon.}
 
-To solve these issues, we study a second highly general model of a researcher optimizing the size of the reported coefficient, this time allowing the selection of any linear combination of control covariates of rank at most $s$.
-\begin{equation}
-        \sup_{P \subseteq \text{ span}{(X_{-0})}, \text{rank}(P) = s} \hat \beta_0^{(P)}, \qquad \hat \beta_0^{(P)} = X.
+\paragraph{Plug-in approximation.} While bounds are the most fundamental concept to derive for understanding the scalings of the problem, actual study of hacking in a specific scientific study requires different tools, and this work present a plug-in approximator of the maximum bias quantity. Taking inspiration from Gaussian approximation of supremum of stochastic processes, this work proposes a linearly separable approximator of the supremum of the order-2 chaos process $\{\hat \beta_{0, S}, S\subseteq [n]\}$, with vanishing \textit{relative} error in the case $n \gg s \sqrt{\log e p /s}$, which holds for most practical settings with $s$ moderately small. 
+
+In general, such a separable approximator does not exist given that the population covariance matrix $C$ may encode an intractable combinatorial structure, but under the assumption that local size-$s$ blocks of $C$ are isotropic ($\sup_{|J|\le 2s}\|R_{JJ}-I\|_{\mathrm{op}}=o(1)$) alongside some weaker conditions, the following holds:
+\begin{equation}\label{eq:plugin-general}
+        \sup_{|S|=s} \hat\beta_{0,S}
+        =\beta_0 + \sum_{j=1}^{s}\{\xi_{1k}\xi_{2k}\}_{(j)}
+        +o_{\mathbb P}\!\Big(\tfrac{s\sqrt{\log(ep/s)}}{n}\Big),
+        \qquad
+        \begin{cases}
+           (\xi_{1k})_k &\overset{\text{iid}}{\sim} N\big(d_k,\,\sigma_0^2-d^\top C^{-1}d\big) \\
+           (\xi_{2k})_k &\overset{\text{iid}}{\sim} N\big((C\beta_{-0})_k,\,\sigma_\varepsilon^2\big)
+        \end{cases},
 \end{equation}
-Surprisingly, while this larger search space is infinitely larger than the coordinate selection space, this new problem admits, as a continuous relaxation, a much more complete characterization in the proportional asymptotic regime; and the maximum bias quantity is still controled.  We notably show 
-\begin{equation}
-        11
+with $(\xi_{1k})_k$ and $(\xi_{2k})_k$ all independent and where the $\{ \}_{(j)}$ notation denotes the order statistics. This showcases how the search, even in moderately high dimensions, may be expressed as the sum of top $s$ order statistics of random variables. In the idealized scenario $C  = I, d = \beta_{-0} = 0$, this supremum is still more dangerous that the supremum of single Gaussians, since the independent product $\xi_{1}\xi_{2}$ has an excess kurtosis of 7, meaning a small budget $s$ can surprisingly lead to a lot of displacement. 
+
+This is also shown, under extension results of the article and additional assumptions, to be the case for weighting estimators, whereas for doubly robust estimators, the displacement is rather of the form $\xi_{1}\xi_{2} + \xi_{3}\xi_{4}$ with all four independent Gaussians, which has lower kurtosis and is thus less prone to hacking with few covariates. 
+
+More generally, the plug-in can easily be computed in applications without the need to run multiple configurations, which is a useful diagnostic. Further, even when the assumption does not hold, simulations show that the anisotropic case is less prone to hacking (intuitively because there are less degrees of freedom to explore), meaning the plug-in is still a useful tool. 
+
+
+%\begin{equation}\label{eq:plugin-hypotheses}
+%    \rho_s(C):=\sup_{|J|\le 2s}\|R_{JJ}-I\|_{\mathrm{op}}=o(1),
+%    \qquad
+%    \sup_{|S|=s}d_S^\top C_{SS}^{-1}d_S=o(\sigma_0^2),
+%\end{equation}
+
+\paragraph{The extended hacking problem.} While this work extracts many important insights from pushing as far as possible entropic tools to derive bounds and stochastic approximators, the obtained results still suffer from two issues. First, they do not apply to the proportional asymptotic regime, where $p$ and $n$ are of comparable size, which is generally thought to be phenomenologically important when working with high-dimensional data. Second, they are basis dependent, that is, they depend on the original basis the data was observed in. More concretely, this means they are not robust to the most trivial form of pre-processing, that is, linear changes of covariates, which may be an important source of bias from researcher's degrees of freedom despite the fact they only end up reporting a small amount of included covariates $s$.
+
+To adress these issues, a second highly general model of a researcher optimizing the size of the reported coefficient is studied, this time over all orthogonal projectors $P$ ($P = P^\top = P^2$) onto rank-$\le s$ subspaces of the control span,
+\begin{equation}\label{eq:relaxed-search}
+        \hat\beta_{0,s}^\star
+        =
+        \sup_{\substack{\operatorname{Im}(P)\subseteq\operatorname{span}(X_{-0})\\ \operatorname{rank}(P)\le s}} \hat\beta_0^{(P)},
+        \qquad
+        \hat\beta_0^{(P)} = \frac{x_0^\top (I-P)\, y}{x_0^\top (I-P)\, x_0},
 \end{equation}
+such that, evidently, $\sup_{|S|=s} \hat\beta_{0,S} \leq \hat\beta_{0,s}^\star$ by inclusion of supports. This generalizes the coordinate estimator $\hat\beta_{0,S}$, recovered when $P = P_S$ projects onto $\operatorname{span}(X_S)$. 
 
-
-
-The strength of our results depening on the specific geometry of $d$ and $\beta_{-0}$. When either is null, we provide matching upper and lower bounds and an essentially complete characterization of the process that is adaptive to the amount of allowed swaps (inclusion or exclusion of covariates) $s$ from any starting configuration. When that is not the case, a gap between upper and lower bounds is observed, and it is hypothesied that the mathematical techniques used (chaining, the entropy method). However, this case is when there exists a strong positive bias even in the low-dimensional regime, which makes hacking trivially easy, problem specific, and is not the core contribution of this theory, which rather discovers a general geometry applicable to many problems in an intermediate regime. In addition, it is hypothesized that the mathematical tools used for this first part cannot yield matching upper and lower bounds. 
-
-Our substantive results are two-fold here. First, 
-
-
-
-
-
-Our contributions are X-fold: 
-\begin{itemize}
-        \item Under very general assumptions on $x_0, X_{-0}$, y, $\beta_0$, we provide a precise characterization 
-        \begin{equation}
-                \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
-        \end{equation}
-        which is described as the supremum of a stochastic process that is not in general Gaussian. Our key assumption is that we assume that $X$ is a random matrix, which, under mild conditions on the population covariance profile, satisfy a certain kind of restricted isometry property. 
-        \item More precisely, in the case 
-\end{itemize}
-
-
-the full configuration as shown in \eqref{eq:model1}, 
-
-
-
-Assume, instead of presenting 
-an estimator computed including all control 
-
-Under general assumptions 
-on the covariance structure of 
-
-
-Consider a reseacher having access to a dataset of $n$ observations, with treatment 
-observations and 
-
-represented by a vector $x_0 \in \mathbb{R}^n$ 
-
-treatment 
-$x_0 \in \mathbb{R}^n$
-
-some dataset $(x_0, X_{-0}, y)$ where 
-$x_0 \in \mathbb{R}^p$ is a 
-
-This work focuses on the effect of covariate selection 
+Surprisingly, while this larger search space is infinitely larger than the coordinate selection space, this new problem admits, as a continuous relaxation, a much more complete characterization in the proportional asymptotic regime; and the maximum bias quantity is still controlled. Under the limit $n, p \rightarrow \infty, p/n \to \kappa \in (0,1)$, the following holds
+\begin{equation}\label{eq:relaxed-rmt}
+        \hat\beta_{0,s}^\star
+        \;\toP\;
+        \beta_0 + q +
+        \underbrace{\sqrt{\,\frac{1}{(1-\kappa)\big(1-\tfrac{d^\top C^{-1}d}{\sigma_0^2}\big)}-1\,}}_{\text{variance inflation}}\;\;
+        \underbrace{\sqrt{\,\frac{\beta_{-0}^\top C\,\beta_{-0}+\kappa\sigma_\varepsilon^2}{4\sigma_0^2}-q^{2}\,}}_{\text{exploitable outcome energy}} \qquad q = \frac{d^\top\beta_{-0}}{2\sigma_0^2}.
+\end{equation}
+One surprise of this result is how the dependency on $s$ is lost, showcasing the potential of hacking with very few covariates even when only linear changes of variables are allowed, and starkly contrasts with the coordinate selection version of the result. One second surprise is how precisely high dimensionality is paid: for this type of hacking, only the regular high-dimensional penalty of $(1-\kappa)^{-1}$ in the variance inflation term, and through $\kappa \sigma_{\varepsilon}^2 / \sigma_0^2$ in the exploitable energy term. 
 
 
 %% PREVIOUS INTRODUCTION (commented out) %%
@@ -237,18 +241,18 @@ This work focuses on the effect of covariate selection
 % geometry. Second, experiments are special not because specification search is
 % harmless, but because randomization turns much of the problem into a
 % calibratable noise supremum. Third, observational specification search is
-harder in a precise sense: once treatment is correlated with observed
-covariates, the same degrees of freedom can change the residual treatment
-direction, the omitted-variable drift, and the studentizing denominator.
+% harder in a precise sense: once treatment is correlated with observed
+% covariates, the same degrees of freedom can change the residual treatment
+% direction, the omitted-variable drift, and the studentizing denominator.
 
-The rest of the paper develops this program. Section~\ref{sec:setup} introduces
-the regression/search notation and the geometric primitives.
-Section~\ref{sec:sparse-search} proves comparison results for discrete
-covariate search below the critical regime and at the critical scale, then
-transfers them to studentized statistics under explicit denominator conditions.
-Section~\ref{sec:continuous-relaxation} studies unrestricted low-rank projector
-search as a benchmark for the largest possible effect of specification freedom
-inside the covariate span. Section~\ref{sec:observational-extensions} extends
-the same perspective to regression adjustment, inverse probability weighting,
-and augmented inverse probability weighting, where the searched nuisance models
-create additional model-based degrees of freedom.
+% The rest of the paper develops this program. Section~\ref{sec:setup} introduces
+% the regression/search notation and the geometric primitives.
+% Section~\ref{sec:sparse-search} proves comparison results for discrete
+% covariate search below the critical regime and at the critical scale, then
+% transfers them to studentized statistics under explicit denominator conditions.
+% Section~\ref{sec:continuous-relaxation} studies unrestricted low-rank projector
+% search as a benchmark for the largest possible effect of specification freedom
+% inside the covariate span. Section~\ref{sec:observational-extensions} extends
+% the same perspective to regression adjustment, inverse probability weighting,
+% and augmented inverse probability weighting, where the searched nuisance models
+% create additional model-based degrees of freedom.
