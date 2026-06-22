@@ -25,14 +25,15 @@ Summary after integration:
 - Added the exact AER `salaimartin1997twoMillion` PDF as
   `sources/salaimartin1997twoMillion/paper.pdf`; retained the related NBER
   working-paper PDF as an alternate artifact.
-- Reworded the preregistration/PAP paragraph to distinguish PAP constraints
-  from broader models of scientific communication, transparency, p-hacking
-  incentives, and implementable statistical decisions.
+- Reworded the preregistration and pre-analysis-plan paragraph to distinguish
+  pre-analysis-plan constraints from broader models of scientific
+  communication, transparency, p-hacking incentives, and implementable
+  statistical decisions.
 - Reworded the observational-control sentence so `kingDetectingModelDependence2007`
   supports model dependence specifically, and moved `cinelliForneyPearl2022crash`
   to the good/bad-controls context.
-- Split ordinary omitted-variable-bias sensitivity citations from the IV
-  sensitivity extension `cinelliHazlett2025iv`.
+- Split ordinary omitted-variable-bias sensitivity citations from the
+  instrumental-variables sensitivity extension `cinelliHazlett2025iv`.
 - Narrowed the experimental-case restricted-eigenvalue claim from correlated
   subgaussian designs to correlated Gaussian designs for
   `raskuttiWainwrightYu2010restricted`.
@@ -43,8 +44,9 @@ Summary after integration:
 - Batch B reviewed introduction field-level diagnostic citations.
 - Batch C reviewed literature-review degrees-of-freedom, publication-bias,
   model-uncertainty, multiverse, and branch-and-bound citations.
-- Batch D reviewed preregistration, PAP, and strategic-reporting citations.
-- Batch E reviewed experimental, observational, OVB/sensitivity, and
-  design-phase citations.
-- Batch F reviewed post-selection, high-dimensional, and RIP/restricted-
-  eigenvalue citations.
+- Batch D reviewed preregistration, pre-analysis-plan, and strategic-reporting
+  citations.
+- Batch E reviewed experimental, observational, omitted-variable-bias
+  sensitivity, and design-phase citations.
+- Batch F reviewed post-selection, high-dimensional, restricted-isometry, and
+  restricted-eigenvalue citations.

@@ -75,7 +75,7 @@ High-priority introduction citation contexts:
 - `CIT-0038` `breznau2022hidden`
 - `CIT-0039` `rohrer2026multiverse`
 
-## Batch D: Literature Review, Preregistration and Strategic Reporting
+## Batch D: Literature Review, Preregistration, Pre-Analysis Plans, and Strategic Reporting
 
 - `CIT-0040` `nosek2018preregistration`
 - `CIT-0041` `olken2015promises`
@@ -105,7 +105,7 @@ High-priority introduction citation contexts:
 - `CIT-0062` `tsao2025minimum`
 - `CIT-0063` `choi2025designPhase`
 
-## Batch F: Post-Selection, High-Dimensional, and RIP Geometry
+## Batch F: Post-Selection, High-Dimensional, and Restricted-Isometry Geometry
 
 - `CIT-0064` `cox1975dataSplitting`
 - `CIT-0065` `berk2013valid`

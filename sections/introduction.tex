@@ -7,10 +7,15 @@ rarely see the full set of analyses that could have produced them, or those
 that were run and set aside. Reported estimates and the hidden analysis behind
 them open room for p-hacking, questionable research practices, researcher
 degrees of freedom, HARKing, and the garden of forking paths, discussed in
-varied methodological literatures \citep{simmonsFalsePositivePsychologyUndisclosed2011,johnMeasuringPrevalenceQuestionable2012,kerr1998harking,gelmanLoken2013,head2015extent,wicherts2016degrees}.
+varied methodological literatures
+\citep{simmonsFalsePositivePsychologyUndisclosed2011,johnMeasuringPrevalenceQuestionable2012,kerr1998harking,gelmanLoken2013,wicherts2016degrees}.
 Field-level diagnostics, such as aggregations across studies, p-value
-distributions, and econometric selection methods, document widespread evidence
-of selective reporting and p-hacking \citep{franco2014publication,brodeur2016star,brodeur2020methods,vivalt2019specification,jerke2025publication,andrews2019identification,elliott2022detecting}.
+distributions, and specification-search measures, document evidence of
+selective reporting and p-hacking
+\citep{franco2014publication,head2015extent,brodeur2016star,brodeur2020methods,vivalt2019specification,jerke2025publication}.
+Related econometric work develops identification, correction, and testing
+methods for publication bias and p-hacking
+\citep{andrews2019identification,elliott2022detecting}.
 
 Within a single study, however, few theoretical tools are available to
 characterize how much a determined analyst can extract from a given dataset by
@@ -46,13 +51,13 @@ On the other hand, our work provides a characterization of this quantity \textit
 \begin{equation}
                 \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S},
 \end{equation}
-under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(x_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize, our mathematical derivations hold for independent (not necessarily i.i.d) rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property (RIP), which holds when the population covariance satisfies RIP and under a random design assumption (with subgaussian random variables).
+under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(x_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. To summarize, our mathematical derivations hold for independent, not necessarily identically distributed, rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property, which holds when the population covariance satisfies a corresponding restricted-isometry condition and under a random design assumption with subgaussian random variables.
 
 \paragraph{Experimental and observational settings bounds.} Our mathematical tools enable to derive upper and lower bounds for all values of $d$. In the case $d = 0$, when there is no correlation between treatment and control covariates (which holds under treatment randomization) the maching bounds 
 \begin{equation}\label{eq:experimental}
     \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp \beta_0+\frac{\sqrt{\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2}}{\sigma_0}\, \frac{s \sqrt{\log (ep/s)}}{n},
 \end{equation}
-are rigorously proved using entropy techniques. The reduction of the maximal bias quantity to the RIP scaling is a new result, which is thus robust to the geometry of $C$ and $\beta_{-0}$ when $d = 0$. Under the more general case $d \neq 0$, which concerns most observational settings, the upper bound 
+are rigorously proved using entropy techniques. The reduction of the maximal bias quantity to the restricted-isometry scaling is a new result, which is thus robust to the geometry of $C$ and $\beta_{-0}$ when $d = 0$. Under the more general case $d \neq 0$, which concerns most observational settings, the upper bound
 \begin{equation}\label{eq:general-discrete}
         \sup_{|S|=s}\hat\beta_{0,S}
         \;\lesssim\;
