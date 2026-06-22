@@ -1,7 +1,113 @@
 \section{Literature Review}
+\label{sec:literature-review}
 
-How dangerous this gap is depends on what the design fixes before the analyst begins to search. A randomized experiment with a pre-specified average treatment effect gives the analyst a fixed target: compare mean outcomes across arms. Random assignment supplies the identifying variation, gives the null distribution its interpretation, and makes pre-treatment covariates unnecessary for identification. Covariate adjustment may still improve precision, but it is not what makes the comparison credible \citep{lin2013agnostic}. Difficulty begins once the analysis moves away from this single design-given contrast. Researchers may search over outcomes, exclusions, transformations, subgroups, or moderators, then choose which pattern of heterogeneity to emphasize. Randomization identifies any pre-specified subgroup contrast, but does not choose the subgroup, the moderator, or the functional form. Once those choices are made after seeing the data, the analyst is again navigating a family of possible claims.
+\subsection{Researcher Degrees of Freedom and Specification Surfaces}
 
-Observational research sits farther along the same continuum. The unadjusted comparison is generally confounded, so controls are part of the identifying argument rather than optional precision variables. Adding, dropping, or transforming covariates can change the estimand, the bias, and the apparent significance of the treatment coefficient. Applied, simulation, causal, and sensitivity-analysis work all emphasize this point \citep{lenz2021achieving,sturman2022uncontrolled,yu2024misstatements,oster2019unobservable,cinelliHazlett2020sensitivity,cinelliForneyPearl2022crash,cinelliHazlett2025iv,tsao2025minimum}. A complementary literature makes this model dependence visible. Classic specification-search and model-uncertainty work, together with multiverse, specification-curve, and many-analysts designs, show how conclusions vary across reasonable analyses \citep{leamer1983con,salaimartin1997twoMillion,young2009modelUncertainty,youngModelUncertaintyRobustness2017,steegenIncreasingTransparencyMultiverse2016,simonsohnSpecificationCurveDescriptive2019,silberzahn2018many,breznau2022hidden,rohrer2026multiverse}. These approaches reveal the specification space hidden by a single reported model, but do not characterize the best result attainable by searching it.
+Empirical work often foregrounds a preferred specification, with robustness
+checks reported as supporting evidence. The inferential difficulty is that the
+preferred specification is often itself the product of choices made after
+examining the data. Choices of outcomes, samples, transformations, exclusions,
+controls, stopping rules, and reporting rules can then make nominal tests
+behave differently from their advertised level
+\citep{simmonsFalsePositivePsychologyUndisclosed2011,johnMeasuringPrevalenceQuestionable2012,wicherts2016degrees}.
+The literatures on HARKing and the garden of forking paths emphasize that this
+need not look like an explicit search: a single reported analysis can be
+data-contingent because the route to it was shaped by the realized data
+\citep{kerr1998harking,gelmanLoken2013,gelman2014crisis}.
 
-This paper studies that search problem directly. Given a treatment, outcome, and many candidate covariates, how large a coefficient or $t$-statistic can be obtained by searching over regression specifications? The answer depends on how many covariates are available, how they sit relative to the treatment and outcome, and how much freedom the analyst has to transform them. This perspective separates two forms of discretion often discussed together. In the first, the analyst chooses among many conventional adjustments; the size and dependence structure of the menu then determine how much selective reporting can buy. In the second, specification choice becomes a form of data processing: the analyst constructs projections from the covariates rather than merely picking from a list. That more permissive regime is stylized, but it isolates the lesson that restrictions on the admissible specification space do real inferential work. Once those restrictions are relaxed, the number of measured covariates no longer captures the discretion available.
+We call the object over which such choices range a \emph{specification
+surface}. Its domain is the set of admissible specifications, preprocessing
+choices, or representations available to the analyst. Its value at each point
+is the reported quantity of interest, such as a coefficient, standard error, or
+test statistic. This terminology separates the object from any particular
+display: a specification curve plots part of a surface, while a multiverse
+analysis enumerates points on it.
+
+Several literatures study related manifestations of this problem. Publication
+bias, file-drawer effects, and bunching or discontinuities in reported test
+statistics document selection across studies or across reported results
+\citep{rosenthal1979file,franco2014publication,brodeur2016star,head2015extent,brunsIoannidis2016pcurve,brodeur2020methods,vivalt2019specification,jerke2025publication};
+recent econometric work develops corresponding diagnostics and corrections
+\citep{andrews2019identification,elliott2022detecting}. Model-uncertainty and
+specification-search work shows that conclusions can vary sharply across
+reasonable models
+\citep{leamer1983con,salaimartin1997twoMillion,young2009modelUncertainty,youngModelUncertaintyRobustness2017}.
+Specification-curve, multiverse, and many-analysts designs make this variation
+visible by replacing a single preferred model with a structured collection of
+defensible alternatives
+\citep{steegenIncreasingTransparencyMultiverse2016,simonsohnSpecificationCurveDescriptive2019,silberzahn2018many,breznau2022hidden,rohrer2026multiverse}.
+Our question is more local. Conditional on one dataset and one specification
+surface, how large can the reported coefficient or $t$-statistic become?
+
+Pre-registration and pre-analysis plans address the same concern by restricting
+the specification surface before the data are analyzed
+\citep{nosek2018preregistration,olken2015promises,banerjee2020praise,kasy2021forking}.
+Empirically, such plans appear most informative when they are sufficiently
+specific \citep{brodeurPreregistrationPreanalysisPlans2024}. Theoretically,
+they can be viewed as rules for implementing statistical decisions under
+selective reporting incentives
+\citep{andrews2021model,libgober2022false,mccloskey2022incentive,spiess2018optimal,kasy2022optimal}.
+These approaches constrain the surface. They do not characterize the geometry
+of the remaining surface, or the extreme values that can be obtained by
+searching it.
+
+\subsection{Experimental Specification Surfaces}
+
+Randomized experiments give an especially clean case. Randomization fixes the
+treatment direction, and covariate adjustment is not needed for identification;
+it is really just a precision device \citep{lin2013agnostic}. More generally, the
+assignment mechanism, and hence the propensity score, is known by design. In
+high-dimensional semiparametric problems, this information can change what is
+statistically possible. This is the lesson of the curse-of-dimensionality
+appropriate asymptotics of \citet{robinsRitov1997coda}, and it is emphasized
+for randomized controlled trials by
+\citet{aronowRobinsSaarinenSavjeSekhon2021}.
+
+In our setting, the implication is geometric. In an experiment, moving across
+the specification surface does not change the population target of the
+treatment coefficient. It can still change the reported coefficient or
+studentized statistic, but the movement comes from chance alignments between
+the randomized treatment vector and candidate adjustment directions. This is
+the regime in which a randomization-based or reduced-form approximation to the
+searched statistic is most natural.
+
+\subsection{Observationally Confounded Specification Surfaces}
+
+Observed confounding changes the surface. In observational work, controls are
+often part of the identifying argument. Adding, removing, or transforming them
+can change the estimand, the residual treatment variation, and the apparent
+strength of evidence
+\citep{kingDetectingModelDependence2007,lenz2021achieving,sturman2022uncontrolled,yu2024misstatements}.
+Thus an observationally confounded specification surface is not merely an
+experimental surface with a different variance.
+
+The closest conceptual precedents are omitted-variable-bias and sensitivity
+analysis. These formulas decompose the effect of an omitted covariate into its
+association with treatment and its association with the outcome
+\citep{oster2019unobservable,cinelliHazlett2020sensitivity,cinelliForneyPearl2022crash,cinelliHazlett2025iv}.
+\citet{tsao2025minimum}, for example, ask how strong an omitted covariate
+would need to be to overturn an insignificant result. We use the same two
+associations for a different purpose: the covariates are observed, and the
+analyst moves across the specification surface by deciding which directions to
+adjust for or how to represent them.
+
+\subsection{Post-Selection and High-Dimensional Inference}
+
+Post-selection inference constructs valid tests or confidence sets after a
+specified selection procedure, using tools such as data splitting and selective
+conditioning
+\citep{cox1975dataSplitting,berk2013valid,fithian2014optimal,lee2016exact}.
+High-dimensional regression develops related methods when models or nuisance
+components are estimated from many covariates
+\citep{el2013robust,sur2019likelihood}. Our object is different. We do not
+condition on a single observed selection event, and we do not aim to recover a
+sparse true model. We study the envelope of possible reported results over a
+specification surface when the search rule may be informal, hidden, or
+adversarial.
+
+We measure researcher discretion through geometry rather than
+through a count of possible regressions. Experimental search,
+observationally confounded search, and general preprocessing define different
+specification surfaces, with different extreme-value behavior. The relevant
+degrees of freedom are determined by the covariance geometry of treatment,
+outcome, and the admissible representations available to the analyst.
