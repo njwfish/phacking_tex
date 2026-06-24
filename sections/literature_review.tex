@@ -1,143 +1,89 @@
 \section{Literature Review}
 \label{sec:literature-review}
 
-\subsection{Researcher Degrees of Freedom and Specification Surfaces}
+The works on research credibility cited in the introduction are heterogeneous,
+resting on different and not always comparable assumptions about the scientific
+process. A first strand locates the problem in a direct selection pressure:
+significant findings are more likely to be published, leaving, for instance, a
+discontinuity in the distribution of reported p-values at the conventional
+threshold
+\citep{rosenthal1979file,franco2014publication,andrews2019identification}. A
+second locates it instead in the researcher's own latitude: among many
+defensible analyses, a researcher can converge on the model that delivers the
+result they wish to present. Seen through this second mechanism, the same
+discontinuity reflects not the filtering of fixed results but a change in the
+models researchers present, a process adjacent to but not identical with
+researcher self-selection, since altering the model also shifts the research
+question slightly \citep{brodeur2016star,elliott2022detecting}.
 
-Empirical work often foregrounds a preferred specification, with robustness
-checks reported as supporting evidence. The inferential difficulty is that the
-preferred specification is often itself the product of choices made after
-examining the data. Choices of outcomes, samples, transformations, exclusions,
-controls, stopping rules, and reporting rules can then make nominal tests
-behave differently from their advertised level
-\citep{simmonsFalsePositivePsychologyUndisclosed2011,johnMeasuringPrevalenceQuestionable2012,wicherts2016degrees}.
-The literatures on HARKing and the garden of forking paths emphasize that this
-need not look like an explicit search: a single reported analysis can be
-data-contingent because the route to it was shaped by the realized data
-\citep{kerr1998harking,gelmanLoken2013,gelman2014crisis}.
+This second mechanism has been described in a series of applied publications,
+whose shared method is to run, whenever the data permit, alternative analyses
+across the decision space and to see whether a result still stands once less
+favourable choices are made. Re-analysing observational studies in a leading
+journal, \citet{lenz2021achieving} find that more than thirty percent owe their
+headline significance to control variables whose inclusion is never disclosed,
+which makes the choice of controls one of the most consequential of these
+decisions. In \citet{silberzahn2018many}, twenty-nine teams analysed one dataset
+to answer a single question, whether referees give more red cards to
+dark-skinned players, each free to choose its own analysis. Their twenty-one
+distinct sets of covariates, with different models and exclusion rules, produced
+odds ratios from 0.89 to 2.93, significant for twenty teams and not for nine.
+Because the treatment and outcome were fixed before any analysis and no result
+was filtered for publication, the study isolates the researcher's latitude
+cleanly, and the spread is a lower bound on what a researcher seeking a
+particular answer could obtain; \citet{breznau2022hidden} reach the same
+conclusion with seventy-three teams. A further, methodological line builds tools
+rather than findings, some for reporting a study's full range of results in
+advance, others for detecting manipulation after publication. A multiverse
+analysis belongs to the first kind: reported with the study, it enumerates every
+defensible specification and gives the estimate each one yields, so the reader
+sees the whole distribution rather than a single chosen point
+\citep{steegenIncreasingTransparencyMultiverse2016}. A specification curve
+presents that distribution graphically, ordering the estimates and marking the
+analytic choices behind each, so the contribution of any one covariate can be
+read off as in a sensitivity analysis
+\citep{simonsohnSpecificationCurveDescriptive2019}. These devices have strong
+data requirements and remain tied to one dataset: they show how wide the range
+of results happens to be in a given study, not how wide it can be made in
+principle. More fundamentally, they document the dispersion while positing the
+researcher's decision space, among the other ingredients of a model, only
+implicitly, which is what the theory that follows makes explicit.
 
-We call the object over which such choices range a \emph{specification
-surface}. Its domain is the set of admissible specifications, preprocessing
-choices, or representations available to the analyst. Its value at each point
-is the reported quantity of interest, such as a coefficient, standard error, or
-test statistic. This terminology separates the object from any particular
-display: a specification curve plots part of a surface, while a multiverse
-analysis enumerates points on it.
+More formally, we find that the explanations insisting on the researcher's
+agency are nearly always reducible to two assumptions: an adversarial
+publication process that rewards the appearance of strong results, and an
+asymmetry of information that keeps the reviewer from inspecting the intermediate
+steps able to change what is reported. Together they cast the situation as a
+principal--agent problem, the reviewer playing the principal and the researcher
+the agent. This framing has been made formal by \citet{spiess2018optimal} and
+\citet{kasy2022optimal}, but is used here only as a qualitative organising
+principle. It opens three axes along which theoretical work can vary: the
+criterion the researcher optimises, whether a p-value or the coefficient on a
+single fixed treatment; the specification set of alternative models open to
+them; and the disclosure rule that fixes the degree of asymmetry. Fixing a
+single treatment matters: searching over models for one coefficient is
+geometrically distinct from searching across many treatments or outcomes, which
+reduces to multiple testing and its classical corrections. The present work
+fixes the criterion as the treatment coefficient, the same analysis covering its
+t-statistic, which proves easier still to inflate, and the specification set as
+the choice of controls in a linear regression, taken in both a coordinate and a
+continuous form, with treatment and outcome held fixed. The disclosure rule is
+the adversarial one: only the model returning the largest statistic reaches the
+reviewer, the supremum $\sup_{|S|=s}\hat\beta_{0,S}$ characterised above.
 
-Several literatures study related manifestations of this problem. Publication
-bias, file-drawer effects, bunching or discontinuities in reported test
-statistics, and p-curve diagnostics study selection across studies or reported results
-\citep{rosenthal1979file,franco2014publication,brodeur2016star,head2015extent,brunsIoannidis2016pcurve,brodeur2020methods,vivalt2019specification,jerke2025publication};
-recent econometric work develops corresponding diagnostics and corrections
-\citep{andrews2019identification,elliott2022detecting}. Model-uncertainty and
-specification-search work shows that conclusions can vary sharply across
-reasonable models
-\citep{leamer1983con,salaimartin1997twoMillion,young2009modelUncertainty,youngModelUncertaintyRobustness2017}.
-Recent computational work on coefficient stability is closer still:
-\citet{knaeble2024branch} search for maximum and minimum adjusted slope
-coefficients over a large discrete model space using branch-and-bound methods.
-That line treats the finite optimization problem directly; our goal is to
-characterize the geometry and limiting size of the envelope.
-Specification-curve, multiverse, and many-analysts designs make this variation
-visible by replacing a single preferred model with a structured collection of
-defensible alternatives
-\citep{steegenIncreasingTransparencyMultiverse2016,simonsohnSpecificationCurveDescriptive2019,silberzahn2018many,breznau2022hidden,rohrer2026multiverse}.
-Our question is more local. Conditional on one dataset and one specification
-surface, how large can the reported coefficient or $t$-statistic become?
-
-Pre-registration and pre-analysis plans address the same concern by restricting
-the specification surface before the data are analyzed
-\citep{nosek2018preregistration,olken2015promises,banerjee2020praise,kasy2021forking}.
-Empirically, such plans appear most informative when they are sufficiently
-specific \citep{brodeurPreregistrationPreanalysisPlans2024}. Theoretically,
-they are connected to broader models of scientific communication, transparency,
-p-hacking incentives, and implementable statistical decisions under misaligned
-researcher and social objectives
-\citep{andrews2021model,libgober2022false,mccloskey2022incentive,spiess2018optimal,kasy2022optimal}.
-These approaches constrain the surface. They do not characterize the geometry
-of the remaining surface, or the extreme values that can be obtained by
-searching it.
-
-\subsection{Experimental Specification Surfaces}
-
-Randomized experiments give an especially clean case. Randomization fixes the
-treatment direction, and covariate adjustment is not needed for identification;
-it is really just a precision device \citep{lin2013agnostic}. More generally, the
-assignment mechanism, and hence the propensity score, is known by design. In
-high-dimensional semiparametric problems, this information can change what is
-statistically possible. This is the lesson of the curse-of-dimensionality
-appropriate asymptotics of \citet{robinsRitov1997coda}, and it is emphasized
-for randomized controlled trials by
-\citet{aronowRobinsSaarinenSavjeSekhon2021}.
-
-In our setting, the implication is geometric. In an experiment, moving across
-the specification surface does not change the population target of the
-treatment coefficient. It can still change the reported coefficient or
-studentized statistic, but the movement comes from chance alignments between
-the randomized treatment vector and candidate adjustment directions. This is
-the regime in which a randomization-based or reduced-form approximation to the
-searched statistic is most natural.
-
-\subsection{Observationally Confounded Specification Surfaces}
-
-Observed confounding changes the surface. In observational work, controls are
-often part of the identifying argument. Adding, removing, or transforming them
-can make conclusions model-dependent and can change the estimand, the residual
-treatment variation, and the apparent strength of evidence
-\citep{kingDetectingModelDependence2007,lenz2021achieving,sturman2022uncontrolled,yu2024misstatements,cinelliForneyPearl2022crash}.
-Thus an observationally confounded specification surface is not merely an
-experimental surface with a different variance.
-
-The closest conceptual precedents are omitted-variable-bias and sensitivity
-analysis. These formulas decompose the effect of an omitted covariate into its
-association with treatment and its association with the outcome
-\citep{oster2019unobservable,cinelliHazlett2020sensitivity,chernozhukov2022long};
-related work extends the same style of sensitivity analysis to instrumental
-variables \citep{cinelliHazlett2025iv}.
-\citet{tsao2025minimum}, for example, ask how strong an omitted covariate
-would need to be to overturn an insignificant result. We use the same two
-associations for a different purpose: the covariates are observed, and the
-analyst moves across the specification surface by deciding which directions to
-adjust for or how to represent them. Recent design-phase work similarly treats
-covariate balance and subsample construction as ways to reduce exposure to
-misspecification \citep{choi2025designPhase}. Here the design choice itself is
-part of the specification surface, and the question is how much movement remains
-available after the admissible surface has been fixed.
-
-\subsection{Post-Selection and High-Dimensional Inference}
-
-Post-selection inference constructs valid tests or confidence sets after a
-specified selection procedure, using tools such as data splitting and selective
-conditioning
-\citep{cox1975dataSplitting,berk2013valid,fithian2014optimal,lee2016exact,kuchibhotla2018assumptionLean,kuchibhotlaKolassaKuffner2022postSelection,tianTaylor2018selective}.
-\citet{berk2013valid} is particularly close in spirit because their
-post-selection-inference constant controls a maximum over all submodels,
-uniformly over selection rules. The object differs from ours: that framework
-targets finite-sample validity for studentized statistics after
-coordinate-submodel selection, while we study the
-coefficient envelope over a specification surface and its drift, variance, and
-outcome-energy decomposition.
-
-High-dimensional regression and proportional-asymptotic random-matrix theory
-develop related methods when models or nuisance components are estimated from
-many covariates
-\citep{el2013robust,sur2019likelihood,hastie2022surprises}. Those results give
-the calculus for regimes with $p/n$ non-negligible, but their standard targets
-are fixed procedures, likelihood ratios, or prediction risk rather than a
-search-maximized reported coefficient. In the low-dimensional sparse case, our
-rates also draw on the restricted-isometry and restricted-eigenvalue geometry
-used in compressed sensing and sparse regression
-\citep{candesTao2005decoding,baraniuk2008simple,bickelRitovTsybakov2009,vandegeerBuhlmann2009conditions,raskuttiWainwrightYu2010restricted}.
-Our use is reversed: the same geometry that enables sparse recovery also
-controls how much an adversarial specification search can extract.
-
-Unlike these works, we do not condition on a single observed
-selection event, and we do not aim to recover a sparse true model. We study the
-envelope of possible reported results over a specification surface when the
-search rule may be informal, hidden, or adversarial.
-
-We measure researcher discretion through geometry rather than
-through a count of possible regressions. Experimental search,
-observationally confounded search, and general preprocessing define different
-specification surfaces, with different extreme-value behavior. The relevant
-degrees of freedom are determined by the covariance geometry of treatment,
-outcome, and the admissible representations available to the analyst.
+Under choices close to ours, Leamer's extreme-bounds analysis varies the
+included controls and reports the range of the resulting coefficient
+\citep{leamer1983con}, and \citet{knaeble2024branch} compute its exact largest
+and smallest values over all subsets of controls by branch and bound. Incentive
+models of publication reach the same control search but summarise it only
+through the sign of the movement between specifications, not its magnitude
+\citep{mccloskey2022incentive}. None of these gives the size of the range as a
+function of the data, which is what this paper provides. That size depends, more
+subtly, on how strongly the treatment is correlated with the controls. Under
+randomisation it is uncorrelated, every fixed specification targets the same
+effect, and only the act of searching can mislead
+\citep{lin2013agnostic,aronowRobinsSaarinenSavjeSekhon2021}. As the correlation
+grows the controls enter the identifying argument, so changing them moves the
+estimate and the assumptions it rests on together
+\citep{cinelliForneyPearl2022crash,cinelliHazlett2020sensitivity,oster2019unobservable},
+and it is here that this paper locates the harder problem.
