@@ -59,13 +59,13 @@ asymmetry of information that keeps the reviewer from inspecting the intermediat
 steps able to change what is reported. 
 
 In this sense, they cast the situation as 
-a \textit{principal--agent problem} (general citation, even maybe definition in parentheses), 
+a \textit{principal--agent problem} {\citep{ross1973economic,holmstrom1979moral,laffontMartimort2002theory}} ({a setting in which one party acts on another's behalf under divergent objectives and actions the other cannot observe}),
 the reviewer playing the principal and the researcher
 the agent. This framing has been made formal by \citet{spiess2018optimal} and
 \citet{kasy2022optimal}, but is used here only as a qualitative organising
 principle. It opens three axes along which theoretical work can vary: the
-criterion the researcher optimises, whether a p-value or the coefficient on a
-single fixed treatment; the specification set of alternative models open to
+criterion the researcher optimises (whether a p-value or the coefficient on a
+single fixed treatment); the specification set of alternative models open to
 them; and the disclosure rule that fixes the degree of asymmetry. Fixing a
 single treatment matters: searching over models for one coefficient is
 geometrically distinct from searching across many treatments or outcomes, which
@@ -94,6 +94,70 @@ estimate and the assumptions it rests on together
 \citep{cinelliForneyPearl2022crash,cinelliHazlett2020sensitivity,oster2019unobservable},
 and it is here that this paper locates the harder problem.
 
-Compared to most of this literature, this literature is leveraging recent progress in high-dimensional probability and contributes to a second strand of technical works. 
+Compared to this existing literature, this work leverages recent developments in
+high-dimensional probability \citep{vershynin2018hdp} and random-matrix theory.
 
-\paragraph{Technical literature.}
+\paragraph{Technical literature: high-dimensional probability and random matrix theory.} This paper recasts the search as the supremum
+of a stochastic process indexed by the specification set, a framing it shares
+with several of the works above, and studies it systematically with the available
+tools for bounding and approximating, with vanishing error, suprema of stochastic
+processes. For the coordinate search over discrete control subsets, the
+controlling quantity is the restricted-isometry constant familiar from compressed
+sensing
+\citep{candesTao2005decoding,bickelRitovTsybakov2009,raskuttiWainwrightYu2010restricted},
+of which the bound here is an applied instance, so that the geometry enabling
+sparse recovery also bounds what an adversarial search can extract.
+
+A second strand of the analysis approximates that supremum with vanishing error,
+through a plug-in built on generic chaining \citep{talagrand2014upper}, refined
+for the order-two chaos process at the heart of the problem by
+\citet{dirksen2015tail}, which fixes the precise rate of the relative error, with
+chaos and the restricted-isometry constant recurring together as in
+\citet{krahmerMendelsonRauhut2014chaos}, and the Gaussian approximation of the
+maximum following \citet{cck2014gaussianapprox}. The closest adjacent question is
+the maximum spurious correlation of \citet{fanZhou2016guarding}, who ask, under
+the null, how large a fit the best $s$-sparse combination of predictors can
+attain, with a companion describing its distribution
+\citep{fanShaoZhou2018spurious}. Their search singles out no treatment, maximising
+symmetrically over all predictors against the response, and it fits the chosen
+subset rather than, as here, adjusting for it, so nothing is partialled out. The
+two meet at only one of their results, the isotropic least-squares limit, where
+the maximum becomes a sum of the top-$s$ order statistics of chi-squared variables
+(while ours is a sum of the top-$s$ order statistics of products of two
+independent Gaussians), carrying the same Gaussian width $\sqrt{s\log(ep/s)}$. On
+the proof side, their normaliser does not depend on the subset and so leaves a
+single chaos process, whereas the present object is a ratio of two chaos processes
+coupled through the shared projector, which requires different mathematical
+arguments.
+
+The continuous relaxation, a supremum over rank-$\le s$ orthogonal projectors of
+the control span, is of a kind that recurs across statistics: reduced-rank
+regression \citep{izenman1975reduced} seeks the best low-rank predictor, and
+optimisation over the Grassmann manifold \citep{edelman1998geometry} extremises a
+smooth objective over all subspaces of a given dimension; neither, however,
+singles out a treatment direction or forms the ratio that arises here. What is
+specific here is the singled-out treatment and the ratio form, analysed in the
+proportional regime $p/n\to\kappa$ through a Ky Fan variational identity
+\citep{fan1949theorem} and the deterministic-equivalent calculus for quadratic
+functionals of the sample covariance \citep{ledoitPeche2011eigenvectors}, rather
+than the spectral-edge results of \citet{baiYin1993}. We are not aware of prior
+work characterising the extreme value of such a coefficient over a continuous
+family of low-rank adjustments.
+
+\paragraph{Contrast with post-selection inference and the validity--sharpness
+tension.} The issue of evaluating an ensemble of available models in a given study
+has also been approached, from a different side, by post-selection inference,
+which seeks not to characterise or detect questionable practices but to build
+sequentially valid decisions across the selection
+\citep{cox1975dataSplitting,fithian2014optimal,lee2016exact,tianTaylor2018selective,kuchibhotlaKolassaKuffner2022postSelection,chengSpectorJanson2025chiseling}.
+For the choice of control variables studied here, \citet{berk2013valid} provide
+such a guarantee, valid against every selection rule. In this case, the guarantee
+seems to come at a heavy price, since, with no structure assumed of the design,
+the correction counts the candidate submodels as if their directions were
+unstructured on the sphere, when the adjustment sets are in fact highly dependent;
+the present results make this conservatism precise once the controls are genuinely
+correlated. While the methods developed here, resting on concentration-of-measure
+phenomena, are unlikely to deliver the exact, finite-population guarantees that
+post-selection inference draws from multiple testing, their descriptive gain can
+still be turned into methodological insight, in the form of a quantitative sensitivity analysis
+rather than a valid test (Section~\ref{sec:discussion}).
