@@ -16,6 +16,12 @@ models researchers present, a process adjacent to but not identical with
 researcher self-selection, since altering the model also shifts the research
 question slightly \citep{brodeur2016star,elliott2022detecting}.
 
+\nic{i don't think andrews and kasy really sits in this first bucket? as i read
+them they lump journal and researcher selection into the one $p(\cdot)$ and say
+straight out they don't try to separate the two, and that submit-only-significant
+is just a special case of their model. they are in fact saying you cannot identify this really? more or less? and then elliot kind of cite this? I think maybe we start with brodeur and file drawer and then say these collapse etc if you want to set it up this way}
+
+
 This second mechanism has been described in a series of applied publications,
 whose shared method is to run, whenever the data permit, alternative analyses
 across the decision space and to see whether a result still stands once less
@@ -25,7 +31,7 @@ headline significance to control variables whose inclusion is never disclosed,
 which makes the choice of controls one of the most consequential of these
 decisions. In \citet{silberzahn2018many}, twenty-nine teams analysed one dataset
 to answer a single question, whether referees give more red cards to
-dark-skinned players, each free to choose its own analysis. Their twenty-one
+dark-skinned players, each free to choose their own analysis. Their twenty-one
 distinct sets of covariates, with different models and exclusion rules, produced
 odds ratios from 0.89 to 2.93, significant for twenty teams and not for nine.
 Because the treatment and outcome were fixed before any analysis and no result
@@ -34,32 +40,34 @@ cleanly, and the spread is a lower bound on what a researcher seeking a
 particular answer could obtain; \citet{breznau2022hidden} reach the same
 conclusion with seventy-three teams. 
 
+
 A further, methodological line builds tools
-rather than findings, some for reporting a study's full range of results in
-advance, others for detecting manipulation after publication. A multiverse
-analysis belongs to the first kind: reported with the study, it enumerates every
+for reporting a study's full range of results.
+\nic{i tweaked this, i do not think the tools really change whether it is pre/post publication for honest reporting/fraud detection} 
+Multiverse analysis enumerates every
 defensible specification and gives the estimate each one yields, so the reader
 sees the whole distribution rather than a single chosen point
-\citep{steegenIncreasingTransparencyMultiverse2016}. A specification curve
-presents that distribution graphically, ordering the estimates and marking the
+\citep{steegenIncreasingTransparencyMultiverse2016}. Specification curves
+present that distribution graphically, ordering the estimates and marking the
 analytic choices behind each, so the contribution of any one covariate can be
 read off as in a sensitivity analysis
 \citep{simonsohnSpecificationCurveDescriptive2019}. These devices have strong
 data requirements and remain tied to one dataset: they show how wide the range
 of results happens to be in a given study, not how wide it can be made in
-principle. More fundamentally, they document a meaningul form of dispersion, 
+principle. 
+\nic{"not how wide it can be made in principle" is a bit weird? i guess this is hard to parse for me. do you mean like they have to specify a "universe" of defensible models?}
+More fundamentally, they document a meaningul form of dispersion, 
 while only implicitly positing the researcher's decision space, among the other 
 ingradients of the modeling landscape.
+\nic{i also dont follow this sentece}
 
-\paragraph{Shared implicits and a common model.} In this push for making explicit the hidden assumptions behind these methodological
-proposals, we find that explanations insisting on the researcher's
-agency can well be reduced down to two assumptions: an adversarial
+\paragraph{A shared implicit model.} Either implicitly or explicitly, these approaches can be simplified by a pair of worst-case assumptions: an adversarial
 publication process that rewards the appearance of strong results; and an
 asymmetry of information that keeps the reviewer from inspecting the intermediate
 steps able to change what is reported. 
 
-In this sense, they cast the situation as 
-a \textit{principal--agent problem} {\citep{ross1973economic,holmstrom1979moral,laffontMartimort2002theory}} ({a setting in which one party acts on another's behalf under divergent objectives and actions the other cannot observe}),
+This essentially sets the publication process up as 
+a principal--agent problem \citep{ross1973economic,holmstrom1979moral,laffontMartimort2002theory} (a setting in which one party acts on another's behalf under divergent objectives and actions the other cannot observe),
 the reviewer playing the principal and the researcher
 the agent. This framing has been made formal by \citet{spiess2018optimal} and
 \citet{kasy2022optimal}, but is used here only as a qualitative organising
@@ -76,15 +84,18 @@ the choice of controls in a linear regression, taken in both a coordinate and a
 continuous form, with treatment and outcome held fixed. The disclosure rule is
 the adversarial one: only the model returning the largest statistic reaches the
 reviewer, the supremum $\sup_{|S|=s}\hat\beta_{0,S}$ characterised above.
+\nic{from the present work on this is a bit clunky, not really smooth}
 
 Under choices close to ours, Leamer's extreme-bounds analysis varies the
 included controls and reports the range of the resulting coefficient
 \citep{leamer1983con}, and \citet{knaeble2024branch} compute its exact largest
-and smallest values over all subsets of controls by branch and bound. Incentive
+and smallest values over all subsets of controls by branch and bound. \nic{'Under choices close to ours, ' i do not like} Incentive
 models of publication reach the same control search but summarise it only
 through the sign of the movement between specifications, not its magnitude
-\citep{mccloskey2022incentive}. None of these gives the size of the range as a
-function of the data, which is what this paper provides. That size depends, more
+\citep{mccloskey2022incentive}. \nic{I think this is a super weird citation for mccloskey, they really just say "here is how you change the p-value, under no endogeneity"? we should not say the "under no endogeneity" point lol but its such a silly paper for this reason. but i guess what you want is smth like "reduces to whether the maximal t-stat crosses a sig threshold" or something like that? but its also quite different because its really theory? Like you could not deploy the method iirc, it would require soliciting info on how phacked things are somehow} None of these gives the size of the range as a
+function of the data, which is what this paper provides. \nic{leamer and knaeble seem todo exactly this? but mccloskey does not for sure, maybe we do all of leamer/knaeable/berk together somewhere?} 
+
+That size depends, more
 subtly, on how strongly the treatment is correlated with the controls. Under
 randomisation it is uncorrelated, every fixed specification targets the same
 effect, and only the act of searching can mislead
@@ -93,6 +104,7 @@ grows the controls enter the identifying argument, so changing them moves the
 estimate and the assumptions it rests on together
 \citep{cinelliForneyPearl2022crash,cinelliHazlett2020sensitivity,oster2019unobservable},
 and it is here that this paper locates the harder problem.
+\nic{maybe worth adding the ding cite commenting on aronow 2025 (we should bump the cite for that its been pubbed in obs studies); maybe worth adding the coda site from robins 1997 somewhere here too. i also think the identification/estaimation gets a bit subtle here and maybe needs to be unpacked more}
 
 Compared to this existing literature, this work leverages recent developments in
 high-dimensional probability \citep{vershynin2018hdp} and random-matrix theory.
@@ -105,7 +117,7 @@ processes. For the coordinate search over discrete control subsets, the
 controlling quantity is the restricted-isometry constant familiar from compressed
 sensing
 \citep{candesTao2005decoding,bickelRitovTsybakov2009,raskuttiWainwrightYu2010restricted},
-of which the bound here is an applied instance, so that the geometry enabling
+of which the bound here is an applied instance, \nic{i do not like this kind of clause i think its harder to read} so that the geometry enabling
 sparse recovery also bounds what an adversarial search can extract.
 
 A second strand of the analysis approximates that supremum with vanishing error,
@@ -114,23 +126,23 @@ for the order-two chaos process at the heart of the problem by
 \citet{dirksen2015tail}, which fixes the precise rate of the relative error, with
 chaos and the restricted-isometry constant recurring together as in
 \citet{krahmerMendelsonRauhut2014chaos}, and the Gaussian approximation of the
-maximum following \citet{cck2014gaussianapprox}. The closest adjacent question is
+maximum following \citet{cck2014gaussianapprox}. \nic{probably it should be rare to have a linear sentence with this many commas} The closest adjacent question is
 the maximum spurious correlation of \citet{fanZhou2016guarding}, who ask, under
 the null, how large a fit the best $s$-sparse combination of predictors can
 attain, with a companion describing its distribution
 \citep{fanShaoZhou2018spurious}. Their search singles out no treatment, maximising
 symmetrically over all predictors against the response, and it fits the chosen
-subset rather than, as here, adjusting for it, so nothing is partialled out. The
+subset rather than, as here, adjusting for it, so nothing is partialled out. \nic{"Their search singles out no treatment" is a weird phrase? i think their goal is actually very standard and distinct this is just a weird way to frame it first like its about our setting?} The
 two meet at only one of their results, the isotropic least-squares limit, where
 the maximum becomes a sum of the top-$s$ order statistics of chi-squared variables
 (while ours is a sum of the top-$s$ order statistics of products of two
-independent Gaussians), carrying the same Gaussian width $\sqrt{s\log(ep/s)}$. On
+independent Gaussians), carrying the same Gaussian width $\sqrt{s\log(ep/s)}$. \nic{"the two meet" is hard to follow, the organization here at a sentence level is just a bit weird. this could read more linearly i think} On
 the proof side, their normaliser does not depend on the subset and so leaves a
 single chaos process, whereas the present object is a ratio of two chaos processes
 coupled through the shared projector, which requires different mathematical
 arguments.
 
-The continuous relaxation, a supremum over rank-$\le s$ orthogonal projectors of
+The continuous relaxation, the supremum over rank-$\le s$ orthogonal projectors of
 the control span, is of a kind that recurs across statistics: reduced-rank
 regression \citep{izenman1975reduced} seeks the best low-rank predictor, and
 optimisation over the Grassmann manifold \citep{edelman1998geometry} extremises a
