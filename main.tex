@@ -16,6 +16,10 @@
 % wrapper (or redefine \tc to {#1}) once the content is accepted.
 \definecolor{tccolor}{rgb}{0.4,0.5,0.95}
 \newcommand{\tc}[1]{{\color{tccolor}#1}}
+% Reviewer comments (Nic): inline, coloured. Redefine as \newcommand{\nic}[1]{}
+% to hide all of them at once before submission.
+\definecolor{niccolor}{rgb}{0.75,0.1,0.1}
+\newcommand{\nic}[1]{{\color{niccolor}[\textbf{Nic:} #1]}}
 \usepackage[numbers,sort&compress]{natbib}
 
 \bibliographystyle{unsrtnat}
