@@ -53,18 +53,18 @@ We call this strategic ``coordinate search'' and formalize it as the following s
 \end{equation}
 characterized in this work under general assumptions on $X_{-0}, x_0, y$, the structure of the true coefficients $\beta_0, \beta_{-0}$, the covariance structure of the controls $C = \text{Cov}(X_{-0})$, treatments $\sigma_0^2 = \text{Var}(x_{0})$, and their interaction $d = \text{Cov}(x_0, X_{-0})$, and $\sigma_\varepsilon^2 = \text{Var}(\varepsilon)$. Our method also works for the process $\{|\hat \beta_{0, S}|, S \subseteq [p]\}$, or for that of the t-statistic when focusing on the question of statistical significance. The latter is also presented in this work but follows a slightly different geometry that is easier to establish once that of the original process has been properly studied.
 
-To summarize, our mathematical derivations hold for independent, not necessarily identically distributed, rows of data, subgaussian entries for $X_{-0}$, a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property, which holds when the population covariance satisfies a corresponding restricted-isometry condition and under a random design assumption with subgaussian random variables.
+To summarize, our mathematical derivations hold for \tc{independent and identically distributed rows of data with jointly subgaussian design,} a boundedness condition on the effective signal-to-noise ratio, and generic regularity conditions on the rest. The key load-bearing condition is that the empirical covariance matrix needs to satisfy the restricted isometry property, which holds when the population covariance satisfies a corresponding restricted-isometry condition and under a random design assumption with subgaussian random variables.
 
-\paragraph{Experimental and observational settings bounds.} Our mathematical tools enable us to derive upper and lower bounds for all values of $d$. In the case $d = 0$, when there is no correlation between treatment and control covariates (which holds under treatment randomization) the maching bounds 
+\paragraph{Experimental and observational settings bounds.} Our mathematical tools enable us to derive upper and lower bounds for all values of $d$. In the case $d = 0$, when there is no correlation between treatment and control covariates (which holds under treatment randomization) the matching bounds 
 \begin{equation}\label{eq:experimental}
-    \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp \beta_0+\frac{\sqrt{\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2}}{\sigma_0}\, \frac{s \sqrt{\log (ep/s)}}{n},
+    \sup_{S \subseteq [p], |S| = s} \hat \beta_{0, S} \asymp \beta_0+\frac{\sqrt{\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2}}{\sigma_0}\, \tc{\frac{s \log (ep/s)}{n}},
 \end{equation}
 are proved using entropy techniques. The reduction of the maximal bias quantity to the restricted-isometry scaling is a new result, which also composes neatly with the geometry of $C$ and $\beta_{-0}$ when $d = 0$. \nic{this sentence is structured weirdly} Under the more general case $d \neq 0$, which concerns most observational settings, the situation is unfortunately less simple. We prove the following upper bound
 \begin{equation}\label{eq:general-discrete}
         \sup_{|S|=s}\hat\beta_{0,S}
         \;\lesssim\;
         \beta_0+\sup_{|S|=s} b_C(S)
-        + \sqrt{\kappa_s(C)}\;\frac{\Xi}{\eta_s}\;\frac{s\sqrt{\log(ep/s)}}{n}, \qquad \kappa_s(C)=\sup_{|J|\le 2s}\frac{\lambda_{\max}(C_{JJ})}{\lambda_{\min}(C_{JJ})},
+        + \sqrt{\kappa_s(C)}\;\frac{\Xi}{\eta_s}\;\tc{\frac{s\log(ep/s)}{n}}, \qquad \kappa_s(C)=\sup_{|J|\le 2s}\frac{\lambda_{\max}(C_{JJ})}{\lambda_{\min}(C_{JJ})},
 \end{equation}
 alongside a lower bound which drops the constant $\sqrt{\kappa_s(C)}$, and where $b_C, \Xi, \eta_s$ are three scalars depending only on population quantities that are in general compared to Equation \eqref{eq:experimental}, not only more complicated  but also much larger. We believe the entropic tools used for proofs may not provide matching bounds without further, more problem-specific, assumptions. \nic{do you not like "we"? I feel like some of the stiltedness of the writing comes from trying to avoid "we" too much. I think it is fine to use "we" in a math paper, and it is often clearer than the passive voice?} \nic{separately, I think we should maybe state how it is that this reduces to (4) when $d = 0$, which requires a little more detail but is clarifying}
 
@@ -79,20 +79,26 @@ More substantively, the comparison between the experimental and the observationa
 %\end{equation}
 %\tc{The matching lower bound is the same expression with the factor $\sqrt{\kappa_s(C)}$ removed, so the two coincide in order when $\kappa_s(C)=O(1)$ and exactly at a restricted isometry; this is informative as long as the treatment keeps variance off the controls ($\eta_s$ bounded below), near-perfect confounding being a separate low-dimensional phenomenon.}
 
-\paragraph{Plug-in approximation.} While bounds are the most fundamental concept to derive for understanding the scalings of the problem, actual study of hacking in a specific scientific study requires different tools, and this work present a plug-in approximator of the maximum bias under coordinate search. \nic{just kind of an abrupt transition here} Taking inspiration from Gaussian approximations of supremum of stochastic processes, this work proposes a linearly separable approximator of the supremum of $\{\hat \beta_{0, S}, S\subseteq [n]\}$, with vanishing \textit{relative} error in the case $n \gg s \sqrt{\log e p /s}$, which holds for most practical settings with $s$ moderately small. 
+\paragraph{Plug-in approximation.} While bounds are the most fundamental concept to derive for understanding the scalings of the problem, actual study of hacking in a specific scientific study requires different tools, and this work presents a plug-in approximator of the maximum bias under coordinate search. \nic{just kind of an abrupt transition here} Taking inspiration from Gaussian approximations of supremum of stochastic processes, this work proposes a linearly separable approximator of the supremum of $\{\hat \beta_{0, S}, S\subseteq [p]\}$, with vanishing \textit{relative} error in the case $n \gg s \sqrt{\log e p /s}$, which holds for most practical settings with $s$ moderately small. 
 
-In general, a separable approximator does not exist because the population covariance matrix $C$ may encode an intractable combinatorial structure. But under the assumption that local size-$s$ blocks of $C$ are isotropic ($\sup_{|J|\le 2s}\|R_{JJ}-I\|_{\mathrm{op}}=o(1)$) alongside some weaker conditions, the following holds:
-\begin{equation}\label{eq:plugin-general}
+In general, a separable approximator does not exist because the population covariance matrix $C$ may encode an intractable combinatorial structure. But under the assumption that local size-$s$ blocks of $C$ are isotropic ($\sup_{|J|\le 2s}\|R_{JJ}-I\|_{\mathrm{op}}=o(1)$) alongside some weaker conditions, \tc{and with the controls normalized to
+unit variance,} the following holds:
+\tc{\begin{equation}\label{eq:plugin-general}
         \sup_{|S|=s} \hat\beta_{0,S}
-        =\beta_0 + \sum_{j=1}^{s}\{\xi_{1k}\xi_{2k}\}_{(j)}
+        =\beta_0
+        + \frac{x_0^\top w}{x_0^\top x_0}
+        + \frac{1}{n\,\sigma_0^2}\sum_{j=1}^{s}\{-\,\xi_{1k}\xi_{2k}\}_{(j)}
         +o_{\mathbb P}\!\Big(\tfrac{s\sqrt{\log(ep/s)}}{n}\Big),
         \qquad
         \begin{cases}
-           (\xi_{1k})_k &\overset{\text{iid}}{\sim} N\big(d_k,\,\sigma_0^2-d^\top C^{-1}d\big) \\
-           (\xi_{2k})_k &\overset{\text{iid}}{\sim} N\big((C\beta_{-0})_k,\,\sigma_\varepsilon^2\big)
+           \xi_{1k} &\sim N\big(\sqrt n\, d_k,\,\sigma_0^2\big) \\
+           \xi_{2k} &\sim N\big(\sqrt n\,(C\beta_{-0})_k,\,\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2\big)
         \end{cases},
 \end{equation}
-with $(\xi_{1k})_k$ and $(\xi_{2k})_k$ all independent and where the $\{ \}_{(j)}$ notation denotes the order statistics. This showcases how the search, even in moderately high dimensions, may be expressed as the sum of top $s$ order statistics of random variables. In the idealized scenario $C  = I, d = \beta_{-0} = 0$, this supremum is still more dangerous that the supremum of single Gaussians, since the independent product $\xi_{1}\xi_{2}$ has an excess kurtosis of 7, meaning a small budget $s$ can surprisingly lead to a lot of displacement. 
+where $w := y - \beta_0 x_0$, so that $x_0^\top w / x_0^\top x_0$ is the
+sampling noise common to every specification, the variables
+$(\xi_{1k})_{k \le p}$ and $(\xi_{2k})_{k \le p}$ are all independent, and
+$\{\,\}_{(j)}$ denotes the order statistics in decreasing order.} This showcases how the search, even in moderately high dimensions, may be expressed as the sum of top $s$ order statistics of random variables. In the idealized scenario $C  = I, d = \beta_{-0} = 0$, this supremum is still more dangerous than the supremum of single Gaussians, since the independent product $\xi_{1}\xi_{2}$ has an excess kurtosis of \tc{6}, meaning a small budget $s$ can surprisingly lead to a lot of displacement. 
 
 This is also shown, under extension results of the article and additional assumptions, to be the case for weighting estimators, whereas for doubly robust estimators, the displacement is rather of the form $\xi_{1}\xi_{2} + \xi_{3}\xi_{4}$ with all four independent Gaussians, which has lower kurtosis and is thus less prone to hacking with few covariates. 
 
@@ -109,7 +115,7 @@ More generally, the plug-in can easily be computed in applications without the n
 
 \paragraph{The extended hacking problem.} While this work extracts many important insights from pushing entropic tools as far as possible to derive bounds and stochastic approximators, the obtained results still suffer from two issues. First, they do not apply to the proportional asymptotic regime, where $p$ and $n$ are of comparable size, which is generally thought to be phenomenologically important when working with high-dimensional data. Second, they are basis dependent, that is, they depend on the original basis the data was observed in. More concretely, this means they are not robust to the most trivial form of pre-processing, that is, linear changes of covariates, which may be an important source of bias from researcher's degrees of freedom despite the fact they only end up reporting a small amount of included covariates $s$.
 
-To adress these issues, we introduce a second model of a researcher optimizing the size of the reported coefficient, this time over all orthogonal projectors $P$ ($P = P^\top = P^2$) onto rank-$s$ or lower subspaces of the control span. Compared to the original ``coordinate search'' problem, we call it ``basis search'', and formalize it as
+To address these issues, we introduce a second model of a researcher optimizing the size of the reported coefficient, this time over all orthogonal projectors $P$ ($P = P^\top = P^2$) onto rank-$s$ or lower subspaces of the control span. Compared to the original ``coordinate search'' problem, we call it ``basis search'', and formalize it as
 \begin{equation}\label{eq:relaxed-search}
         \hat\beta_{0,s}^\star
         =
