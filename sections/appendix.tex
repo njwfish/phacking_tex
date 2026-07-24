@@ -1,0 +1,2434 @@
+\appendix
+
+\section{Proofs of the Bounds}
+\label{app:bounds}
+
+\subsection{Proofs of Theorem~\ref{thm:experimental-matching}}
+\label{app:experimental}
+
+\tc{In the statement of Theorem~\ref{thm:experimental-matching}, the
+constants of the assumptions are
+$(K_\psi, K, c_{\mathrm{ret}}, c_{\min}, c_0, C_0)$ of
+Assumption~\ref{ass:dgp}; for the upper bound alone, they reduce to
+$(K_\psi, C_0)$. Throughout the appendices, the proofs abbreviate the
+part of the outcome not driven by the treatment and its variance as
+\begin{equation}\label{eq:app-outcome-material}
+        w := y - \beta_0 x_0,
+        \qquad
+        \sigma_w^2 := \Var(w^{(i)})
+        = \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2,
+\end{equation}
+a shorthand internal to the arguments: no statement of the article uses
+it. The displays of Section~\ref{sec:bounds} are the bounds below
+rewritten in the isometry scale \eqref{eq:isometry-scale}, using
+$\delta_{s,n,p}^2 = sL/n$.}
+
+\begin{remark}[Role of the distributional assumptions]\label{rem:subgaussian-upper}
+\tc{The upper end of \eqref{eq:experimental-matching} rests on entropy
+and chaining arguments, which consume only the subgaussian tails of
+Assumption~\ref{ass:dgp}(i), the explained variance entering through
+$\Psi_s^2$ in the energy scale itself.
+The lower bound
+uses in addition anti-concentration: the independence of
+Assumption~\ref{ass:experimental}, the treatment variance floor
+$\sigma_0^2 > 0$, and the retained outcome variance of condition (iii) provide
+the required small-ball estimates for the quadratic forms involved, so
+Gaussianity is required nowhere. The moderate-deviations condition
+$\log(ep/s) \lesssim \sqrt n$ is the price of this generality: it keeps the
+searched statistics in the range where subgaussian tails match Gaussian
+ones.}
+\end{remark}
+
+\tc{Throughout this subsection $L := \log(ep/s)$, and $c, C$ denote
+positive constants depending only on $K_\psi$, changing from line to
+line. Singular blocks $C_{SS}$ are routed through representatives as in
+the preliminaries of Appendix~\ref{app:tstat}. All suprema run over
+$\{ S : |S| \le s \}$, of cardinality at most $e^{sL}$.}
+
+\begin{lemma}[Centering identity]\label{lem:centering}
+\tc{For every $S$, with $w = y - \beta_0 x_0$,
+\begin{equation}\label{eq:appa-centering}
+        \hat\beta_{0,S} - \hat\beta_{0,\emptyset}
+        =
+        \frac{-\, x_0^\top P_S\, w
+        + \dfrac{(x_0^\top w)(x_0^\top P_S\, x_0)}{x_0^\top x_0}}
+        {x_0^\top M_S\, x_0}.
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{$M_S y = \beta_0 M_S x_0 + M_S w$ gives
+$\hat\beta_{0,S} = \beta_0 + x_0^\top M_S w / x_0^\top M_S x_0$ and
+$\hat\beta_{0,\emptyset} = \beta_0 + x_0^\top w / x_0^\top x_0$;
+subtracting over the common denominator,
+\begin{equation*}
+        (x_0^\top x_0)(x_0^\top M_S w)
+        - (x_0^\top w)(x_0^\top M_S x_0)
+        =
+        - (x_0^\top x_0)(x_0^\top P_S w)
+        + (x_0^\top w)(x_0^\top P_S x_0),
+\end{equation*}
+and dividing by $(x_0^\top x_0)(x_0^\top M_S x_0)$ gives
+\eqref{eq:appa-centering}.}
+\end{proof}
+
+\begin{lemma}[Denominators, $\kappa$-free]\label{lem:denominator}
+\tc{With probability at least $1 - C e^{-c s L}$, simultaneously for
+all $|S| \le s$,
+\begin{equation}\label{eq:appa-den}
+        \Big| \frac{\norm{x_0}_2^2}{n} - \sigma_0^2 \Big|
+        \le \frac{\sigma_0^2}{4},
+        \qquad
+        \norm{P_S\, x_0}_2^2 \le C \sigma_0^2\, s L,
+        \qquad
+        x_0^\top M_S\, x_0 = \sigma_0^2 n ( 1 + \theta_S ),
+        \ \ |\theta_S| \le C \sqrt{\tfrac{s L}{n}} \le \tfrac12 .
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{$x_{0,i}^2$ are i.i.d.\ with mean $\sigma_0^2$ and $\psi_1$-norm
+at most $K_\psi^2 \sigma_0^2$; Bernstein gives
+$\Prob( | \norm{x_0}^2/n - \sigma_0^2 | > t \sigma_0^2 )
+\le 2 e^{-c n \min(t^2, t)}$, and $t = C\sqrt{sL/n} \le 1/4$
+(Assumption~\ref{ass:dgp}(ii), $C_0$ large) leaves failure
+$e^{-cC^2 sL}$. Conditionally on $X_{-0}$, $P_S$ is a projector of
+rank $r_S \le s$ and $x_0 \perp X_{-0}$ (Assumption
+\ref{ass:experimental}) has independent centered entries with
+$\psi_2 \le K_\psi \sigma_0$; Hanson--Wright gives
+\begin{equation*}
+        \Prob\!\left( \norm{P_S x_0}_2^2 > \sigma_0^2 r_S + t \right)
+        \le
+        2 \exp\!\left( - c \min\!\left(
+        \tfrac{t^2}{K_\psi^4 \sigma_0^4 s},\,
+        \tfrac{t}{K_\psi^2 \sigma_0^2} \right) \right),
+\end{equation*}
+and $t = C K_\psi^2 \sigma_0^2 sL$ beats the union over $e^{sL}$
+sets. The third display is
+$x_0^\top M_S x_0 = \norm{x_0}^2 - \norm{P_S x_0}^2$ with
+$sL \le n / C_0$.}
+\end{proof}
+
+\begin{lemma}[Energy of the projected outcome]\label{lem:energy}
+\tc{For every $\theta \ge 1$, with probability at least
+$1 - C e^{-\theta s L}$,
+\begin{equation}\label{eq:appa-energy}
+        \max_{|S| \le s} \norm{P_S\, w}_2^2
+        \;\le\;
+        C \left( \theta\, \sigma_w^2\, s L + n\, \Psi_s^2 \right).
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{Fix $S$ with $C_{SS} \succ 0$; let
+$\gamma_S = C_{SS}^{-1} (C\beta_{-0})_S$, so that
+$w = X_S \gamma_S + u_S$ with, per row,
+$\E[X_S^{(i)} u_S^{(i)}] = 0$,
+$\Var(u_S^{(i)}) = \sigma_w^2 - R^2(S) \le \sigma_w^2$,
+$R^2(S) = (C\beta_{-0})_S^\top C_{SS}^{-1} (C\beta_{-0})_S \le
+\Psi_s^2$, and $\psi_2(u_S^{(i)}) \le C K_\psi \sigma_w$ (a linear
+functional of $(X_{-0}^{(i)}, \varepsilon^{(i)})$, with
+$\varepsilon$ independent). Since $X_S\gamma_S \in
+\operatorname{span}(X_S)$,
+$\norm{P_S w}_2^2 \le 2 \norm{X_S \gamma_S}_2^2
++ 2 \norm{P_S u_S}_2^2$. On the whitened Gram event
+\begin{equation}\label{eq:appa-gram}
+        \mathcal G
+        =
+        \Big\{
+        \max_{|J| \le 2s}
+        \big\| C_{JJ}^{-1/2} \big( \tfrac1n X_J^\top X_J \big)
+        C_{JJ}^{-1/2} - I \big\|_{\mathrm{op}}
+        \le C \sqrt{\tfrac{s L}{n}} \le \tfrac12
+        \Big\},
+\end{equation}
+of probability $1 - e^{-csL}$ (isotropic $K_\psi$-subgaussian
+whitened rows; a net argument gives per-set failure $2e^{-t}$ at
+deviation $C(\sqrt{s/n} + \sqrt{t/n})$, and $t = CsL$ beats the
+union), one has
+$\norm{X_S \gamma_S}_2^2 = n \gamma_S^\top \hat C_{SS} \gamma_S
+\le 2 n R^2(S) \le 2 n \Psi_s^2$. For the residual part, on
+$\mathcal G$,
+$\norm{P_S u_S}_2 = \| (X_S^\top X_S)^{-1/2} X_S^\top u_S \|_2
+\le \sqrt{2/n}\, \| C_{SS}^{-1/2} X_S^\top u_S \|_2$; the vector
+$C_{SS}^{-1/2} X_S^\top u_S$ is a sum of $n$ i.i.d.\ centered vectors
+whose one-dimensional projections have $\psi_1 \le C K_\psi^2
+\sigma_w$ (product of subgaussians, centered by uncorrelatedness), so
+a $\tfrac12$-net of the sphere and Bernstein give
+$\| C_{SS}^{-1/2} X_S^\top u_S \|_2 \le C \sigma_w \sqrt{n s L}$ with
+per-set failure $e^{-2sL}$, hence
+$\norm{P_S u_S}_2^2 \le C \sigma_w^2 sL$ uniformly.}
+\end{proof}
+
+\begin{lemma}[Upper end]\label{lem:union}
+\tc{For every $\theta \ge 1$, on the intersection of the previous events
+at deviation level $\theta$ and with a further loss of
+$C e^{-\theta s L}$,
+\begin{equation}\label{eq:appa-upper}
+        \sup_{|S| = s} \hat\beta_{0,S} - \hat\beta_{0,\emptyset}
+        \;\le\;
+        \frac{C\, \theta}{\sigma_0}
+        \sqrt{ \sigma_w^2 + \frac{n \Psi_s^2}{sL} }\;
+        \frac{s L}{n}
+        \;\le\;
+        \frac{C\, \theta\, \sigma_w}{\sigma_0} \sqrt{\frac{sL}{n}},
+\end{equation}
+using Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:experimental}
+only. The second inequality is the ceiling quoted after
+Theorem~\ref{thm:experimental-matching}: the population projection bounding
+$\Psi_s^2 \le \beta_{-0}^\top C \beta_{-0} \le \sigma_w^2$, the radical is
+at most
+$\sigma_w \sqrt{1 + n/(sL)} \le \sigma_w \sqrt{2n/(sL)}$ by
+Assumption~\ref{ass:dgp}(ii).}
+\end{lemma}
+
+\begin{proof}
+\tc{Conditionally on $(X_{-0}, w)$, the variables $-x_0^\top P_S w$
+are centered with $\psi_2 \le K_\psi \sigma_0 \norm{P_S w}_2$; the
+maximum over $e^{sL}$ of them exceeds
+$C K_\psi \sigma_0 \sqrt{sL} \max_S \norm{P_S w}_2$ with conditional
+probability at most $e^{sL} 2 e^{-cC^2 sL} \le e^{-sL}$, so by
+Lemma~\ref{lem:energy}
+\begin{equation}\label{eq:appa-numerator}
+        \sup_{|S| \le s} \big( -x_0^\top P_S w \big)
+        \le
+        C \sigma_0 \sqrt{sL}\,
+        \sqrt{ \sigma_w^2 sL + n \Psi_s^2 } .
+\end{equation}
+For the cross term of \eqref{eq:appa-centering}: conditionally on
+$w$, $x_0^\top w$ is centered with $\psi_2 \le K_\psi \sigma_0
+\norm{w}_2$, and $\norm{w}_2 \le C \sigma_w \sqrt n$ off an $e^{-cn}$
+event, so $|x_0^\top w| \le C \sigma_0 \sigma_w \sqrt{n sL}$ off
+$e^{-csL}$; with Lemma~\ref{lem:denominator},
+\begin{equation*}
+        \frac{|x_0^\top w| \max_S \norm{P_S x_0}_2^2}{x_0^\top x_0}
+        \le
+        \frac{ C\sigma_0 \sigma_w \sqrt{n sL}\cdot C\sigma_0^2 sL }
+        { \sigma_0^2 n / 2 }
+        =
+        C \sigma_0 \sigma_w\, sL \sqrt{\tfrac{sL}{n}}
+        \le C \sigma_0 \sigma_w\, sL,
+\end{equation*}
+dominated by \eqref{eq:appa-numerator}. Divide by
+$x_0^\top M_S x_0 \ge \sigma_0^2 n/2$ and use
+$\sqrt{sL}\sqrt{\sigma_w^2 sL + n\Psi_s^2} = sL \sqrt{\sigma_w^2 +
+n\Psi_s^2/(sL)}$.}
+\end{proof}
+
+\begin{lemma}[Block geometry and retained scale on $A$]
+\label{lem:block-gram}
+\tc{Normalize the controls to unit variance (spans, hence every
+$\hat\beta_{0,S}$, are invariant). On the region $A$ of condition
+(iv), the correlation floor gives
+$\lambda_{\min}(C_{JJ}) \ge c_{\min}$ for every $J \subseteq A$,
+$|J| \le 2s$, and on $\mathcal G$ the empirical blocks inherit
+$\lambda_{\min}( \tfrac1n X_J^\top X_J ) \ge c_{\min}/2$; by
+condition (iii), $\sigma_w^2 - R^2(J) \ge c_{\mathrm{ret}} \sigma_w^2$
+for every such $J$.}
+\end{lemma}
+
+\begin{proof}
+\tc{With unit variances the blocks of $C$ on $A$ are the correlation
+blocks, so the floor is the hypothesis; on $\mathcal G$,
+$\lambda_{\min}(\hat C_{JJ}) \ge \lambda_{\min}(C_{JJ})(1 -
+\| C_{JJ}^{-1/2} \hat C_{JJ} C_{JJ}^{-1/2} - I \|_{\mathrm{op}})$.
+The last claim is the display of condition (iii).}
+\end{proof}
+
+\begin{lemma}[Joint exceedances]\label{lem:exceedance}
+\tc{Let $\tilde X_j = X_j / \norm{X_j}_2$ and, for $j \in A$,
+$\zeta_j = ( -x_0^\top \tilde X_j )( \tilde X_j^\top w )$. With
+probability at least $1 - C e^{-c s L} - \pi_n$, at least $s$ indices
+$j \in A$ satisfy $\zeta_j \ge c\, \sigma_0 \sigma_w L$, where
+$\pi_n$ denotes the failure probability of the exceedance-count
+concentration.
+% GAP: the count concentration. The joint indicators
+% 1{ -x_0^T Xt_j >= c sigma_0 sqrt(L) } 1{ Xt_j^T w >= c sigma_w
+% sqrt(L) } are dependent across j. Each has probability at least
+% e^{-C c^2 L} >= (s/ep)^{1/2} for c small, by Cramer--Petrov lower
+% tails valid in the moderate-deviations range log(ep/s) <= c_0
+% sqrt(n) (this is where that regularity condition is consumed), so
+% the expected count over |A| >= p/2 is at least 4s for s <= p/2. A
+% second-moment argument requires the pairwise indicator covariances
+% to be small; the correlation floor bounds the pairwise score
+% correlations by 1 - c_min, which closes under a Gaussian design or
+% a Gaussian-copula comparison, but is left open for general
+% subgaussian designs. Cleanest patch: Gaussian design for the lower
+% end; then pi_n <= C e^{-cs}.
+}
+\end{lemma}
+
+\begin{proof}
+\tc{Write $\xi_j = \tilde X_j^\top w$ and
+$\eta_j = -x_0^\top \tilde X_j$. Conditionally on $X_{-0}$, each
+$\eta_j$ is centered with variance $\sigma_0^2$,
+$\psi_2 \le K_\psi \sigma_0$ (Assumption~\ref{ass:experimental});
+each $\xi_j / \norm{\tilde X_j}$-normalized score is a sum of $n$
+i.i.d.\ $\psi_1$ variables whose per-row variance on $A$ is at least
+$c_{\mathrm{ret}} \sigma_w^2$ by Lemma~\ref{lem:block-gram}. By
+Cram\'er--Petrov, for standardized deviations
+$x = c\sqrt L = o(\sqrt n)$,
+$\Prob( \xi_j \ge c \sigma_w \sqrt L ) \ge e^{-C c^2 L}$, and
+likewise for $\eta_j$; for $c$ small the joint probability is at
+least $(s/ep)^{1/2}$, so the expected joint count over $A$ is at
+least $\tfrac{p}{2}(s/ep)^{1/2} \ge 4s$ when $s \le p/2$. Given the
+count concentration (GAP note), at least $s$ coordinates realize
+$\zeta_j \ge c^2 \sigma_0 \sigma_w L$.}
+\end{proof}
+
+\begin{lemma}[Greedy transfer]\label{lem:greedy}
+\tc{Let $J^\ast \subseteq A$, $|J^\ast| = s$, collect $s$ joint
+exceedance coordinates with pairwise empirical correlations below
+$1 - c_{\min}/2$ (possible within the count of
+Lemma~\ref{lem:exceedance} after enlarging constants). On the
+previous events,
+\begin{equation}\label{eq:appa-greedy}
+        \hat\beta_{0,J^\ast} - \hat\beta_{0,\emptyset}
+        \;\ge\;
+        c\, \frac{\sigma_w}{\sigma_0}\, \frac{s L}{n}.
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{By \eqref{eq:appa-centering} and the cross-term bound of
+Lemma~\ref{lem:union} it suffices to lower-bound
+$-x_0^\top P_{J^\ast} w$. Comparing $P_{J^\ast}$ with the sum of
+rank-one projectors,
+\begin{equation*}
+        -x_0^\top P_{J^\ast} w
+        =
+        \sum_{j \in J^\ast} ( -x_0^\top \tilde X_j )
+        ( \tilde X_j^\top w )
+        + x_0^\top \tilde X_{J^\ast}
+        \big( I - \hat R_{J^\ast}^{-1} \big)
+        \tilde X_{J^\ast}^\top w ,
+\end{equation*}
+and on the events of Lemma~\ref{lem:block-gram}, with the selected
+pairwise correlations below $1 - c_{\min}/2$, the second term is at
+most a constant fraction of the first for $c_{\min}$-dependent
+constants; the first is at least $c\, s\, \sigma_0 \sigma_w L$ by
+Lemma~\ref{lem:exceedance}. Divide by
+$x_0^\top M_{J^\ast} x_0 \le 2 \sigma_0^2 n$.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:experimental-matching}]
+\tc{\emph{Upper bound.} Lemma~\ref{lem:union} at deviation level
+$\theta$ is the upper end of \eqref{eq:experimental-matching}, on an event of probability
+$1 - C e^{-\theta sL}$ built from Lemmas~\ref{lem:denominator}
+and~\ref{lem:energy} at the same level and the union bound over the
+$e^{sL}$ configurations. Only Assumptions~\ref{ass:dgp}(i)--(ii)
+and~\ref{ass:experimental} enter, and the $\theta$-family is the natural
+one here: the maximum of $e^{sL}$ subgaussian scores has upper tails of
+exactly this shape, so the deviation level cannot be traded away, only
+paid for in the constant.
+
+\emph{Lower bound.} Two configurations compete. The exceedance set
+$J^\ast$ gives the $\sigma_w$-branch \eqref{eq:appa-greedy}; its own
+failure is not the binding term, since the expected number of joint
+exceedances over $A$ is of order $\sqrt{sp}$ rather than the $4s$ used in
+Lemma~\ref{lem:exceedance}, so the count fails with probability
+$e^{-c\sqrt{sp}}$, negligible against $e^{-csL}$ as soon as
+$p \gtrsim s L^2$; what binds is the design event $\mathcal G$, of
+probability $1 - Ce^{-csL}$. The best-explained set
+$J^\circ \in \arg\max_{|J| \le s} R^2(J)$ has, on $\mathcal G$,
+$\norm{P_{J^\circ} w}_2^2 \ge c\, n \Psi_s^2$, and a Paley--Zygmund
+bound for the conditionally centered $-x_0^\top P_{J^\circ} w$ gives the
+$\Psi$-branch $c\, \Psi_s / (\sigma_0 \sqrt n)$ at constant conditional
+probability --- a single configuration offers no averaging, which is why
+this branch, alone among the four estimates, does not come with an
+exponentially small failure probability.
+% GAP: upgrading the Psi-branch to probability 1 - e^{-csL} and
+% multiplying it by the search gain sqrt(sL) requires the same
+% anti-concentration input as the count of Lemma lem:exceedance (no
+% Sudakov minoration for subgaussian x_0); under the same patch both
+% close, and max(a, b) >= (a + b)/2 >= c sqrt(a^2 + b^2) assembles
+% the two branches into the radical of the display.
+Combining the branches yields the lower end
+$c_\ell (1/\sigma_0) \sqrt{ \sigma_w^2 + n \Psi_s^2 / (sL) }\, sL/n$,
+and the interval display follows; the upper end used only
+Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:experimental}
+(Lemma~\ref{lem:union}).}
+\end{proof}
+
+\subsection{Proof of Theorems~\ref{thm:observational-bounds}
+and~\ref{thm:observational-lower}}
+\label{app:observational}
+
+\tc{For $S \subseteq [p]$, write
+$\eta(S) = \sigma_0^2 - d_S^\top C_{SS}^{-1} d_S$ for the treatment
+variance left after adjusting on $S$, so that the drift \eqref{eq:drift}
+reads $b(S) = \beta_{-0,S^c}^\top ( d_{S^c} - C_{S^c S} C_{SS}^{-1} d_S )
+/ \eta(S)$, and set $\eta_s = \inf_{|S| = s} \eta(S)$; since the variance
+explained by a subset is at most that explained by the full span,
+Assumption~\ref{ass:observational}(i) gives
+$\eta(S) \ge \eta([p]) \ge c_{\mathrm{ov}}\, \sigma_0^2$ for every $S$.
+The fluctuation scale of the searched process is
+$\Xi = \sqrt{\eta([p])\, \sigma_w^2
++ \left( d^\top \beta_{-0} \right)^2}$; by the Cauchy--Schwarz inequality
+and Assumption~\ref{ass:observational}(i), $\Xi/\eta_s$ is trapped between
+constant multiples of $\sigma_w/\sigma_0$,
+which is how the composite scale disappears from the statement of
+Theorem~\ref{thm:observational-bounds}. The regularity conditions of
+the lower bound~\eqref{eq:observational-lower} are those of
+Appendix~\ref{app:experimental}.}
+
+\tc{The proof re-runs the two-sided architecture around the drifted
+center: the population part of $x_0^\top M_S w$ carries the drift
+$b(S)$, and the analysis splits the numerator into its drift, its
+population fluctuation, and the searched part. The upper
+bound~\eqref{eq:observational-upper} bounds the searched part by the
+whitened transfer that produces the factor $\sqrt{\kappa_s(C)}$; the
+lower bound~\eqref{eq:observational-lower} anchors the packing inside
+the near-maximal family at resolution $\delta$, whose entropy
+$\ell_\delta$ replaces that of the full menu in the exceedance
+minoration of Appendix~\ref{app:experimental}, run at the scale
+$\Xi/\eta_s$; the drift deficit within the family, at most $\delta$,
+is subtracted explicitly in the statement, which is why no condition
+ties $\delta$ to the fluctuation scale.}
+
+\begin{lemma}[Drift decomposition]\label{lem:drift-decomp}
+\tc{For $S$ with $C_{SS} \succ 0$ let $\alpha_S = C_{SS}^{-1} d_S$
+and $\tilde x_{0 \cdot S} = x_0 - X_S \alpha_S$, so that per row
+$\E[ X_S^{(i)} \tilde x^{(i)}_{0\cdot S} ] = 0$,
+$\Var( \tilde x^{(i)}_{0\cdot S} ) = \eta(S)$ and
+$\Cov( \tilde x^{(i)}_{0\cdot S}, w^{(i)} )
+= d^\top \beta_{-0} - d_S^\top C_{SS}^{-1} (C\beta_{-0})_S
+=: \nu(S) = b(S)\, \eta(S)$. Then, exactly,
+\begin{equation}\label{eq:appb-decomp}
+        \hat\beta_{0,S} - \beta^\star_{0,S}
+        =
+        \frac{ g_S }{ \tilde x_{0\cdot S}^\top M_S\,
+        \tilde x_{0\cdot S} },
+        \quad
+        g_S :=
+        \tilde x_{0\cdot S}^\top M_S\, w - n \nu(S)
+        - b(S) \big( \tilde x_{0\cdot S}^\top M_S\,
+        \tilde x_{0\cdot S} - n \eta(S) \big).
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{$M_S X_S = 0$ gives
+$x_0^\top M_S = \tilde x_{0\cdot S}^\top M_S$ in numerator and
+denominator of $\hat\beta_{0,S} - \beta_0 = x_0^\top M_S w /
+x_0^\top M_S x_0$; expanding $\nu(S) = \beta_{-0,S^c}^\top ( d_{S^c}
+- C_{S^cS} C_{SS}^{-1} d_S )$ (the $S$-block cancels) identifies
+$\nu(S) = b(S)\eta(S)$ with \eqref{eq:drift}; substituting
+$\beta^\star_{0,S} = \beta_0 + b(S)$ and rearranging gives
+\eqref{eq:appb-decomp}.}
+\end{proof}
+
+\begin{lemma}[Observational denominators]\label{lem:obs-denominator}
+\tc{With probability at least $1 - C e^{-csL}$, for all $|S| \le s$,
+$\tilde x_{0\cdot S}^\top M_S \tilde x_{0\cdot S}
+= n \eta(S) ( 1 + O(\sqrt{sL/n}) ) \ge c_{\mathrm{ov}} \sigma_0^2 n
+/ 2$, using Assumption~\ref{ass:observational}(i) through
+$\eta(S) \ge \eta([p]) \ge c_{\mathrm{ov}} \sigma_0^2$ (explained
+variance is monotone in the span).}
+\end{lemma}
+
+\begin{proof}
+\tc{As Lemma~\ref{lem:denominator}, run per $S$ before the union:
+the rows $\tilde x^{(i)}_{0\cdot S}$ are i.i.d.\ subgaussian
+($\psi_2 \le C K_\psi \sigma_0$), and the arguments consume only the
+per-row uncorrelatedness $\E[ X_S \tilde x_{0\cdot S} ] = 0$ in
+place of independence.}
+\end{proof}
+
+\begin{lemma}[Fluctuation upper bound]\label{lem:whitened-upper}
+\tc{Set $\phi_s := \sup_{|S| \le s} d_S^\top C_{SS}^{-1} d_S /
+\sigma_0^2 \le 1 - c_{\mathrm{ov}}$. With probability at least
+$1 - C e^{-csL}$, for all $|S| \le s$,
+\begin{equation}\label{eq:appb-fluct}
+        | g_S |
+        \;\le\;
+        C \sqrt{ \kappa_s(C) }\, \sigma_0 \sigma_w
+        \left(
+        \sqrt{ n\, s L\, \phi_s }
+        + sL
+        + \sqrt{ n\, sL \cdot \tfrac{ n \Psi_s^2 }{ \sigma_w^2 sL } }
+        \right).
+\end{equation}
+% CORRECTION NOTE (surfaced by this proof): the first term is an
+% S-dependent adjustment fluctuation not visible in the display of
+% Theorem thm:observational-bounds. After normalization it
+% contributes (sigma_w/sigma_0) sqrt(phi_s sL/n), which exceeds the
+% display's rate whenever phi_s >> sL/n; it vanishes at d = 0
+% (alpha_S = 0), recovering Theorem 1. The display is therefore
+% valid as stated only under the additional treatment-side condition
+%    sup_{|S| <= s} d_S^T C_SS^{-1} d_S <= C sigma_0^2 sL/n,
+% the exact mirror of condition (iii) for the treatment; otherwise
+% the radical must be enlarged by n phi_s sigma_w^2/(sL) inside the
+% square root. Statement-level decision for the author.
+}
+\end{lemma}
+
+\begin{proof}
+\tc{Split $g_S$ into (a) the centered i.i.d.\ sum
+$\tilde x_{0\cdot S}^\top ( w - b(S) \tilde x_{0\cdot S} ) - \E$,
+whose per-row $\psi_1$ norm is at most $C K_\psi^2 \sigma_0 \sigma_w
+( 1 + \sqrt{\phi_s} )$ by $|\nu(S)| \le \sqrt{\eta(S)}\, \sigma_w$
+and $|b(S)| \le \sigma_w / \sqrt{ c_{\mathrm{ov}} \sigma_0^2 }$
+(Cauchy--Schwarz and Assumption~\ref{ass:observational}(i)); Bernstein
+and the union give
+$C \sigma_0 \sigma_w ( 1 + \sqrt{\phi_s} ) \sqrt{n sL}$, whose
+$\sqrt{\phi_s}$ part is the correction term; and (b) the projected
+part $- \tilde x_{0\cdot S}^\top P_S ( w - b(S) \tilde x_{0\cdot S}
+)$, bounded as Lemmas~\ref{lem:energy}--\ref{lem:union} except that
+whitening the block for a vector correlated with $X_S$ costs
+$\| C_{SS}^{1/2} \|_{\mathrm{op}} \| C_{SS}^{-1/2} \|_{\mathrm{op}}
+\le \sqrt{ \kappa_s(C) }$ in the net transfer, giving the remaining
+terms.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:observational-bounds}]
+\tc{For every $S$,
+$\hat\beta_{0,S} - \hat\beta_{0,S^\star}
+= ( \beta^\star_{0,S} - \beta^\star_{0,S^\star} )
++ g_S / ( \tilde x_{0\cdot S}^\top M_S \tilde x_{0\cdot S} )
+- g_{S^\star} / ( \tilde x_{0\cdot S^\star}^\top M_{S^\star}
+\tilde x_{0\cdot S^\star} )$, the first bracket nonpositive by
+maximality of $S^\star$; Lemmas~\ref{lem:obs-denominator}
+and~\ref{lem:whitened-upper} bound the two fluctuations by
+$C \sqrt{\kappa_s} (1/\sigma_0) \sqrt{ \sigma_w^2 + n\Psi_s^2/(sL)
+}\, (sL/n)$ each, once the $\phi_s$-correction of
+\eqref{eq:appb-fluct} is absorbed (see the note there); this proves
+\eqref{eq:observational-upper} under
+Assumptions~\ref{ass:dgp} and~\ref{ass:observational}.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:observational-lower}]
+\tc{Fix $\delta \ge 0$ and let $\mathcal V_\delta$ be the
+near-maximal family of \eqref{eq:landscape-entropy}, of
+log-cardinality $\ell_\delta$. Every $S \in \mathcal V_\delta$ has
+$\beta^\star_{0,S} \ge \beta^\star_{0,S^\star} - \delta$, so by
+Lemma~\ref{lem:drift-decomp},
+\begin{equation*}
+        \sup_{|S| = s} \hat\beta_{0,S} - \hat\beta_{0,S^\star}
+        \;\ge\;
+        \sup_{S \in \mathcal V_\delta}
+        \frac{ g_S }{ \tilde x_{0\cdot S}^\top M_S
+        \tilde x_{0\cdot S} }
+        - \frac{ g_{S^\star} }{ \tilde x_{0\cdot S^\star}^\top
+        M_{S^\star} \tilde x_{0\cdot S^\star} }
+        - \delta .
+\end{equation*}
+The centered term $g_{S^\star}$ is $O( \sigma_0 \sigma_w \sqrt{n
+\ell_\delta} )$-bounded off an $e^{-c\ell_\delta}$ event (Bernstein,
+one set), hence contributes $O( (\sigma_w/\sigma_0)
+\sqrt{\ell_\delta/n} )$ after normalization by Lemma~\ref{lem:obs-denominator}; the searched fluctuation
+over $\mathcal V_\delta$ is lower-bounded by the exceedance route of
+Lemmas~\ref{lem:exceedance}--\ref{lem:greedy}, run over the family
+$\mathcal V_\delta$ in place of the full menu: its entropy
+$\ell_\delta$ replaces $sL$ throughout, the retention region, the
+correlation floor and the moderate-deviations range enter as before,
+and the count argument inherits the same GAP as
+Lemma~\ref{lem:exceedance}; the outcome is
+$c_\ell ( \sigma_w / \sigma_0 )\, \ell_\delta / n$ with failure
+$C e^{-c \ell_\delta} + C e^{-csL} + \pi_n$. Subtracting the
+deficit $\delta$ gives \eqref{eq:observational-lower}.
+% GAP: as in Appendix A.1, the exceedance-count concentration (pi_n)
+% and, when ell_delta << sL, the replacement of the menu entropy by
+% ell_delta in the per-coordinate exceedance level, are closed under
+% a Gaussian design; for general subgaussian designs they are the
+% localized open steps. The g_{S*} term is genuinely of order
+% (sigma_w/sigma_0) sqrt(ell_delta/n) only after the S*-centering
+% cancellation of its common part against the searched
+% configurations; the residual is absorbed for phi_s <= C sL/n, the
+% same treatment-side condition as in the upper bound's correction
+% note.
+}
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:tstat-transfer}}
+\label{app:tstat}
+
+\tc{The transfer theorem is a sandwich of the studentizing factor: the
+identity $\hat t_{0,S} = Z_S A_S B_S$ splits the t-statistic into the
+numerator normalized by the unprojected energies and the denominator
+factors, and the overlap and outcome floors imply that both studentizing
+energies concentrate at their population values uniformly over the menu,
+trapping the factor
+$\sqrt{(n-s-1)\, x_0^\top M_S x_0 / y^\top M_S y}$ between constant
+multiples of $\sqrt n\, \sigma_0/\sigma_y$. On the event that the searched
+coefficient is nonnegative, taking suprema commutes with the sandwich.}
+
+% Full proof: agent-written, two adversarial critique rounds, clean gate.
+% Legacy machinery adapted from technical-draft.tex l.1594-1699 and
+% l.1701-1831 (flat-denominator factorization; population flatness).
+
+\tc{Throughout this appendix $S$ ranges over the menu
+$\{ S \subseteq [p] : |S| = s \}$ with $1 \le s \le p$ --- the
+concentration events below over the larger family
+$\{ S \subseteq [p] : |S| \le s \}$ --- so that
+$\sum_{k \le s} \binom{p}{k} \le e^{s \log(ep/s)}$ and
+$\log(ep/s) \ge 1$, and $c, C$
+denote positive constants depending only on $K_\psi$ and changing from
+line to line; the constants $c_t, C_t$ of the final sandwich depend only
+on $(c_{\mathrm{ov}}, c_y)$, and the probability constants only on
+$(K_\psi, C_0)$, so that the full dependence is on
+$(K_\psi, c_{\mathrm{ov}}, c_y, C_0)$ as stated. As in
+Appendix~\ref{app:observational},
+$\eta(S) = \sigma_0^2 - d_S^\top C_{SS}^{-1} d_S$ denotes the residual
+treatment variance after adjusting on $S$, and
+\begin{equation}\label{eq:appc-res-var}
+        \sigma_{y \cdot S}^2
+        :=
+        \sigma_y^2 - c_{y,S}^\top C_{SS}^{-1} c_{y,S}
+\end{equation}
+the residual outcome variance built from \eqref{eq:sigma-y}.
+Assumption~\ref{ass:observational}(i) presupposes $C \succ 0$, and then
+$C_{SS} \succ 0$ for every $S$ (a pseudoinverse reading is also
+meaningful, since $d = \Cov( x_0^{(i)}, X_{-0}^{(i)} )
+\in \operatorname{range}(C)$ always, and is covered by the reduction
+below). In the experimental branch, where
+Assumption~\ref{ass:observational}(i) is supplied by
+Assumption~\ref{ass:experimental} and $C$ may be singular, all inverses
+are read as Moore--Penrose pseudoinverses; any $v$ with
+$v^\top C_{SS}\, v = \Var( v^\top X_S^{(i)} ) = 0$ satisfies
+$v^\top X_S^{(i)} = 0$ almost surely, so the columns of $X_S$ obey the
+population linear dependencies,
+$\operatorname{span}(X_S) = \operatorname{span}(X_{S'})$ almost surely
+for any $S' \subseteq S$ with $|S'| = \operatorname{rank}(C_{SS})$ and
+$C_{S'S'} \succ 0$, and the replacement $S \mapsto S'$ changes neither
+$P_S$ nor $\eta(S)$ nor $\sigma_{y \cdot S}^2$, the latter two being
+variances of $L_2$-projection residuals onto
+$\operatorname{span}\{ X_j^{(i)} : j \in S \}$, which the replacement
+preserves. The exceptional null sets are finitely many (one per $S$),
+so almost surely the span identities hold simultaneously for all $S$;
+a singular $S$ thus inherits every statement below from a
+representative $S'$ with $|S'| = \operatorname{rank}(C_{SS}) \le s$
+and $C_{S'S'} \succ 0$ --- possibly $S' = \emptyset$, with
+$M_\emptyset = I_n$, $\eta(\emptyset) = \sigma_0^2$ and
+$\sigma_{y \cdot \emptyset}^2 = \sigma_y^2$ --- which is why
+Lemma~\ref{lem:energy-conc} is quantified over all $|S| \le s$ rather
+than over the menu alone. In the proofs we accordingly take
+$C_{SS} \succ 0$ and route singular sets through their
+representatives; the studentizing factor of Lemma~\ref{lem:sandwich}
+keeps the degrees-of-freedom count $s = |S|$ of \eqref{eq:tstat-def},
+not $|S'|$, which is harmless since only
+$(n-s-1)/n \in [\tfrac12, 1]$ is used.}
+
+\tc{The two floors of the statement read, uniformly over all
+$|S| \le s$,
+\begin{equation}\label{eq:appc-floors}
+        c_{\mathrm{ov}}\, \sigma_0^2 \le \eta(S) \le \sigma_0^2,
+        \qquad
+        c_y\, \sigma_y^2 \le \sigma_{y \cdot S}^2 \le \sigma_y^2:
+\end{equation}
+the second pair restates Assumption~\ref{ass:outcome-floor} together
+with $c_{y,S}^\top C_{SS}^{-1} c_{y,S} \ge 0$, and the first follows
+from Assumption~\ref{ass:observational}(i) and the variational
+monotonicity
+\begin{equation}\label{eq:appc-monotone}
+        d_S^\top C_{SS}^{-1} d_S
+        =
+        \sup_{\gamma \in \R^s}
+        \left( 2 \gamma^\top d_S - \gamma^\top C_{SS}\, \gamma \right)
+        \le
+        \sup_{\gamma \in \R^p}
+        \left( 2 \gamma^\top d - \gamma^\top C\, \gamma \right)
+        =
+        d^\top C^{-1} d
+        \le
+        (1 - c_{\mathrm{ov}})\, \sigma_0^2,
+\end{equation}
+the middle inequality extending $\gamma$ by zero off $S$; the same
+zero-extension, applied to $c_{y,S}$ inside any menu superset of $S$,
+shows $\sigma_{y \cdot S}^2$ is nonincreasing under inclusion and
+carries the outcome floor from the menu of
+Assumption~\ref{ass:outcome-floor} to all $|S| \le s$. The scale
+$\sigma_y$ is nondegenerate: the Cauchy--Schwarz inequality and
+\eqref{eq:appc-monotone} give
+$(d^\top \beta_{-0})^2
+\le (d^\top C^{-1} d)\, (\beta_{-0}^\top C \beta_{-0})
+\le (1 - c_{\mathrm{ov}})\, \sigma_0^2\, \sigma_w^2$
+by \eqref{eq:app-outcome-material}, so \eqref{eq:sigma-y} completes to a square,
+\begin{equation}\label{eq:appc-sigmay-pos}
+        \sigma_y^2
+        \ge
+        \beta_0^2 \sigma_0^2
+        - 2 |\beta_0|\, \sigma_0\, \sqrt{1 - c_{\mathrm{ov}}}\;\sigma_w
+        + \sigma_w^2
+        =
+        \left( |\beta_0|\, \sigma_0
+        - \sqrt{1 - c_{\mathrm{ov}}}\; \sigma_w \right)^2
+        + c_{\mathrm{ov}}\, \sigma_w^2
+        \;\ge\;
+        c_{\mathrm{ov}}\, \sigma_w^2
+        \;>\;
+        0.
+\end{equation}
+% adapted from draft l.1594-1652 (definition of Z_S, A_S, B_S and the
+% factorization used in the flat-denominator reduction).
+Finally, the roadmap identity is elementary: with
+$Z_S = \sqrt n\, x_0^\top M_S y / ( \norm{x_0} \norm{y} )$,
+$A_S = \sqrt{(n-s-1)/n}$, and
+$B_S = ( 1 - x_0^\top P_S x_0 / x_0^\top x_0 )^{-1/2}
+( 1 - y^\top P_S y / y^\top y )^{-1/2}$, the cancellation
+$x_0^\top x_0\, ( 1 - x_0^\top P_S x_0 / x_0^\top x_0 )
+= x_0^\top M_S x_0$ and its outcome analogue turn
+\eqref{eq:tstat-def} into $\hat t_{0,S} = Z_S A_S B_S$ whenever
+$x_0 \ne 0$ and $y \ne 0$, as on the event below; regrouped
+around $\hat\beta_{0,S}$ instead, the same identity is
+$\hat t_{0,S} = \hat\beta_{0,S} F_S$ with the studentizing factor
+$F_S$ of Lemma~\ref{lem:sandwich} below, and the proof works with the
+latter form, in the announced sequence: uniform energy concentration,
+factor sandwich, sup comparison.}
+
+\begin{lemma}[Uniform energy concentration]\label{lem:energy-conc}
+\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii)
+and~\ref{ass:observational}(i) hold, with the constant $C_0$ of
+Assumption~\ref{ass:dgp}(ii) large enough given $K_\psi$. With
+probability at least $1 - C e^{-c\, s \log(ep/s)}$, simultaneously for
+every $S \subseteq [p]$ with $|S| \le s$,
+\begin{equation}\label{eq:appc-energy}
+        \tfrac{4}{9}\, \eta(S)
+        \;\le\;
+        \frac{x_0^\top M_S\, x_0}{n}
+        \;\le\;
+        \tfrac{3}{2}\, \eta(S),
+        \qquad
+        \tfrac{4}{9}\, \sigma_{y \cdot S}^2
+        \;\le\;
+        \frac{y^\top M_S\, y}{n}
+        \;\le\;
+        \tfrac{3}{2}\, \sigma_{y \cdot S}^2;
+\end{equation}
+in particular, by \eqref{eq:appc-floors}, under
+Assumption~\ref{ass:outcome-floor} the two studentizing energies lie in
+the brackets
+$x_0^\top M_S x_0 / n \in
+[ \tfrac49\, c_{\mathrm{ov}}\, \sigma_0^2,\ \tfrac32\, \sigma_0^2 ]$
+and
+$y^\top M_S y / n \in
+[ \tfrac49\, c_y\, \sigma_y^2,\ \tfrac32\, \sigma_y^2 ]$.}
+\end{lemma}
+
+\begin{proof}
+% adapted from draft l.1701-1831 (population interpretation of the flat
+% denominators: the split u_S, v_S behind x_0'P_Sx_0/n -> d_S'C_SS^-1 d_S
+% and y'P_Sy/n -> c_{y,S}'C_SS^-1 c_{y,S}), upgraded from an o_P(1)
+% statement to uniform constant-factor concentration at the
+% e^{-s log(ep/s)} level.
+\tc{\emph{Step 1: population projection split.} By the reduction of
+the preliminaries it suffices to treat the sets with
+$C_{SS} \succ 0$, of any size $|S| \le s$. For such $S$ define the
+$n$-vectors
+\begin{equation}\label{eq:appc-split}
+        u_S := x_0 - X_S\, C_{SS}^{-1} d_S,
+        \qquad
+        r_S := y - X_S\, C_{SS}^{-1} c_{y,S},
+\end{equation}
+whose rows $u_S^{(i)}, r_S^{(i)}$ are i.i.d.\ and centered; for
+$S = \emptyset$ they read $u_\emptyset = x_0$ and $r_\emptyset = y$.
+From the
+model \eqref{eq:model1}, \eqref{eq:sigma-y} and \eqref{eq:app-outcome-material},
+\begin{equation}\label{eq:appc-pop-cov}
+        \Cov( X_S^{(i)}, y^{(i)} )
+        = \beta_0\, d_S + (C \beta_{-0})_S
+        = c_{y,S},
+        \qquad
+        \Var( y^{(i)} )
+        = \beta_0^2 \sigma_0^2 + 2 \beta_0\, d^\top \beta_{-0}
+        + \sigma_w^2
+        = \sigma_y^2,
+\end{equation}
+so \eqref{eq:appc-split} is exactly the population $L_2$-projection
+split onto $X_S$:
+\begin{equation}\label{eq:appc-uncorr}
+        \Cov( X_S^{(i)}, u_S^{(i)} )
+        = d_S - C_{SS} C_{SS}^{-1} d_S = 0,
+        \qquad
+        \Cov( X_S^{(i)}, r_S^{(i)} )
+        = c_{y,S} - C_{SS} C_{SS}^{-1} c_{y,S} = 0,
+\end{equation}
+\begin{equation}\label{eq:appc-var}
+        \Var( u_S^{(i)} )
+        = \sigma_0^2 - d_S^\top C_{SS}^{-1} d_S
+        = \eta(S),
+        \qquad
+        \Var( r_S^{(i)} )
+        = \sigma_y^2 - c_{y,S}^\top C_{SS}^{-1} c_{y,S}
+        = \sigma_{y \cdot S}^2.
+\end{equation}
+Only the uncorrelatedness \eqref{eq:appc-uncorr} is consumed below;
+independence of $y$ from $X_{-0}$ is nowhere required. For the tails,
+$u_S^{(i)}$ is a linear functional of $(x_0^{(i)}, X_{-0}^{(i)})$, so
+Assumption~\ref{ass:dgp}(i) gives
+$\| u_S^{(i)} \|_{\psi_2} \le K_\psi \sqrt{\eta(S)}$, while
+$r_S^{(i)} = a_S^{(i)} + \varepsilon^{(i)}$ with
+$a_S^{(i)} = \beta_0 x_0^{(i)} + X_{-0}^{(i)\top} \beta_{-0}
+- c_{y,S}^\top C_{SS}^{-1} X_S^{(i)}$ a centered linear functional of
+the design, independent of $\varepsilon^{(i)}$, so that
+$\Var( a_S^{(i)} ) + \sigma_\varepsilon^2 = \sigma_{y \cdot S}^2$ and,
+by the triangle inequality and Assumption~\ref{ass:dgp}(i),
+\begin{equation}\label{eq:appc-psi2}
+        \| r_S^{(i)} \|_{\psi_2}
+        \;\le\;
+        K_\psi \left( \| a_S^{(i)} \|_{L_2} + \sigma_\varepsilon \right)
+        \;\le\;
+        \sqrt{2}\, K_\psi\, \sigma_{y \cdot S}.
+\end{equation}
+Since $M_S X_S = 0$, one has $M_S x_0 = M_S u_S$ and
+$M_S y = M_S r_S$, hence the Pythagoras identities
+\begin{equation}\label{eq:appc-pyth}
+        x_0^\top M_S\, x_0
+        = \norm{ M_S u_S }^2
+        = \norm{ u_S }^2 - \norm{ P_S u_S }^2,
+        \qquad
+        y^\top M_S\, y
+        = \norm{ M_S r_S }^2
+        = \norm{ r_S }^2 - \norm{ P_S r_S }^2,
+\end{equation}
+which reduce the lemma to the concentration of $\norm{u_S}^2,
+\norm{r_S}^2$ and the smallness of the projected parts.
+
+\emph{Step 2: three uniform events.} Whiten the selected controls:
+$Z_S := X_S\, C_{SS}^{-1/2}$, an $n \times |S|$ matrix with i.i.d.\
+rows $z_S^{(i)} = C_{SS}^{-1/2} X_S^{(i)}$ satisfying, for every
+$v \in \R^{|S|}$, by Assumption~\ref{ass:dgp}(i),
+\begin{equation}\label{eq:appc-whiten}
+        \E ( v^\top z_S^{(i)} )^2 = \norm{v}^2,
+        \qquad
+        \| v^\top z_S^{(i)} \|_{\psi_2} \le K_\psi \norm{v},
+        \qquad
+        \operatorname{span}(Z_S) = \operatorname{span}(X_S).
+\end{equation}
+Define the events, all quantified over the family
+$\{ S : |S| \le s,\ C_{SS} \succ 0 \}$ --- at $S = \emptyset$ the
+$Z_S$-clauses are vacuous and $\mathcal E_2$ reads on
+$\norm{x_0}^2/n$ and $\norm{y}^2/n$ ---
+\begin{equation}\label{eq:appc-E1}
+        \mathcal E_1
+        =
+        \Big\{ \norm{ \tfrac1n Z_S^\top Z_S - I_{|S|} }_{\op}
+        \le \tfrac12 \ \text{for all } S \Big\},
+\end{equation}
+\begin{equation}\label{eq:appc-E2}
+        \mathcal E_2
+        =
+        \Big\{
+        \big| \tfrac1n \norm{u_S}^2 - \eta(S) \big|
+        \le \tfrac12\, \eta(S)
+        \ \text{and}\
+        \big| \tfrac1n \norm{r_S}^2 - \sigma_{y \cdot S}^2 \big|
+        \le \tfrac12\, \sigma_{y \cdot S}^2
+        \ \text{for all } S \Big\},
+\end{equation}
+\begin{equation}\label{eq:appc-E3}
+        \mathcal E_3
+        =
+        \Big\{
+        \tfrac1n \norm{ Z_S^\top u_S }
+        \le \tfrac16 \sqrt{\eta(S)}
+        \ \text{and}\
+        \tfrac1n \norm{ Z_S^\top r_S }
+        \le \tfrac16\, \sigma_{y \cdot S}
+        \ \text{for all } S \Big\}.
+\end{equation}
+The only probabilistic tool is Bernstein's inequality for i.i.d.\
+centered subexponential summands \citep[\S2.8]{vershynin2018hdp}: if
+$\E \xi^{(1)} = 0$ and $\| \xi^{(1)} \|_{\psi_1} \le L$, then
+\begin{equation}\label{eq:appc-bernstein}
+        \Prob\left( \Big| \frac1n \sum_{i=1}^n \xi^{(i)} \Big|
+        > t \right)
+        \;\le\;
+        2 \exp\left( - c_0\, n
+        \min\left( \frac{t^2}{L^2}, \frac{t}{L} \right) \right),
+        \qquad c_0 \ \text{an absolute constant},
+\end{equation}
+combined with the $\psi$-calculus
+$\norm{\xi \zeta}_{\psi_1} \le \norm{\xi}_{\psi_2}
+\norm{\zeta}_{\psi_2}$ and
+$\norm{ \xi - \E \xi }_{\psi_1} \le C \norm{\xi}_{\psi_1}$
+\citep[\S2.7]{vershynin2018hdp}, the covering bound
+$| \mathcal N_\epsilon | \le (1 + 2/\epsilon)^{|S|}$ for an
+$\epsilon$-net $\mathcal N_\epsilon$ of the unit sphere of
+$\R^{|S|}$, and
+the net evaluations
+$\norm{A}_{\op} \le 2 \max_{v \in \mathcal N_{1/4}} | v^\top A v |$
+for symmetric $A$ and
+$\norm{a} \le 2 \max_{v \in \mathcal N_{1/2}} v^\top a$ for vectors
+\citep[\S4.2, \S4.4]{vershynin2018hdp}.
+
+\emph{The event $\mathcal E_2$.} For fixed $S$ the summands
+$\xi^{(i)} = ( u_S^{(i)} )^2 - \eta(S)$ are i.i.d., centered, with
+$\| \xi^{(1)} \|_{\psi_1} \le C \| u_S^{(1)} \|_{\psi_2}^2
+\le C K_\psi^2\, \eta(S)$, so \eqref{eq:appc-bernstein} at
+$t = \eta(S)/2$ gives
+\begin{equation}\label{eq:appc-E2-single}
+        \Prob\left( \Big| \frac{\norm{u_S}^2}{n} - \eta(S) \Big|
+        > \frac{\eta(S)}{2} \right)
+        \le 2\, e^{-c n},
+\end{equation}
+and the same bound holds for $r_S$ with $\sigma_{y \cdot S}^2$ in
+place of $\eta(S)$ by \eqref{eq:appc-psi2} whenever
+$\sigma_{y \cdot S} > 0$; if $\sigma_{y \cdot S} = 0$, then
+\eqref{eq:appc-psi2} forces $r_S = 0$ almost surely and every
+$r_S$-clause of $\mathcal E_2$ and $\mathcal E_3$ holds trivially
+(the $u_S$ side never degenerates:
+$\eta(S) \ge c_{\mathrm{ov}}\, \sigma_0^2 > 0$ by
+\eqref{eq:appc-floors}). A union over the
+$2 \sum_{k \le s} \binom{p}{k} \le 2\, e^{s \log(ep/s)}$ pairs gives
+\begin{equation}\label{eq:appc-E2-union}
+        \Prob( \mathcal E_2^c )
+        \le 4 \exp\left( s \log(ep/s) - c n \right)
+        \le 4\, e^{- s \log(ep/s)},
+\end{equation}
+the last step because $n \ge C_0\, s \log(ep/s)$ with
+$C_0 \ge 2/c$, which Assumption~\ref{ass:dgp}(ii) grants.
+
+\emph{The event $\mathcal E_1$.} For fixed $S$ and a fixed unit $v$,
+\begin{equation}\label{eq:appc-E1-form}
+        v^\top \Big( \tfrac1n Z_S^\top Z_S - I_{|S|} \Big) v
+        =
+        \frac1n \sum_{i=1}^n
+        \left( ( v^\top z_S^{(i)} )^2 - 1 \right)
+\end{equation}
+is an i.i.d.\ centered sum with summand $\psi_1$-norm at most
+$C K_\psi^2$ by \eqref{eq:appc-whiten}, so
+\eqref{eq:appc-bernstein} at $t = 1/4$, the symmetric net evaluation
+over $\mathcal N_{1/4}$, and a union over the
+$\sum_{k \le s} 9^{k} \binom{p}{k} \le e^{4 s \log(ep/s)}$ pairs
+$(S, v)$ give
+\begin{equation}\label{eq:appc-E1-union}
+        \Prob( \mathcal E_1^c )
+        \le 2 \exp\left( 4\, s \log(ep/s) - c n \right)
+        \le 2\, e^{- s \log(ep/s)}
+\end{equation}
+for $C_0 \ge 5/c$.
+
+\emph{The event $\mathcal E_3$.} For fixed $S$ and a fixed unit $v$,
+the summands $\xi^{(i)} = ( v^\top z_S^{(i)} )\, u_S^{(i)}$ of
+$v^\top Z_S^\top u_S / n$ are i.i.d.\ with
+\begin{equation}\label{eq:appc-E3-mean}
+        \E\, \xi^{(1)}
+        =
+        v^\top C_{SS}^{-1/2}\, \Cov( X_S^{(1)}, u_S^{(1)} )
+        =
+        0,
+        \qquad
+        \| \xi^{(1)} \|_{\psi_1}
+        \le
+        \| v^\top z_S^{(1)} \|_{\psi_2}\, \| u_S^{(1)} \|_{\psi_2}
+        \le
+        K_\psi^2 \sqrt{\eta(S)},
+\end{equation}
+the mean vanishing by \eqref{eq:appc-uncorr}, the single point where
+the population split enters the probabilities; then
+\eqref{eq:appc-bernstein} at $t = \sqrt{\eta(S)}/12$, the vector net
+evaluation
+$\norm{ Z_S^\top u_S / n }
+\le 2 \max_{v \in \mathcal N_{1/2}} v^\top Z_S^\top u_S / n$,
+and a union over the
+$\sum_{k \le s} 5^{k} \binom{p}{k} \le e^{3 s \log(ep/s)}$ pairs
+$(S, v)$, together with the same argument for $r_S$ at
+$t = \sigma_{y \cdot S} / 12$ with summand $\psi_1$-norm at most
+$\sqrt 2 K_\psi^2\, \sigma_{y \cdot S}$ by \eqref{eq:appc-psi2}, give
+\begin{equation}\label{eq:appc-E3-union}
+        \Prob( \mathcal E_3^c )
+        \le 4 \exp\left( 3\, s \log(ep/s) - c n \right)
+        \le 4\, e^{- s \log(ep/s)}
+\end{equation}
+for $C_0 \ge 4/c$.
+
+\emph{Step 3: assembly.} On $\mathcal E_1$, every $Z_S$ has full column
+rank with $\lambda_{\min}( Z_S^\top Z_S ) \ge n/2$, so by
+\eqref{eq:appc-whiten} $P_S = Z_S ( Z_S^\top Z_S )^{-1} Z_S^\top$ and,
+on $\mathcal E_1 \cap \mathcal E_3$,
+\begin{equation}\label{eq:appc-proj-small}
+        \frac{ \norm{ P_S u_S }^2 }{n}
+        =
+        \frac1n\, ( Z_S^\top u_S )^\top ( Z_S^\top Z_S )^{-1}
+        ( Z_S^\top u_S )
+        \;\le\;
+        \frac{2}{n^2}\, \norm{ Z_S^\top u_S }^2
+        \;\le\;
+        \frac{2\, \eta(S)}{36}
+        =
+        \frac{\eta(S)}{18};
+\end{equation}
+with $\mathcal E_2$, the identities \eqref{eq:appc-pyth} then give,
+for every $S$,
+\begin{equation}\label{eq:appc-x-bracket}
+        \frac{x_0^\top M_S\, x_0}{n}
+        \;\ge\;
+        \frac{\eta(S)}{2} - \frac{\eta(S)}{18}
+        \;=\;
+        \frac{4}{9}\, \eta(S),
+        \qquad
+        \frac{x_0^\top M_S\, x_0}{n}
+        \;\le\;
+        \frac{ \norm{u_S}^2 }{n}
+        \;\le\;
+        \frac{3}{2}\, \eta(S),
+\end{equation}
+and the identical displays with $( r_S, \sigma_{y \cdot S}^2 )$ in
+place of $( u_S, \eta(S) )$ give the outcome half of
+\eqref{eq:appc-energy}; since
+$\Prob( \mathcal E_1 \cap \mathcal E_2 \cap \mathcal E_3 )
+\ge 1 - 10\, e^{- s \log(ep/s)}$
+by \eqref{eq:appc-E2-union}, \eqref{eq:appc-E1-union}
+and \eqref{eq:appc-E3-union}, the proof is complete.}
+\end{proof}
+
+\begin{lemma}[Factor sandwich]\label{lem:sandwich}
+\tc{For $|S| = s$ define the studentizing factor
+\begin{equation}\label{eq:appc-factor}
+        F_S
+        :=
+        \sqrt{ \frac{ (n-s-1)\; x_0^\top M_S\, x_0 }
+        { y^\top M_S\, y } }.
+\end{equation}
+On the event of Lemma~\ref{lem:energy-conc}, under
+Assumptions~\ref{ass:observational}(i), \ref{ass:outcome-floor},
+and~\ref{ass:dgp}(ii) with $C_0 \ge 4$, every $\hat t_{0,S}$ is well
+defined, satisfies the
+exact identity $\hat t_{0,S} = \hat\beta_{0,S}\, F_S$, and,
+simultaneously for all $|S| = s$,
+\begin{equation}\label{eq:appc-sandwich}
+        \frac{ \sqrt{c_{\mathrm{ov}}} }{3}\; \sqrt{n}\;
+        \frac{\sigma_0}{\sigma_y}
+        \;\le\;
+        F_S
+        \;\le\;
+        \frac{2}{ \sqrt{c_y} }\; \sqrt{n}\;
+        \frac{\sigma_0}{\sigma_y}.
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+% adapted from draft l.1640-1652 (factorization step of the
+% flat-denominator reduction); the two-sided constants on the event of
+% Lemma \ref{lem:energy-conc} replace the o_P(1) reduction of draft
+% l.1616-1699.
+\tc{On the event of Lemma~\ref{lem:energy-conc},
+$y^\top M_S\, y \ge \tfrac49\, c_y\, n\, \sigma_y^2 > 0$ by
+\eqref{eq:appc-sigmay-pos} and
+$x_0^\top M_S\, x_0 \ge \tfrac49\, c_{\mathrm{ov}}\, n\, \sigma_0^2
+> 0$, so $F_S \in (0, \infty)$ and both members of
+\eqref{eq:tstat-def} are well defined. From \eqref{eq:tstat-def},
+$\hat\sigma_S = \left( y^\top M_S\, y / (n-s-1) \right)^{1/2}$, hence
+\begin{equation}\label{eq:appc-identity}
+        \hat t_{0,S}
+        =
+        \hat\beta_{0,S}\;
+        \frac{ \sqrt{ x_0^\top M_S\, x_0 } }{ \hat\sigma_S }
+        =
+        \hat\beta_{0,S}
+        \sqrt{ \frac{ (n-s-1)\; x_0^\top M_S\, x_0 }
+        { y^\top M_S\, y } }
+        =
+        \hat\beta_{0,S}\, F_S.
+\end{equation}
+By Assumption~\ref{ass:dgp}(ii) with $C_0 \ge 4$ and $s \ge 1$,
+$n \ge C_0\, s \log(ep/s) \ge 4 s \ge 2(s+1)$, so
+\begin{equation}\label{eq:appc-dof}
+        \frac12 \;\le\; \frac{n-s-1}{n} \;\le\; 1,
+\end{equation}
+and the brackets of Lemma~\ref{lem:energy-conc} give
+\begin{equation}\label{eq:appc-Fsq}
+        F_S^2
+        =
+        \frac{n-s-1}{n} \cdot
+        \frac{ x_0^\top M_S\, x_0 / n }{ y^\top M_S\, y / n }
+        \cdot n
+        \;\in\;
+        \left[
+        \frac{ \tfrac12 \cdot \tfrac49\, c_{\mathrm{ov}}\, \sigma_0^2 }
+        { \tfrac32\, \sigma_y^2 },\;
+        \frac{ \tfrac32\, \sigma_0^2 }
+        { \tfrac49\, c_y\, \sigma_y^2 }
+        \right] n
+        =
+        \left[ \frac{4\, c_{\mathrm{ov}}}{27},\;
+        \frac{27}{8\, c_y} \right]
+        \frac{n\, \sigma_0^2}{\sigma_y^2},
+\end{equation}
+from which \eqref{eq:appc-sandwich} follows by
+$\sqrt{4/27} \ge 1/3$ and $\sqrt{27/8} \le 2$.}
+\end{proof}
+
+% NOTE (integration): the identity eq:appc-identity is exact for the
+% paper's convention eq:tstat-def, whose
+% \hat\sigma_S^2 = y^T M_S y / (n-s-1) residualizes y on X_S only. The
+% conventional OLS studentizer for \hat\beta_{0,S} in the regression of
+% y on (x_0, X_S) uses y^T M_{S\cup{0}} y <= y^T M_S y instead, so the
+% conventional |t| is weakly larger and is NOT bracketed by the events
+% E_1--E_3; a transfer for the conventional t-statistic would need a
+% uniform bound on the searched partial correlation, which this
+% appendix does not provide. The theorem is a statement about the
+% stated convention.
+
+\begin{lemma}[Sup comparison]\label{lem:sup-comparison}
+\tc{Let $0 < c_* \le C_*$ and suppose that, for every $|S| = s$,
+$\hat t_{0,S} = \hat\beta_{0,S}\, F_S$ with $F_S \in [c_*, C_*]$.
+Then, on the event $\sup_{|S| = s} \hat\beta_{0,S} \ge 0$,
+\begin{equation}\label{eq:appc-supcomp}
+        c_* \sup_{|S| = s} \hat\beta_{0,S}
+        \;\le\;
+        \sup_{|S| = s} \hat t_{0,S}
+        \;\le\;
+        C_* \sup_{|S| = s} \hat\beta_{0,S}.
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{The menu is finite, so both suprema are maxima of finitely many
+measurable variables and are attained; fix
+$S^\star \in \arg\max_{|S| = s} \hat\beta_{0,S}$ and write
+$\hat\beta^\star = \hat\beta_{0,S^\star} \ge 0$ on the stated event.
+For the lower bound,
+\begin{equation}\label{eq:appc-lower}
+        \sup_{|S| = s} \hat t_{0,S}
+        \;\ge\;
+        \hat t_{0,S^\star}
+        =
+        \hat\beta^\star F_{S^\star}
+        \;\ge\;
+        c_*\, \hat\beta^\star,
+\end{equation}
+the last step multiplying $\hat\beta^\star \ge 0$ by
+$F_{S^\star} \ge c_* > 0$. For the upper bound, for every $S$ either
+$\hat\beta_{0,S} \ge 0$, in which case
+\begin{equation}\label{eq:appc-upper-pos}
+        \hat t_{0,S}
+        =
+        \hat\beta_{0,S}\, F_S
+        \;\le\;
+        C_*\, \hat\beta_{0,S}
+        \;\le\;
+        C_*\, \hat\beta^\star,
+\end{equation}
+or $\hat\beta_{0,S} < 0$, in which case
+\begin{equation}\label{eq:appc-upper-neg}
+        \hat t_{0,S}
+        =
+        \hat\beta_{0,S}\, F_S
+        \;<\;
+        0
+        \;\le\;
+        C_*\, \hat\beta^\star;
+\end{equation}
+maximizing over $S$ gives
+$\sup_{|S| = s} \hat t_{0,S} \le C_*\, \hat\beta^\star$.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:tstat-transfer}]
+\tc{First, the parenthetical of the statement: under
+Assumption~\ref{ass:experimental},
+\begin{equation}\label{eq:appc-cov-one}
+        d = \Cov( x_0^{(i)}, X_{-0}^{(i)} ) = 0
+        \quad \Longrightarrow \quad
+        d^\top C^{-1} d = 0 = (1 - 1)\, \sigma_0^2,
+\end{equation}
+so Assumption~\ref{ass:observational}(i) holds with
+$c_{\mathrm{ov}} = 1$; in the pseudoinverse reading of the
+preliminaries, $d_S = 0$ and $\eta(S) = \sigma_0^2$ for every $S$, so
+the same conclusion holds when $C$ is singular. Let $\mathcal E$ be
+the event of Lemma~\ref{lem:energy-conc}, so that
+\begin{equation}\label{eq:appc-final-prob}
+        \Prob( \mathcal E )
+        \;\ge\;
+        1 - C e^{- c\, s \log(ep/s)},
+\end{equation}
+with $(c, C)$ depending only on $(K_\psi, C_0)$. On $\mathcal E$,
+Lemma~\ref{lem:sandwich} gives, for every $|S| = s$,
+$\hat t_{0,S} = \hat\beta_{0,S}\, F_S$ with
+\begin{equation}\label{eq:appc-final-sandwich}
+        F_S
+        \;\in\;
+        \left[
+        \frac{ \sqrt{c_{\mathrm{ov}}} }{3}\, \sqrt n\,
+        \frac{\sigma_0}{\sigma_y},\;
+        \frac{2}{ \sqrt{c_y} }\, \sqrt n\,
+        \frac{\sigma_0}{\sigma_y}
+        \right],
+\end{equation}
+so on $\mathcal E \cap
+\{ \sup_{|S| = s} \hat\beta_{0,S} \ge 0 \}$,
+Lemma~\ref{lem:sup-comparison} applied with these two bounds as
+$(c_*, C_*)$ yields \eqref{eq:tstat-transfer} with
+\begin{equation}\label{eq:appc-final-constants}
+        c_t = \frac{ \sqrt{c_{\mathrm{ov}}} }{3},
+        \qquad
+        C_t = \frac{2}{ \sqrt{c_y} },
+\end{equation}
+constants depending only on
+$(K_\psi, c_{\mathrm{ov}}, c_y, C_0)$ as claimed.}
+\end{proof}
+
+% ------------------------------------------------------------------
+% No GAP markers: every step closes under the stated assumptions.
+% The external inputs are textbook facts (psi_1/psi_2 calculus,
+% Bernstein's inequality, sphere nets and net evaluations), cited to
+% Vershynin (2018) with section numbers.
+% NOTE: the event E_1 coincides with the uniform whitened Gram control
+% planned as lem:block-gram in Appendix A, and (E_2, E_3) subsume the
+% flat-denominator concentration planned as lem:denominator; once
+% Appendix A is on disk, Step 2 of Lemma \ref{lem:energy-conc} may
+% cite those lemmas in place of the local derivation of E_1.
+% ------------------------------------------------------------------
+
+
+\section{Proofs of the Plug-in Approximation}
+\label{app:plugin}
+
+% Proof of Theorem~\ref{thm:plugin-separable} and
+% Corollary~\ref{cor:plugin-calibration}.
+
+\tc{Throughout the appendix we normalize $\sigma_0 = \sigma_w = 1$
+(replace $x_0$ by $x_0/\sigma_0$ and $w$ by $w/\sigma_w$; the statement
+is equivariant), write $L = \log(ep/s) \to \infty$,
+$\delta_n = \sqrt{sL/n} \to 0$, and let $C_t$ be the constant of
+Assumption~\ref{ass:plugin}(ii), so that
+$\bar a := \sqrt n \max_k |d_k| \le C_t \sqrt L$ and
+$\bar b := \sqrt n \max_k |(C\beta_{-0})_k| \le C_t \sqrt L$. All
+statements hold on events of probability $\to 1$; constants $C, c$
+depend only on the constants of the assumptions and may change from
+line to line. Subsection~\ref{app:plugin-factors} treats the extension
+of Remark~\ref{rem:plugin-factors} to designs carrying correlation at a
+fixed level; the chain below is self-contained under
+Assumption~\ref{ass:plugin} as stated.}
+
+\begin{lemma}[Centering identity]\label{lem:plugin-identity}
+\tc{Let $\hat w = w - \hat\beta_w x_0$ with
+$\hat\beta_w = x_0^\top w / x_0^\top x_0$, so that
+$x_0^\top \hat w = 0$. Then, for every $S$,
+\begin{equation*}
+        \hat\beta_{0,S} - \hat\beta_{0,\emptyset}
+        = \frac{-\, x_0^\top P_S \hat w}{x_0^\top M_S x_0}.
+\end{equation*}}
+\end{lemma}
+
+\begin{proof}
+\tc{From $y = \beta_0 x_0 + w$,
+$\hat\beta_{0,S} = \beta_0 + x_0^\top M_S w / x_0^\top M_S x_0$ and
+$\hat\beta_{0,\emptyset} = \beta_0 + \hat\beta_w$; subtracting and using
+$M_S(w - \hat\beta_w x_0) = M_S \hat w$ and
+$x_0^\top M_S \hat w = -\, x_0^\top P_S \hat w$ gives the identity.}
+\end{proof}
+
+\begin{lemma}[Design event]\label{lem:plugin-event}
+\tc{Under Assumptions~\ref{ass:dgp}(i)--(ii)
+and~\ref{ass:plugin}(i), with probability $\to 1$, simultaneously:
+(a) $\max_k |u_k| \vee |v_k| \le C\sqrt{L + \log s}$, where
+$u_k = (x_0^\top X_k - n d_k)/\sqrt n$ and
+$v_k = (X_k^\top w - n(C\beta_{-0})_k)/\sqrt n$;
+(b) $\sup_{|J| \le 2s} \| X_J^\top X_J / n - C_{JJ} \|_{\mathrm{op}}
+\le C\delta_n$;
+(c) $x_0^\top x_0/n = 1 + O(\delta_n)$ and
+$x_0^\top w / n = d^\top \beta_{-0} + O(\delta_n)$;
+(d) $\sum_{j \le s} \{u^2\}_{(j)} \le C s L$ and the same for $v$.}
+\end{lemma}
+
+\begin{proof}
+\tc{(a) Each $u_k$ is a normalized sum of $n$ independent centered
+variables with $\psi_1$ norm bounded by $C K_\psi^2$
+(Assumption~\ref{ass:dgp}(i)), so Bernstein's inequality gives
+$\Prob(|u_k| > t) \le 2\exp(-c \min(t^2, t\sqrt n))$; a union bound
+over $p \le e^{sL}$ coordinates and $t = C\sqrt{L + \log s}$, together
+with $L + \log s \le C' n$ from $sL = o(n)$, yields (a). (b) is the
+standard subgaussian block-Gram bound: a $1/4$-net argument on each
+$2s$-block and a union over the $\le e^{2sL}$ blocks. (c) are single
+Bernstein bounds. For (d), fix $t = C_1 L$; then
+$\E (u_k^2 - t)_+ \le C e^{-c C_1 L} \le (s/p)\, e^{-L}$ for $C_1$
+large, so
+$\E \sum_k (u_k^2 - t)_+ \le s\, e^{-L}$ and, by Markov,
+$\sum_{j \le s} \{u^2\}_{(j)} \le st + \sum_k (u_k^2 - t)_+
+\le C s L$ with probability $\to 1$.}
+\end{proof}
+
+\begin{lemma}[Reduction to the searched numerator]
+\label{lem:plugin-reduction}
+\tc{On the event of Lemma~\ref{lem:plugin-event}, under $sL = o(n)$,
+\begin{equation}\label{eq:plugin-reduction}
+        \sup_{|S| = s} \hat\beta_{0,S} - \hat\beta_{0,\emptyset}
+        = \frac{1}{n} \sup_{|S| = s}
+        \left[ -\, x_0^\top P_S w \right] + o\!\left(\frac{sL}{n}\right).
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{Three replacements, each uniform over the menu. First,
+$\| P_S x_0 \|^2 \le C(sL + n \sup_S d_S^\top C_{SS}^{-1} d_S)$ by
+Lemma~\ref{lem:plugin-event}(b), (d), and the overlap is
+$\le (1 - o(1))^{-1} s \max_k d_k^2 \le C sL/n$, since
+Assumption~\ref{ass:plugin}(i) puts $\lambda_{\min}(C_{SS})$ above
+$1 - o(1)$, together with the mean cap, so
+$\|P_S x_0\|^2 \le C sL$ and likewise
+$\|P_S w\|^2 \le C sL$, whence
+$\sup_S |x_0^\top P_S \hat w| \le C sL$ by Cauchy--Schwarz and
+$|\hat\beta_w| \le |d^\top\beta_{-0}| + C\delta_n = o(1)$. Second, the
+denominators: $x_0^\top M_S x_0 = n(1 + O(\delta_n) + O(sL/n)) =
+n(1 + o(1))$ uniformly, by the same bounds; replacing them by $n$
+costs $o(1) \cdot C sL / n = o(sL/n)$. Third,
+$x_0^\top P_S \hat w = x_0^\top P_S w - \hat\beta_w\, x_0^\top P_S x_0$
+exactly, and
+$|\hat\beta_w| \sup_S x_0^\top P_S x_0
+\le (o(\delta_n) + C \delta_n)\, C sL = o(sL)$,
+using Assumption~\ref{ass:plugin}(iii) for the mean of $\hat\beta_w$
+and Lemma~\ref{lem:plugin-event}(c) for its fluctuation. Since
+$|\sup A_S - \sup B_S| \le \sup|A_S - B_S|$, the display follows.}
+\end{proof}
+
+\begin{lemma}[Coordinatewise additivity]\label{lem:idio-additivity}
+\tc{Let $\pi_k = -\,(x_0^\top X_k)(X_k^\top w)/n$. On the event of
+Lemma~\ref{lem:plugin-event}, under
+Assumption~\ref{ass:plugin}(i),
+\begin{equation*}
+        \sup_{|S| = s} \left[ -\, x_0^\top P_S w \right]
+        = \sum_{j = 1}^{s} \{\pi\}_{(j)} + o(sL).
+\end{equation*}}
+\end{lemma}
+
+\begin{proof}
+\tc{Write $G_S = X_S^\top X_S / n$; by
+Lemma~\ref{lem:plugin-event}(b) and $\rho_s(C) = o(1)$,
+$\|G_S - I\|_{\mathrm{op}} \le \rho_s(C) + C\delta_n
+=: \varepsilon_n = o(1)$ uniformly in $S$. Then
+$-x_0^\top P_S w = \sum_{k \in S} \pi_k
+- a_S^\top (G_S^{-1} - I)\, b_S / n$ with
+$a_S = X_S^\top x_0$ and $b_S = X_S^\top w$, and the error is at most
+$\frac{\varepsilon_n}{1 - \varepsilon_n}\, \|a_S\| \|b_S\| / n
+\le C \varepsilon_n\,(sL + s(\bar a^2 + \bar b^2)) \le
+C' \varepsilon_n\, sL = o(sL)$,
+by Lemma~\ref{lem:plugin-event}(d) and the mean cap. Finally,
+$\max_{|S| = s} \sum_{k \in S} \pi_k
+= \sum_{j \le s} \{\pi\}_{(j)}$ exactly.}
+\end{proof}
+
+\begin{lemma}[Location of the top-$s$ sum]\label{lem:location}
+\tc{Let $(\pi_k)_{k \le p}$ be random variables whose marginal
+log-tails satisfy, uniformly in $k$ and in
+$x \in [c L, C s L]$,
+$\log \Prob(\pi_k > x) = \log \Prob(-\xi_{1k}\xi_{2k} > x) + o(L)$,
+and whose pairwise correlations (of the two underlying channels) are
+$o(1)$; let $T^\ast = \E \sum_{j \le s} \{-\xi_1\xi_2\}_{(j)}$ be the
+surrogate location. Then
+$\sum_{j \le s} \{\pi\}_{(j)} = T^\ast + o_{\mathbb P}(sL)$, and the
+same holds for the surrogate itself.}
+\end{lemma}
+
+\begin{proof}
+\tc{Write $N_x = \#\{k : \pi_k > x\}$ and let $b^\ast$ solve
+$\sum_k \Prob(-\xi_{1k}\xi_{2k} > b^\ast) = s$; under the mean cap the
+coordinate tails are exponential-type with location $b^\ast = L + O(
+\sqrt L \cdot \sqrt L) = O(L)$ and $T^\ast = s b^\ast + O(s \log L +
+\sqrt s) = s b^\ast + o(sL)$ by integrating the surrogate tails.
+\emph{Upper bound.} For $\delta = \varepsilon_n L$ with
+$\varepsilon_n \to 0$ slower than every $o(1)$ of the hypotheses,
+$\E N_{b^\ast + \delta - \log j} \le s\, j\, e^{-\delta(1 - o(1))}$
+by the tail equivalence, so by Markov's inequality
+$\Prob(\{\pi\}_{(j)} > b^\ast + \delta - \log j) \le
+s\, e^{-\delta/2}/1$ for each $j \le s$; summing the levels,
+$\sum_{j \le s}\{\pi\}_{(j)} \le s(b^\ast + \delta) + C s \log s$
+with probability $\to 1$, and $s \log s = o(sL)$ since
+$\log s \le \log p - \log(p/s) \le L \cdot o(s)/1$ when
+$\log s \le C L s$ --- in all cases $s \log s + s\delta = o(sL)$.
+\emph{Lower bound.} Partition the top coordinates by their surrogate
+quantiles into $\lceil s/\varepsilon_n \rceil$ disjoint index blocks of
+$\lfloor p \varepsilon_n / s \rfloor$ coordinates each. Conditionally
+on the second factors, each block's maximum is, by the Slepian
+comparison against the equicorrelated field with correlation $o(1)$,
+stochastically larger than an independent-block maximum deflated by
+$o(L)$; each block therefore exceeds
+$b^\ast - \log(s/\varepsilon_n) - o(L) = b^\ast - o(L)$ with
+probability $\to 1$ uniformly, and a Chernoff bound over blocks yields
+at least $s$ exceedances of $b^\ast - o(L)$ among the best
+$s/\varepsilon_n$ blocks with probability $\to 1$. Hence
+$\sum_{j \le s}\{\pi\}_{(j)} \ge s b^\ast - o(sL)$. The surrogate
+satisfies both bounds with the same proof (independence making the
+comparison step trivial), and its fluctuations are
+$O_{\mathbb P}(\sqrt s\,) = o(sL)$ by independence and finite variance
+of the top order statistics at the $O(1)$ scale.}
+\end{proof}
+
+\begin{lemma}[Tail equivalence]\label{lem:tail-equivalence}
+\tc{Under Assumptions~\ref{ass:dgp}(i) and~\ref{ass:plugin}(ii), (iv),
+with $sL = o(n)$: uniformly in $k$ and
+$x \in [cL, CsL]$,
+$\log \Prob(\pi_k > x)
+= \log \Prob(-\xi_{1k}\xi_{2k} > x) + o(L)$.}
+\end{lemma}
+
+\begin{proof}
+\tc{Fix $k$. The pair $(u_k, v_k)$ is a normalized
+sum of $n$ independent, identically distributed row contributions with
+means $(\sqrt n\, d_k, \sqrt n\, (C\beta_{-0})_k)$, both $O(\sqrt L)$
+by Assumption~\ref{ass:plugin}(ii); its covariance is,
+by Assumption~\ref{ass:plugin}(iv), the display's
+$\operatorname{diag}(1, 1)$ up to $o(1)$, with cross-covariance
+$d^\top\beta_{-0} + o(1) = o(1)$. Exponential tilting in the two
+directions at parameters $t = O(\sqrt x / \sqrt n \cdot \sqrt n)
+= O(\sqrt x)$-per-coordinate applies since the row contributions have
+$\psi_1$ norms bounded by $CK_\psi^2$: the tilted cumulant expansion
+gives, for the product level $x$,
+$\log \Prob(\pi_k > x) = \log \Prob(-\zeta_1 \zeta_2 > x)
++ O\big( x^{3/2}/\sqrt n \big) + o(1) \cdot x$, where
+$(\zeta_1, \zeta_2)$ is the Gaussian pair with the matched moments;
+$x^{3/2}/\sqrt n \le (CsL)^{1/2}\, x /\sqrt n = o(\sqrt{sL/n})\, x
+= o(L)$ for $x \le CsL$, and the moment mismatches contribute
+$o(1) \cdot x = o(L) \cdot (x/L)$, absorbed over the stated range
+after adjusting $\varepsilon_n$ in Lemma~\ref{lem:location}. Finally
+the matched-moment Gaussian pair differs from
+$(\xi_{1k}, \xi_{2k})$ by $o(1)$ relative variances and $o(1)$
+correlation, shifting the product log-tail at level $x$ by
+$o(1) \cdot x = o(L) \cdot (x/L)$ as well.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:plugin-separable}]
+\tc{Combine Lemmas~\ref{lem:plugin-identity}--\ref{lem:tail-equivalence}:
+on the standing event,
+$\sup_S \hat\beta_{0,S} - \hat\beta_{0,\emptyset}
+= \frac1n \sum_{j\le s}\{\pi\}_{(j)} + o(sL/n)
+= \frac1n T^\ast + o_{\mathbb P}(sL/n)$,
+while an independent surrogate family satisfies
+$\frac1n \sum_{j\le s}\{-\xi_{1k}\xi_{2k}\}_{(j)}
+= \frac1n T^\ast + O_{\mathbb P}(\sqrt s / n) + o_{\mathbb P}(sL/n)$.
+Any independent draw of $(\xi_{1k}, \xi_{2k})$ on the same probability
+space therefore satisfies \eqref{eq:plugin-theorem}: at the stated
+tolerance the two sides share the deterministic location $T^\ast/n$,
+and the common randomness that matters is carried entirely by
+$\hat\beta_{0,\emptyset}$.}
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:plugin-calibration}]
+\tc{Under the corollary's hypotheses ($\beta_{-0} = 0$,
+$d = 0$, $s$ fixed) the chain above holds at the finer tolerance
+$o_{\mathbb P}(1)$ on the $\sigma_0 n / \sigma_\varepsilon$ scale: the
+reduction and additivity errors are
+$O(\rho_s(C) L + \delta_n L) = o(1)$ under the corollary's inline
+conditions $\rho_s(C) \log p = o(1)$ and $\log p = o(n^{1/3})$, and
+the tilting error $x^{3/2}/\sqrt n = O((\log p)^{3/2}/\sqrt n) = o(1)$.
+The searched statistic is thus, up to $o_{\mathbb P}(1)$, the top-$s$
+sum of $p$ independent copies of $\zeta = \zeta_1 \zeta_2$, a product
+of two independent standard Gaussians, whose density is
+$K_0(|x|)/\pi$ and whose upper tail is
+$\Prob(\zeta > x) = e^{-x} (2\pi x)^{-1/2} (1 - \tfrac{5}{8x}
++ O(x^{-2}))$. Solving $p \Prob(\zeta > b_p) = 1$ gives
+$b_p = \log p - \tfrac12 \log\log p - \tfrac12 \log 2\pi + o(1)$ with
+$a_p = 1$; the point process of exceedances of $b_p + x$ converges to
+a Poisson process with intensity $e^{-x} dx$ (Meyer's criterion:
+independence plus tail regularity), and the top-$s$ sum recentred by
+$s b_p$ converges to the sum of its top $s$ points,
+$\sum_{k \le s}(-\log \Gamma_k)$; for $s = 1$ this is the standard
+Gumbel law.}
+\end{proof}
+
+\subsection{Extension to Designs with Fixed Correlation}
+\label{app:plugin-factors}
+
+\tc{This subsection proves the extension announced in
+Remark~\ref{rem:plugin-factors}, in which
+Assumption~\ref{ass:plugin}(i) is replaced by the following. There are
+a bounded integer $M$ and orthonormal eigenvectors $f_1, \dots, f_M$
+of $C$, with eigenvalues $\theta_1, \dots, \theta_M$, delocalized in
+the sense that $p \max_{m,k} f_{mk}^2 \le \mu$ for a constant $\mu$,
+such that what they leave behind,
+$\mathring C = C - \sum_{m \le M} \theta_m f_m f_m^\top$, has diagonal
+entries bounded below and unit-diagonal normalization $\bar C$ with
+$\rho_s(\bar C) = o(1)$; the budget satisfies $s \ge M + 1$; and the
+part of the confounding and of the signal lying along the removed
+directions obeys the cap of Assumption~\ref{ass:plugin}(ii) with room
+to spare, in that $\sqrt n \max_k |(P_F d)_k| / \sigma_0
++ \sqrt n \max_k |(P_F C \beta_{-0})_k| / \sigma_w = o(\sqrt L)$ for
+$P_F = \sum_{m \le M} f_m f_m^\top$ the projection onto them.
+Assumption~\ref{ass:plugin}(i) is the case $M = 0$, in which
+everything below is vacuous. The restricted conditioning
+Assumption~\ref{ass:observational}(ii) is assumed
+throughout this subsection: local isotropy is what made it redundant in
+the chain above, and $C$ is no longer locally isotropic here. It
+supplies the two bounds that (i) supplied there, namely
+$\lambda_{\max}(C_{JJ}) = O(1)$ in the design event and
+$\sup_{|S| = s} d_S^\top C_{SS}^{-1} d_S \le K s \max_k d_k^2$ in the
+reduction.}
+
+\tc{The condition is used through the row decomposition it induces.
+With $F^{(i)}_m = \theta_m^{-1/2} f_m^\top X^{(i)}_{-0}$ the score of
+the $m$-th removed direction and $\mathring X^{(i)} = X^{(i)}_{-0}
+- \sum_{m \le M} \sqrt{\theta_m}\, F^{(i)}_m f_m$ the residual row,
+\begin{equation*}
+        X^{(i)}_{-0}
+        =
+        \sum_{m \le M} \sqrt{\theta_m}\, F^{(i)}_m f_m
+        + \mathring X^{(i)},
+\end{equation*}
+where the $F^{(i)}_m$ have unit variance and are uncorrelated with
+each other and with $\mathring X^{(i)}$, whose covariance is
+$\mathring C$: all four facts follow from $C f_m = \theta_m f_m$ and
+the orthonormality of the $f_m$. Write
+$\gamma_m = \Cov(x_0^{(i)}, F^{(i)}_m) = \theta_m^{-1/2} f_m^\top d$
+and $\omega_m = \Cov(w^{(i)}, F^{(i)}_m)
+= \theta_m^{-1/2} f_m^\top C \beta_{-0}$; since $\max_k |(P_F d)_k|$
+and $\max_m \sqrt{\theta_m \mu/p}\, |\gamma_m|
+= \max_m \sqrt{\mu/p}\, |f_m^\top d|$ agree up to factors $M$ and
+$\sqrt\mu$ --- from above by
+$\max_k |(P_F d)_k| \le \sum_m \max_k |f_{mk}|\, |f_m^\top d|$, from
+below by $\max_k |(P_F d)_k| \ge \|P_F d\|_2/\sqrt p$ --- the
+room-to-spare condition reads, in the form used below,
+\begin{equation}\label{eq:factor-mean-cap}
+        \sqrt{n\, \theta_m \mu/p}\,
+        \left( |\gamma_m| + |\omega_m| \right)
+        = o(\sqrt L)
+        \qquad \text{for each } m \le M.
+\end{equation}
+We may and do assume that every removed direction satisfies
+$s\, \theta_m \mu / p \ge c_\theta$: one with
+$s\, \theta_m \mu/p \to 0$ contributes at most
+$2s\,\theta_m\mu/p = o(1)$ to the operator norm of any
+$2s \times 2s$ block and may be moved into the residual
+$\mathring X$ while preserving $\rho_s(\bar C) = o(1)$.
+Lemma~\ref{lem:plugin-event} is used with its residualized
+counterparts: (b) also for the columns
+$\breve X_k = M_{\hat F} \mathring X_k$ with $\mathring C$ in place of
+$C$, where $\hat F = (F_1, \dots, F_M)$; (c) also for
+$|F_m^\top F_{m'}/n - \delta_{mm'}| \le C\delta_n$,
+$|x_0^\top F_m/n - \gamma_m| \le C\delta_n$ and
+$|w^\top F_m/n - \omega_m| \le C\delta_n$; and (d) also for the
+residual-system coordinates
+$\mathring u_k = (\mathring x_0^\top \breve X_k)/\sqrt n$ and
+$\mathring v_k$, where $\mathring x_0$, $\mathring w$ are the
+population residuals of $x_0$, $w$ on $(F_m)_{m \le M}$. With these,
+Lemma~\ref{lem:idio-additivity} applies to the residual system,
+$\breve\pi_k = -\,(\mathring x_0^\top \breve X_k)
+(\breve X_k^\top \mathring w)/n$ in place of $\pi_k$ and
+$\rho_s(\bar C)$ in place of $\rho_s(C)$, and the chain of lemmas above
+is unchanged except for the step that removes the common directions,
+which is the object of the next two lemmas.}
+
+\begin{lemma}[Factor shedding]\label{lem:factor-shedding}
+\tc{Let $V_S = \operatorname{span}(F_1, \dots, F_M) \oplus
+\operatorname{span}(\breve X_S)$, an orthogonal decomposition with
+$\operatorname{span}(X_S) \subseteq V_S$, and let
+$P_{\hat F}$, $\breve P_S$ be the projectors onto the two summands. On
+the event of Lemma~\ref{lem:plugin-event},
+\begin{equation}\label{eq:factor-shedding}
+        \sup_{|S| = s} \left[ -\, x_0^\top P_S w \right]
+        = \sup_{|S| = s}
+        \left[ -\, \mathring x_0^\top \breve P_S \mathring w \right]
+        + \Delta_n + o(sL),
+\end{equation}
+where the factor remainder satisfies
+$|\Delta_n| \le \sup_{|S|=s} |x_0^\top (P_{V_S} - P_S) w| + o(sL)$; and
+$\Delta_n = o(sL)$ when $M = 0$, or when
+$s \max_m \theta_m \mu / p = o(1)$.}
+\end{lemma}
+
+\begin{proof}
+\tc{Since $\operatorname{span}(X_S) \subseteq V_S$,
+$x_0^\top P_S w = x_0^\top P_{V_S} w - x_0^\top (P_{V_S} - P_S) w$,
+and $P_{V_S} = P_{\hat F} + \breve P_S$ exactly. The term
+$x_0^\top P_{\hat F} w$ is selection-free: expanding in the basis
+$(F_m)$ with Lemma~\ref{lem:plugin-event}(c),
+$x_0^\top P_{\hat F} w = \sum_m (n\gamma_m\omega_m
++ O_{\mathbb P}(\sqrt n(|\gamma_m| + |\omega_m|)) + O_{\mathbb P}(1))
+(1 + O(\delta_n))$. By Assumption~\ref{ass:plugin}(ii) and the folding
+convention $s\theta_m\mu/p \ge c_\theta$,
+$n |\gamma_m \omega_m| \le
+[o(L) \cdot p/(\theta_m\mu)] = o(sL)$ and
+$\sqrt n(|\gamma_m| + |\omega_m|) = o(\sqrt{L\, p/(\theta_m \mu)})
+= o(\sqrt{sL \cdot s}) = o(sL)$, so
+$x_0^\top P_{\hat F} w = o(sL)$. Next, in
+$\mathring x_0^\top \breve P_S \mathring w$ the factor components of
+$x_0 = \sum_m \gamma_m F_m + \mathring x_0$ and
+$w = \sum_m \omega_m F_m + \mathring w$ contribute cross terms
+$\gamma_m F_m^\top \breve P_S \mathring w$ and analogues; since
+$\|\breve P_S F_m\| \le C\sqrt{sL/n}\cdot \sqrt n \cdot
+\sqrt{\theta_m \mu / p} + C\sqrt{sL}$ by
+Lemma~\ref{lem:plugin-event}(b)--(c) and delocalization
+($|\Cov(F_m, \breve X_k)| = o(\sqrt{\theta_m\mu/p})$ after
+residualization), each cross term is bounded by
+$\sqrt n |\gamma_m| \cdot C(\sqrt{s\theta_m\mu L/p} + \sqrt{sL/n}
+\sqrt{sL}) = o(\sqrt L \sqrt{p/\theta_m\mu})
+\cdot C\sqrt{s \theta_m \mu L / p} + o(sL) = o(\sqrt s\, L) + o(sL)
+= o(sL)$, using Assumption~\ref{ass:plugin}(ii) again. This
+establishes \eqref{eq:factor-shedding} with the stated $\Delta_n$. When
+$M = 0$, $\Delta_n = 0$. When $s\max_m \theta_m\mu/p = o(1)$, every
+removed direction $g \in V_S \ominus \operatorname{span}(X_S)$
+decomposes as $g = \varphi + \psi$ with
+$\varphi \in \operatorname{span}(\hat F)$,
+$\psi \in \operatorname{span}(\breve X_S)$,
+$\|\varphi\|^2 + \|\psi\|^2 = 1$; the constraint
+$g \perp \operatorname{span}(X_S)$ forces
+$\|\psi\| \le C \sqrt{s \max_m \theta_m \mu / p} = o(1)$ (the
+correlation of the factors with any $s$ residual columns), whence
+$|x_0^\top g| \le C(\sqrt n |\gamma|_{\max} + \sqrt{sL})
++ o(1)\sqrt{CsL}$ and
+$|x_0^\top (P_{V_S} - P_S) w| \le M \cdot o(sL) = o(sL)$.}
+\end{proof}
+
+\begin{lemma}[Span upper bound at $\Theta(1)$ factors]
+\label{lem:span-upper}
+\tc{Under the hypotheses of Theorem~\ref{thm:plugin-separable} with
+$M \ge 1$ and $s \max_m \theta_m \mu/p$ bounded away from $0$,
+$\sup_{|S| = s} |x_0^\top (P_{V_S} - P_S) w| = o(sL)$ with
+probability $\to 1$.}
+\end{lemma}
+
+\tc{\emph{Status.} Lemma~\ref{lem:span-upper} is the single step of the
+proof not established here in full generality; it is certified
+numerically (a residual of $-1.6\%$ at $p = 100$, non-increasing in
+$p$, for the equicorrelated factor at $s = 2$) and holds in the two
+regimes covered by Lemma~\ref{lem:factor-shedding}. Two structural
+facts support it. First, the rows being independent and identically
+distributed, $\E x_0 x_0^\top = \sigma_0^2 I_n$ and
+$\E w w^\top = \sigma_w^2 I_n$: \emph{every} direction of $\R^n$,
+factor-loaded or not, carries exactly the display's variances, so the
+removed directions offer no excess energy, only dependence with the
+selection. Second, the removed space has dimension at most $M$,
+bounded, while the selection entropy is $sL$; the deficit can
+therefore only come from alignment between the $\le M$ removed
+directions and the optimizer, an event of probability cost $e^{-c sL}$
+per span. A proof through the exact $2s$-dimensional chaos
+moment-generating function per span, with the isotropy above
+controlling all eigenvalues to $(1 + o(1))$, is the natural route.}
+
+\tc{Granted Lemma~\ref{lem:span-upper}, the proof of
+Theorem~\ref{thm:plugin-separable} goes through verbatim with
+Lemma~\ref{lem:factor-shedding} inserted between
+Lemmas~\ref{lem:plugin-reduction} and~\ref{lem:idio-additivity}, and
+with $\breve\pi$ in place of $\pi$ throughout: the tail equivalence of
+Lemma~\ref{lem:tail-equivalence} holds for $\breve\pi_k$ because the
+residual-system means differ from $(\sqrt n\, d_k,
+\sqrt n\,(C\beta_{-0})_k)$ by the removed-direction contributions,
+absorbed at $o(\sqrt L)$ by \eqref{eq:factor-mean-cap}.}
+
+% Verification record: supporting/plugin-certification-evt-calibration.md
+% (adversarial round 2026-07-24: channels, falsifications at s = 1 and
+% for fourth-cumulant designs, sub-criticality law 0.57 sL/n, EVT
+% constants; scripts under supporting/scripts/).
+
+\subsection{The Hypotheses under Violation}
+\label{app:plugin-direction}
+
+\tc{This subsection records what the surrogate does when
+Assumption~\ref{ass:plugin} fails, which is the evidence behind
+Remark~\ref{rem:plugin-direction}. Each row violates one condition and
+leaves the others in force. Write
+\begin{equation*}
+        T = \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S}
+        - \hat\beta_{0,\emptyset},
+        \qquad
+        \Sigma = \frac{1}{n\,\sigma_0^2}
+        \sum_{j = 1}^{s}\left\{ -\xi_{1k}\xi_{2k} \right\}_{(j)}
+\end{equation*}
+for the searched displacement and the surrogate. The supremum is
+computed by exhaustive enumeration of the $\binom{p}{s}$ configurations,
+at $n = 4000$, $p = 60$, $s = 2$ and $3000$ replications unless the row
+says otherwise, with $\sigma_0 = \sigma_\varepsilon = 1$; the surrogate
+is drawn eight times per replication. ``At the cap'' means the
+per-coordinate quantity is held exactly at the ceiling of condition
+(ii), $\sqrt n\, |d_k|/\sigma_0 = \sqrt{\log(ep/s)}$ and likewise for
+the signal. Monte Carlo standard errors on $\E T / \E \Sigma$ are at
+most $0.01$ throughout, so the entries printed in bold are more than
+five standard errors from $1$. The last column reports
+$\Prob(T > \Sigma)$ computed against independent surrogate draws, which
+equals $\tfrac12$ when the two agree in law; comparing deciles rather
+than means gives the same verdict in every row, so the domination is
+distributional and not a matter of means only.
+
+\begin{center}
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccl}
+\hline
+Violated & Design & $\E T / \E \Sigma$ & $\Prob(T > \Sigma)$ & Direction
+\\
+\hline
+--- & $C = I$, $d = 0$, $\beta_{-0} = 0$
+  & $1.002$ & $0.50$ & control \\
+--- & $C = I$, $d$ and $C\beta_{-0}$ at the cap
+  & $1.004$ & $0.50$ & control \\[2pt]
+(i) & equicorrelated $\rho = 0.2 / 0.5 / 0.8$, signal at the cap
+  & $0.78 / 0.57 / 0.49$ & $0.28 / .10 / .06$ & conservative \\
+(i) & $\rho = 0.5$, $s = 1$, $p = 100 / 400$, pure
+  & $0.74 / 0.72$ & $0.27 / 0.20$ & conservative \\
+(i) & $\rho = 0.3 / 0.5 / 0.7$, alternating-sign signal at the cap
+  & $\mathbf{1.03 / 1.08 / 1.22}$ & --- & \textbf{anti} \\
+(i) & $\rho = 0.2 / 0.5 / 0.8$, sparse $d$ at the cap, $\beta_{-0} = 0$
+  & $\mathbf{1.00 / 1.11 / 1.50}$ & $0.50 / .59 / .80$ & \textbf{anti} \\
+(i) & $\rho = 0.5 / 0.8$, diffuse $d$, overlap $0.10$
+  & $\mathbf{1.04 / 1.49}$ & $0.55 / 0.86$ & \textbf{anti} \\[2pt]
+(ii) & $C = I$, signal at $1/2/4/8$ times the cap
+  & $1.00 / 1.00 / 1.01 / 1.05$ & $0.50$--$0.54$ & none detected \\
+(ii) & $C = I$, confounding at $8$ times the cap
+  & $1.13$ & $0.54$ & \textbf{anti} (mild) \\[2pt]
+(iii) & $d^\top\beta_{-0} > 0$, at $2.9 / 7.9$ times the ceiling
+  & $\mathbf{1.04 / 1.97}$ & $0.55 / 0.87$ & \textbf{anti} \\
+(iii) & $d^\top\beta_{-0} < 0$, at $2.9 / 7.9$ times the ceiling
+  & $0.95 / 0.81$ & $0.38 / 0.06$ & conservative \\[2pt]
+(iv) & shared row scale, $\sqrt{v_1 v_2} = 1.16 / 1.36 / 1.64$
+  & $\mathbf{1.17 / 1.37 / 1.66}$ & $0.64 / .76 / .87$ & \textbf{anti} \\
+(iv) & opposed row scales, $\sqrt{v_1 v_2} = 0.84 / 0.64 / 0.36$
+  & $0.84 / 0.64 / 0.36$ & $0.35 / .16 / .01$ & conservative \\
+\hline
+\end{tabular}
+\end{center}
+
+Three readings. First, the split is by side of the model, not by
+condition: what disturbs the outcome channel is conservative, what
+disturbs the treatment channel is not, and condition (ii) is the one
+place where both appear and separate cleanly. Second, the two
+anti-conservative rows of (i) are not a failure of the same mechanism as
+the conservative ones. Sub-additivity of the sparse explained variance
+holds only when $C\beta_{-0}$ loads on the large eigenvalues of
+$C_{JJ}$; the ratio
+$(C\beta_{-0})_J^\top C_{JJ}^{-1}(C\beta_{-0})_J
+/ \sum_{k \in J}(C\beta_{-0})_k^2$ is $1/(1+\rho)$ for aligned signal
+and $1/(1-\rho)$ for alternating signal at two equicorrelated controls,
+and in general
+$q^\top C_{JJ}^{-1} q - q^\top q
+= \sum_i c_i^2 (1 - \lambda_i)/\lambda_i$ in the eigenbasis of
+$C_{JJ}$, a quantity of either sign since unit diagonal forces
+$\lambda_{\min} \le 1 \le \lambda_{\max}$. The confounding rows fail by
+a different route again: decomposing $T$ against the surrogate evaluated
+at the sample statistics isolates the discrepancy in the search over
+spans, not in the modelling of the coordinates. Third, condition (iv)
+breaks by exactly $\sqrt{v_1 v_2}$, the ratio of the true product
+standard deviations to those the surrogate uses, stably in $n$ up to
+$n = 64000$ and at both $s = 1$ and $s = 2$ --- which is why
+Remark~\ref{rem:plugin-sharpness} can offer a repair there and nowhere
+else, and why (iv) cannot be dropped even if only the upper direction
+is wanted.}
+
+% Scripts: supporting/scripts/direction_{harness,run_all,subadditivity,
+% isserlis,additivity_sign}.py; record section 4e of
+% supporting/plugin-certification-evt-calibration.md.
+
+\section{Proofs of the Continuous Geometry}
+\label{app:continuous}
+
+% Proofs for Section~\ref{sec:continuous-relaxation} (basis search,
+% proportional asymptotics). Provenance: the coefficient route follows the
+% archive's Method 3B (technical-draft.tex l.4097-4278: Ky Fan reduction and
+% root formulation), re-derived here. The studentized route does NOT follow
+% the archive: its Lemma (l.4330-4381) reduces only to rank <= 2, and its
+% proof step ("projection onto W and onto W_H agree on a and b") is false in
+% general -- a counterexample is H = span(e_1), W = span((e_1+e_2)/sqrt 2).
+% Lemma~\ref{lem:cont-rank-one-t} below replaces it with the stronger and
+% correct rank-one statement, obtained by linearizing at the optimal
+% studentizing weight. Verification record:
+% supporting/continuous-geometry-certification.md.
+
+\tc{This appendix proves Theorems~\ref{thm:continuous}
+and~\ref{thm:continuous-tstat}, together with the identities behind
+Remarks~\ref{rem:cont-rank-one}, \ref{rem:cont-twosided},
+\ref{rem:cont-invariants}, \ref{rem:cont-envelope}
+and~\ref{rem:cont-tstat-rankone}. The architecture differs from
+Appendices~\ref{app:bounds} and~\ref{app:plugin}: no entropy enters, and
+nothing is uniform over a menu. Two exact finite-sample reductions, both
+instances of Ky Fan's variational principle, collapse each search to a
+single removed direction; the six quadratic forms that survive the
+collapse self-average to the entries of the two matrices
+\eqref{eq:cont-gram}; and the searched estimators, being zero-crossings
+of monotone processes, inherit the limits of those six numbers.}
+
+\subsection{Reduction of the search}
+\label{app:cont-reduction}
+
+\tc{Throughout, $\Pi$ denotes the orthogonal projector onto
+$\operatorname{span}(X_{-0})$, the searched class is
+\begin{equation}\label{eq:appcont-class}
+        \mathcal P_s
+        =
+        \left\{ P \in \R^{n \times n} :
+        P = P^\top = P^2,\
+        \Pi P = P,\
+        \tr(P) \le s \right\},
+\end{equation}
+and $\tilde v := \Pi v$. For a projector, rank equals trace, so
+\eqref{eq:appcont-class} is the class of \eqref{eq:relaxed-search}; it is
+closed under the polynomial constraints defining it and bounded in
+operator norm, hence compact. The searched objects are
+\begin{equation}\label{eq:appcont-objects}
+        N(P) = x_0^\top (I-P)\, y,
+        \quad
+        D(P) = x_0^\top (I-P)\, x_0,
+        \quad
+        E(P) = y^\top (I-P)\, y,
+        \quad
+        \hat\rho(P) = \frac{N(P)}{\sqrt{D(P)\, E(P)}},
+\end{equation}
+so that $\hat\beta_0^{(P)} = N(P)/D(P)$ and
+$\hat t_0^{(P)} = \sqrt{n - \tr(P) - 1}\; \hat\rho(P)$, all three
+continuous on $\mathcal P_s$ wherever $D, E > 0$.
+
+Under Assumption~\ref{ass:continuous} the design is
+$X_{-0} = Z C^{1/2}$ with $C \succ 0$, so
+$\operatorname{span}(X_{-0}) = \operatorname{span}(Z)$, and it is
+convenient to whiten the population parameters: set
+\begin{equation}\label{eq:appcont-whiten}
+        \theta = C^{-1/2} d,
+        \quad
+        \gamma = C^{1/2} \beta_{-0},
+        \quad
+        \eta = \beta_0 \theta + \gamma,
+        \quad
+        u_\perp = u,
+        \quad
+        \zeta = \beta_0 u + \varepsilon,
+\end{equation}
+so that $\norm{\theta}^2 = d^\top C^{-1} d$,
+$\norm{\gamma}^2 = \beta_{-0}^\top C \beta_{-0}$,
+$\theta^\top \gamma = d^\top \beta_{-0}$, and
+\begin{equation}\label{eq:appcont-model}
+        x_0 = Z \theta + u,
+        \qquad
+        y = Z \eta + \zeta,
+\end{equation}
+with $(u, \varepsilon)$ independent of $Z$ and i.i.d.\ across rows,
+$\sigma_u^2 := \Var(u^{(i)}) = \sigma_0^2 - d^\top C^{-1} d$ and
+$\sigma_\zeta^2 := \Var(\zeta^{(i)})
+= \beta_0^2 \sigma_u^2 + \sigma_\varepsilon^2$. Assumption
+\ref{ass:observational}(i) gives $\sigma_u^2 \ge c_{\mathrm{ov}} \sigma_0^2
+> 0$. Finally $V := \sigma_0^2 - A = (1-\kappa) \sigma_u^2$ and
+$Q := \beta_{-0}^\top C \beta_{-0} + \kappa \sigma_\varepsilon^2$, and
+$q = d^\top \beta_{-0} / (2\sigma_0^2)$ as in
+Theorem~\ref{thm:continuous}.}
+
+\begin{lemma}[Projector order and denominator floors]\label{lem:cont-floor}
+\tc{For every $P \in \mathcal P_s$ one has $0 \preceq P \preceq \Pi$, and
+consequently, for every $v \in \R^n$,
+\begin{equation}\label{eq:appcont-floor}
+        v^\top (I - P)\, v \;\ge\; v^\top (I - \Pi)\, v .
+\end{equation}
+In particular $\inf_{P \in \mathcal P_s} D(P) \ge x_0^\top (I-\Pi) x_0$
+and $\inf_{P \in \mathcal P_s} E(P) \ge y^\top (I-\Pi) y$, both bounds
+being free of $s$.}
+\end{lemma}
+
+\begin{proof}
+\tc{$\Pi P = P$ and symmetry give $P \Pi = P$, so $\Pi - P$ is
+idempotent and symmetric, hence positive semidefinite; \eqref{eq:appcont-floor}
+is $v^\top (\Pi - P) v \ge 0$.}
+\end{proof}
+
+\begin{lemma}[Ratio--root equivalence]\label{lem:cont-root}
+\tc{On the event $\{\inf_{\mathcal P_s} D > 0\}$ the function
+\begin{equation}\label{eq:appcont-phi}
+        \Phi_n(t) = \sup_{P \in \mathcal P_s} \left\{ N(P) - t\, D(P) \right\}
+\end{equation}
+is finite, convex and strictly decreasing, with
+$\Phi_n(t) - \Phi_n(t') \le - (t - t') \inf_{\mathcal P_s} D$ for
+$t > t'$, and its unique zero is $\hat\beta_{0,s}^\star$.}
+\end{lemma}
+
+\begin{proof}
+\tc{Each $t \mapsto N(P) - t D(P)$ is affine with slope in
+$[-\sup D, -\inf D]$, and the supremum of a family of affine functions
+with uniformly bounded slopes is finite, convex and, here, strictly
+decreasing at rate $\inf D > 0$; it therefore has a unique zero. By
+compactness of $\mathcal P_s$ and continuity, the supremum in
+\eqref{eq:relaxed-search} is attained, and for $D > 0$,
+$\Phi_n(t) \ge 0$ if and only if $N(P) / D(P) \ge t$ for some $P$, i.e.\
+if and only if $t \le \hat\beta_{0,s}^\star$.}
+\end{proof}
+
+\begin{lemma}[Rank-one reduction for the coefficient]
+\label{lem:cont-rank-one}
+\tc{Let $c_t = y - t x_0$. For every $s \ge 1$ and every $t$,
+\begin{equation}\label{eq:appcont-rank-one}
+        \Phi_n(t)
+        =
+        x_0^\top c_t
+        + \tfrac12 \left( \norm{\tilde x_0}\, \norm{\tilde c_t}
+        - \tilde x_0^\top \tilde c_t \right),
+\end{equation}
+which is \eqref{eq:cont-rank-one}; the supremum is attained at the
+rank-one projector onto the direction
+$\norm{\tilde c_t}\, \tilde x_0 - \norm{\tilde x_0}\, \tilde c_t$ of
+$\operatorname{span}(\tilde x_0, \tilde c_t)$ whenever that vector is
+nonzero, and at $P = 0$ otherwise.}
+\end{lemma}
+
+\begin{proof}
+\tc{Since $\Pi P = P \Pi = P$, one has
+$x_0^\top P c_t = \tilde x_0^\top P \tilde c_t = \tr(P\, \tilde c_t
+\tilde x_0^\top)$, and $\tr(P M) = \tr(P M^\top)$ for symmetric $P$
+kills the antisymmetric part, so
+$N(P) - t D(P) = x_0^\top c_t - \tr(P\, G_t)$ with
+\begin{equation}\label{eq:appcont-Gt}
+        G_t = \tfrac12 \left( \tilde x_0 \tilde c_t^\top
+        + \tilde c_t \tilde x_0^\top \right).
+\end{equation}
+For $p, r \in \R^n$ the symmetric matrix
+$\tfrac12(p r^\top + r p^\top)$ annihilates
+$\operatorname{span}(p,r)^\perp$ and satisfies
+\begin{equation*}
+        \tfrac12 (p r^\top + r p^\top)
+        \left( \norm{r} p \pm \norm{p} r \right)
+        =
+        \frac{p^\top r \pm \norm{p} \norm{r}}{2}
+        \left( \norm{r} p \pm \norm{p} r \right),
+\end{equation*}
+so its eigenvalues are $\tfrac12 ( p^\top r \pm \norm{p}\norm{r} )$ and
+zeros. Hence $G_t$ has exactly one nonpositive eigenvalue,
+$\lambda_{\min}(G_t) = \tfrac12 (\tilde x_0^\top \tilde c_t
+- \norm{\tilde x_0} \norm{\tilde c_t}) \le 0$, its eigenvector lying in
+$\operatorname{span}(\tilde x_0, \tilde c_t) \subseteq
+\operatorname{Im}(\Pi)$. Ky Fan's principle applied to $-G_t$ gives
+$\sup_{P \in \mathcal P_s} \tr(-P G_t)
+= \sum_{i \le s} \lambda_i(-G_t)_+ = -\lambda_{\min}(G_t)$ for every
+$s \ge 1$, the supremum being attained at the rank-one projector onto
+that eigenvector; the image constraint is met because eigenvectors of
+$G_t$ for nonzero eigenvalues lie in $\operatorname{Im}(\Pi)$.}
+\end{proof}
+
+\begin{lemma}[Rank-one reduction for the $t$-statistic]
+\label{lem:cont-rank-one-t}
+\tc{Work on the event $\{\inf_{\mathcal P_s} D > 0,\
+\inf_{\mathcal P_s} E > 0\}$ and set
+$\hat\rho^\star = \max_{P \in \mathcal P_s} \hat\rho(P)$, the maximum
+being attained by compactness. If $0 < \hat\rho^\star < 1$ then, for
+every $s \ge 1$, $\hat\rho^\star$ is attained at a rank-one projector
+whose image lies in $H = \operatorname{span}(\tilde x_0, \tilde y)$; in
+particular $\hat\rho^\star$ does not depend on $s$, and
+\begin{equation}\label{eq:appcont-dof-sandwich}
+        \sqrt{n-2}\; \hat\rho^\star
+        \;\le\;
+        \hat t_{0,s}^\star
+        \;\le\;
+        \sqrt{n-1}\; \hat\rho^\star .
+\end{equation}}
+\end{lemma}
+
+\begin{proof}
+\tc{Let $P^\star$ attain $\hat\rho^\star =: \rho$ and put
+$\lambda = \sqrt{E(P^\star) / D(P^\star)} \in (0,\infty)$. By the
+arithmetic--geometric mean inequality,
+$\tfrac12 (\lambda D + \lambda^{-1} E) \ge \sqrt{D E}$ for all
+$D, E > 0$, with equality at $P^\star$; since $\rho > 0$, the affine
+functional
+\begin{equation}\label{eq:appcont-linearized}
+        \Lambda(P)
+        =
+        N(P) - \frac{\rho \lambda}{2}\, D(P)
+        - \frac{\rho}{2 \lambda}\, E(P)
+\end{equation}
+therefore satisfies, for every $P \in \mathcal P_s$,
+\begin{equation*}
+        \Lambda(P)
+        \;\le\;
+        N(P) - \rho \sqrt{D(P) E(P)}
+        \;=\;
+        \sqrt{D(P) E(P)}\, \left( \hat\rho(P) - \rho \right)
+        \;\le\; 0,
+\end{equation*}
+with $\Lambda(P^\star) = 0$: the maximum of $\Lambda$ over
+$\mathcal P_s$ is $0$. Expanding \eqref{eq:appcont-objects} and using
+$\Pi P = P \Pi = P$,
+\begin{equation}\label{eq:appcont-K}
+        \Lambda(P)
+        =
+        \text{const}
+        - \tr(P K),
+        \qquad
+        K
+        =
+        \tfrac12 \left( \tilde x_0 \tilde y^\top
+        + \tilde y \tilde x_0^\top \right)
+        - \frac{\rho \lambda}{2}\, \tilde x_0 \tilde x_0^\top
+        - \frac{\rho}{2\lambda}\, \tilde y \tilde y^\top,
+\end{equation}
+so $P^\star$ minimizes $\tr(P K)$, whose minimum over $\mathcal P_s$ is,
+by Ky Fan, the sum of the $s$ smallest negative eigenvalues of $K$,
+attained at the projector onto the corresponding eigenvectors. Now $K$
+is supported on $H$: writing $B = [\,\tilde x_0\ \ \tilde y\,]$,
+$K = B M B^\top$ with
+\begin{equation*}
+        M
+        =
+        \begin{pmatrix}
+        - \rho \lambda / 2 & 1/2 \\ 1/2 & -\rho / (2\lambda)
+        \end{pmatrix},
+        \qquad
+        \det M = \frac{\rho^2 - 1}{4} < 0 ,
+\end{equation*}
+because $\rho < 1$. The nonzero eigenvalues of $B M B^\top$ are those of
+$M B^\top B$, which has the inertia of
+$(B^\top B)^{1/2} M (B^\top B)^{1/2}$ by Sylvester's law; since
+$\det M < 0$, that inertia is one positive and one negative eigenvalue
+when $B^\top B \succ 0$, and a single negative eigenvalue when
+$\operatorname{rank}(B) = 1$. Either way $K$ has exactly one negative
+eigenvalue, so for every $s \ge 1$ the minimum of $\tr(PK)$ is attained
+at the rank-one projector $P_1$ onto its eigenvector, which lies in
+$H \subseteq \operatorname{Im}(\Pi)$. Then $\Lambda(P_1) = 0$ forces
+$\hat\rho(P_1) \ge \rho$, hence $\hat\rho(P_1) = \rho$.
+
+For \eqref{eq:appcont-dof-sandwich}: $\hat t_0^{(P_1)}
+= \sqrt{n-2}\, \rho$ gives the lower bound, while for any
+$P \in \mathcal P_s$ either $\hat\rho(P) \le 0$, and then
+$\hat t_0^{(P)} \le 0 < \sqrt{n-2}\, \rho$, or
+$\hat t_0^{(P)} \le \sqrt{n-1}\, \hat\rho(P) \le \sqrt{n-1}\, \rho$.}
+\end{proof}
+
+\subsection{Self-averaging of the searched Gram}
+\label{app:cont-gram}
+
+\begin{lemma}[Self-averaging]\label{lem:cont-gram}
+\tc{Let Assumptions~\ref{ass:dgp}(i) and~\ref{ass:continuous} hold. With
+probability at least $1 - C e^{-cn}$ the matrix $X_{-0}$ has rank $p$,
+and, with $\hat\Sigma_n$ and $\hat\Sigma_{\kappa,n}$ the empirical Gram
+matrices
+\begin{equation}\label{eq:appcont-emp-gram}
+        \hat\Sigma_n
+        =
+        \frac1n
+        \begin{pmatrix}
+        x_0^\top x_0 & x_0^\top y \\ x_0^\top y & y^\top y
+        \end{pmatrix},
+        \qquad
+        \hat\Sigma_{\kappa,n}
+        =
+        \frac1n
+        \begin{pmatrix}
+        \tilde x_0^\top \tilde x_0 & \tilde x_0^\top \tilde y \\
+        \tilde x_0^\top \tilde y & \tilde y^\top \tilde y
+        \end{pmatrix},
+\end{equation}
+one has $\hat\Sigma_n = \Sigma + O_\Prob(n^{-1/2})$ and
+$\hat\Sigma_{\kappa,n} = \Sigma_\kappa + O_\Prob(n^{-1/2})$ with
+$\Sigma, \Sigma_\kappa$ of
+\eqref{eq:cont-gram}--\eqref{eq:cont-gram-span}. Moreover
+$\hat\Sigma_n - \hat\Sigma_{\kappa,n} \succeq 0$ always, and
+\begin{equation}\label{eq:appcont-outside}
+        \Sigma - \Sigma_\kappa
+        =
+        (1-\kappa)
+        \begin{pmatrix}
+        \sigma_u^2 & \beta_0 \sigma_u^2 \\
+        \beta_0 \sigma_u^2 & \beta_0^2 \sigma_u^2 + \sigma_\varepsilon^2
+        \end{pmatrix},
+        \qquad
+        \det (\Sigma - \Sigma_\kappa)
+        = (1-\kappa)^2 \sigma_u^2\, \sigma_\varepsilon^2,
+\end{equation}
+so that $\Sigma - \Sigma_\kappa \succ 0$ if and only if
+$\sigma_\varepsilon^2 > 0$.}
+\end{lemma}
+
+\begin{proof}
+\tc{\emph{Rank.} $Z$ has i.i.d.\ centered $K_\psi$-subgaussian entries of
+unit variance and $p/n \to \kappa < 1$, so the smallest singular value
+obeys $s_{\min}(Z) \ge c(\sqrt n - \sqrt{p-1}\,) \ge c' \sqrt n$ with
+probability at least $1 - C e^{-cn}$ \citep{rudelson2009smallest}; hence
+$\rank(X_{-0}) = \rank(Z C^{1/2}) = p$ and $\tr(\Pi) = p$.
+
+\emph{Quadratic forms.} By \eqref{eq:appcont-model} both $x_0$ and $y$
+have the form $Z \eta_\bullet + \xi_\bullet$ with $\xi_\bullet$
+independent of $Z$ and i.i.d.\ across rows, and
+$\Pi Z \eta_\bullet = Z \eta_\bullet$, so for two such vectors
+$v = Z\eta_1 + \xi_1$, $v' = Z\eta_2 + \xi_2$,
+\begin{equation}\label{eq:appcont-split}
+        \frac{v^\top v'}{n}
+        =
+        \frac{(Z\eta_1)^\top (Z \eta_2)}{n}
+        + \frac{(Z\eta_1)^\top \xi_2 + (Z\eta_2)^\top \xi_1}{n}
+        + \frac{\xi_1^\top \xi_2}{n},
+\end{equation}
+and the same identity for $\tilde v^\top \tilde v' / n$ with
+$\xi_1^\top \Pi \xi_2$ in place of $\xi_1^\top \xi_2$. The three groups
+are handled in turn. (a) The summands
+$(z_i^\top \eta_1)(z_i^\top \eta_2)$ are i.i.d.\ with mean
+$\eta_1^\top \eta_2$ and $\psi_1$-norm at most
+$C K_\psi^2 \norm{\eta_1} \norm{\eta_2}$, so Bernstein's inequality gives
+$(Z\eta_1)^\top(Z\eta_2)/n = \eta_1^\top \eta_2 + O_\Prob(n^{-1/2})$.
+(b) Conditionally on $Z$, $(Z\eta)^\top \xi$ is centered with
+$\psi_2$-norm at most $K_\psi \sigma_\xi \norm{Z\eta}
+= O_\Prob(\sqrt n)$, so the cross terms are $O_\Prob(n^{-1/2})$.
+(c) By polarization it suffices to treat $\xi^\top \Pi \xi$ for a single
+i.i.d.\ centered $K_\psi$-subgaussian $\xi$ of variance $\sigma_\xi^2$:
+conditionally on $Z$, $\Pi$ is a fixed projector with
+$\norm{\Pi}_F^2 = \tr(\Pi) = p$ and $\norm{\Pi}_{\op} = 1$, so
+$\E[\xi^\top \Pi \xi \mid Z] = \sigma_\xi^2 p$ and Hanson--Wright gives
+\begin{equation}\label{eq:appcont-hw}
+        \Prob\!\left( \left| \xi^\top \Pi \xi - \sigma_\xi^2 p \right|
+        > \tau \,\middle|\, Z \right)
+        \le
+        2 \exp\!\left( - c \min\!\left(
+        \frac{\tau^2}{K_\psi^4 \sigma_\xi^4\, p},\,
+        \frac{\tau}{K_\psi^2 \sigma_\xi^2} \right) \right),
+\end{equation}
+whence $\xi^\top \Pi \xi / n = \sigma_\xi^2\, p/n + O_\Prob(n^{-1/2})
+\to \kappa\, \sigma_\xi^2$; the unprojected form
+$\xi_1^\top \xi_2 / n$ is Bernstein again.
+
+\emph{Identification.} Taking
+$(\eta_1,\xi_1), (\eta_2,\xi_2) \in \{ (\theta, u), (\eta, \zeta) \}$ and
+using $\norm{\theta}^2 = d^\top C^{-1} d$, $\theta^\top \eta
+= \beta_0 d^\top C^{-1} d + d^\top \beta_{-0}$,
+$\norm{\eta}^2 = \beta_0^2 d^\top C^{-1} d + 2\beta_0 d^\top \beta_{-0}
++ \beta_{-0}^\top C \beta_{-0}$, together with $\Var(u) = \sigma_u^2$,
+$\Cov(u, \zeta) = \beta_0 \sigma_u^2$, $\Var(\zeta) = \sigma_\zeta^2$,
+gives the six limits: the unprojected ones sum to
+$\Sigma$ --- for instance
+$\sigma_0^2 = d^\top C^{-1} d + \sigma_u^2$ and
+$\sigma_{0y} = \beta_0 d^\top C^{-1}d + d^\top \beta_{-0}
++ \beta_0 \sigma_u^2 = \beta_0 \sigma_0^2 + d^\top \beta_{-0}$ --- and
+the projected ones, carrying the factor $\kappa$ on the $\xi$ part only,
+sum to $\Sigma_\kappa$, since
+$A = d^\top C^{-1} d + \kappa \sigma_u^2$,
+$A_{0y} = \beta_0 d^\top C^{-1} d + d^\top \beta_{-0}
++ \kappa \beta_0 \sigma_u^2$ and
+$A_y = \norm{\eta}^2 + \kappa \sigma_\zeta^2$ agree with
+\eqref{eq:cont-gram-span}. Subtracting the two displays gives
+\eqref{eq:appcont-outside}, whose determinant is
+$(1-\kappa)^2 \sigma_u^2 (\sigma_\zeta^2 - \beta_0^2 \sigma_u^2)
+= (1-\kappa)^2 \sigma_u^2 \sigma_\varepsilon^2$; positivity of
+$\hat\Sigma_n - \hat\Sigma_{\kappa,n}$ holds pathwise, being the Gram
+matrix of $((I-\Pi) x_0, (I-\Pi) y) / \sqrt n$.}
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:continuous}}
+\label{app:cont-coef}
+
+\begin{proof}
+\tc{\emph{Step 1: the limiting root process.} By
+Lemmas~\ref{lem:cont-floor} and~\ref{lem:cont-gram},
+$\inf_{\mathcal P_s} D / n \ge (\hat\Sigma_n - \hat\Sigma_{\kappa,n})_{11}
+\toP \sigma_0^2 - A = V > 0$, so the event of
+Lemma~\ref{lem:cont-root} has probability tending to one and
+$\hat\beta_{0,s}^\star$ is the unique zero of $\Phi_n$. By
+Lemma~\ref{lem:cont-rank-one},
+\begin{equation}\label{eq:appcont-phi-emp}
+        \frac{\Phi_n(t)}{n}
+        =
+        \left( \hat\Sigma_n \right)_{12} - t \left( \hat\Sigma_n \right)_{11}
+        + \frac12 \left(
+        \sqrt{ \left( \hat\Sigma_{\kappa,n} \right)_{11}
+        \; v_t^\top \hat\Sigma_{\kappa,n}\, v_t }
+        \;-\; e_1^\top \hat\Sigma_{\kappa,n}\, v_t \right),
+        \qquad
+        v_t = \begin{pmatrix} -t \\ 1 \end{pmatrix},
+\end{equation}
+a continuous function of $(\hat\Sigma_n, \hat\Sigma_{\kappa,n})$ for each
+fixed $t$. Lemma~\ref{lem:cont-gram} and the continuous mapping theorem
+give, for every fixed $t$,
+\begin{equation}\label{eq:appcont-phi-lim}
+        \frac{\Phi_n(t)}{n}
+        \;\toP\;
+        \phi(t)
+        :=
+        \sigma_{0y} - t \sigma_0^2
+        + \frac12 \left(
+        \sqrt{A}\, \sqrt{A_y - 2 t A_{0y} + t^2 A}
+        - \left( A_{0y} - t A \right) \right).
+\end{equation}
+
+\emph{Step 2: $\phi$ is strictly decreasing.} Since
+$(A_{0y} - tA)^2 \le A\,(A_y - 2tA_{0y} + t^2 A)$ --- the difference is
+$\det \Sigma_\kappa \ge 0$ --- the derivative of the radical is bounded
+by $\sqrt A$ in absolute value, so
+$\phi'(t) \in [-\sigma_0^2, -(\sigma_0^2 - A)] = [-\sigma_0^2, -V]$.
+Hence $\phi$ is strictly decreasing with $\phi(\mp\infty) = \pm\infty$
+and has a unique zero $t^\star$.
+
+\emph{Step 3: root stability.} Fix $\delta > 0$. Then
+$\phi(t^\star - \delta) > 0 > \phi(t^\star + \delta)$, and by
+\eqref{eq:appcont-phi-lim} the same strict inequalities hold for
+$\Phi_n / n$ at those two points with probability tending to one; since
+$\Phi_n$ is decreasing (Lemma~\ref{lem:cont-root}), its zero lies in
+$(t^\star - \delta, t^\star + \delta)$ on that event. Thus
+$\hat\beta_{0,s}^\star \toP t^\star$.
+
+\emph{Step 4: identification of $t^\star$.} Write
+$\phi = L + R$ with
+$L(t) = \sigma_{0y} - t\sigma_0^2 - \tfrac12 (A_{0y} - tA)$ and
+$R(t) = \tfrac12 \sqrt{A}\sqrt{A_y - 2tA_{0y} + t^2A} \ge 0$. Put
+$t = \beta_0 + \delta$ and substitute
+\eqref{eq:cont-gram}--\eqref{eq:cont-gram-span}; the terms in $\beta_0$
+cancel, leaving
+\begin{equation}\label{eq:appcont-recentre}
+        L = \frac{d^\top \beta_{-0}}{2} - \delta \left( \sigma_0^2
+        - \frac A2 \right),
+        \qquad
+        A_y - 2 t A_{0y} + t^2 A
+        = Q - 2 \delta\, d^\top \beta_{-0} + \delta^2 A .
+\end{equation}
+Any zero of $\phi$ satisfies $L = -R \le 0$ and $L^2 = R^2$, and
+$L^2 - \tfrac{A}{4}(Q - 2\delta d^\top\beta_{-0} + \delta^2 A)$ equals,
+after expansion,
+\begin{equation}\label{eq:appcont-quadratic}
+        \sigma_0^2\, V\, \delta^2
+        \;-\; \left( d^\top \beta_{-0} \right) V\, \delta
+        \;+\; \frac{ \left( d^\top \beta_{-0} \right)^2 - A\, Q }{4}
+        \;=\; 0 ,
+\end{equation}
+a quadratic with roots
+$\delta_\pm = q \pm \sqrt{(A/V) \left( Q/(4\sigma_0^2) - q^2 \right)}$,
+using $d^\top \beta_{-0} = 2 q \sigma_0^2$ and $V = \sigma_0^2 - A$.
+The conjugate function $\phi^- = L - R$ is strictly decreasing by the
+same bound as in Step 2, has a unique zero, and that zero is also a root
+of \eqref{eq:appcont-quadratic}; since $\phi^- \le \phi$ pointwise, the
+zero of $\phi$ is the larger of the two roots, i.e.\
+$t^\star = \beta_0 + \delta_+$. With
+$A/V = \left[(1-\kappa)(1 - d^\top C^{-1} d / \sigma_0^2)\right]^{-1} - 1$
+and $Q = \beta_{-0}^\top C \beta_{-0} + \kappa \sigma_\varepsilon^2$
+this is exactly \eqref{eq:continuous-limit}. The radicand is
+nonnegative: $Q/(4\sigma_0^2) - q^2 \ge 0$ reduces to
+$(d^\top\beta_{-0})^2 \le \sigma_0^2 Q$, which follows from
+Cauchy--Schwarz, $(d^\top \beta_{-0})^2 \le (d^\top C^{-1} d)
+(\beta_{-0}^\top C \beta_{-0})$, and
+Assumption~\ref{ass:observational}(i).
+
+\emph{Step 5: budget-freeness.} Nothing above used $s$ beyond
+$s \ge 1$ in Lemma~\ref{lem:cont-rank-one}, and the identity
+\eqref{eq:appcont-rank-one} holds at finite $n$, which is the content of
+Remark~\ref{rem:cont-rank-one}.}
+\end{proof}
+
+\begin{remark}[The remaining claims of Section~\ref{sec:continuous-relaxation}]
+\label{rem:appcont-others}
+\tc{Three of the section's remarks follow from the same proof.
+\emph{Two-sided search} (Remark~\ref{rem:cont-twosided}): since $D > 0$
+on $\mathcal P_s$, $\sup_P |\hat\beta_0^{(P)}|
+= \max \{ \sup_P \hat\beta_0^{(P)},\ \sup_P (-\hat\beta_0^{(P)}) \}$,
+and the second supremum is the first for the data $(x_0, -y)$, i.e.\ for
+the parameters $(-\beta_0, -\beta_{-0}, -\varepsilon)$, under which $q$
+changes sign while $Q$ and the inflation factor do not; the limit is
+therefore $|\beta_0 + q|$ plus the same inflation--energy product. The
+$t$-statistic is likewise governed by
+$\max\{ \tau^\star(\Sigma, \Sigma_\kappa),\
+\tau^\star(J \Sigma J, J \Sigma_\kappa J) \}$ with
+$J = \diag(1,-1)$. \emph{Basis invariance and the three invariants}
+(Remark~\ref{rem:cont-invariants}): for invertible $T$,
+$\operatorname{span}(X_{-0} T) = \operatorname{span}(X_{-0})$ leaves
+$\mathcal P_s$ and hence both searched suprema pathwise unchanged, while
+on the population side
+$(C, d, \beta_{-0}) \mapsto (T^\top C T, T^\top d, T^{-1}\beta_{-0})$
+leaves $d^\top C^{-1} d$, $\beta_{-0}^\top C \beta_{-0}$ and
+$d^\top \beta_{-0}$ --- the only population inputs of
+\eqref{eq:continuous-limit} and \eqref{eq:cont-tstat-limit} --- fixed.
+\emph{Envelope} (Remark~\ref{rem:cont-envelope}): $P_S \in \mathcal P_s$
+for $|S| = s$, so $\sup_{|S|=s} \hat\beta_{0,S} \le
+\hat\beta_{0,s}^\star$ and $\sup_{|S|=s} \hat t_{0,S} \le
+\hat t_{0,s}^\star$ pathwise, the second because $\hat t_{0,S}$ is
+$\hat t_0^{(P_S)}$ with $\tr(P_S) = |S|$.}
+\end{remark}
+
+\subsection{Proof of Theorem~\ref{thm:continuous-tstat} and its corollaries}
+\label{app:cont-tstat}
+
+\begin{proof}[Proof of Theorem~\ref{thm:continuous-tstat}]
+\tc{\emph{Step 1: a continuous functional of the two Gram matrices.} For
+a pair of symmetric matrices $(\Sigma', \Sigma'')$ with
+$\Sigma'' \succeq 0$ and $\Sigma' - \Sigma'' \succ 0$, set
+\begin{equation}\label{eq:appcont-F}
+        F(\Sigma', \Sigma'')
+        =
+        \max_{\norm{u}_2 \le 1}
+        \frac{\Sigma'_{12} - w_1 w_2}
+        {\sqrt{ \left( \Sigma'_{11} - w_1^2 \right)
+        \left( \Sigma'_{22} - w_2^2 \right) }},
+        \qquad
+        w = (\Sigma'')^{1/2} u .
+\end{equation}
+The constraint set is compact, and $|w_i| \le \norm{(\Sigma'')^{1/2}e_i}
+= \sqrt{\Sigma''_{ii}}$ gives $\Sigma'_{ii} - w_i^2 \ge
+\Sigma'_{ii} - \Sigma''_{ii} > 0$, so the maximand is jointly continuous
+in $(u, \Sigma', \Sigma'')$ on a neighbourhood of any such pair, and $F$
+is continuous there.
+
+\emph{Step 2: the empirical statistic is $F$ evaluated at the empirical
+Grams.} Let $P = u u^\top \in \mathcal P_s$ be rank one with
+$u \in \operatorname{Im}(\Pi)$, $\norm{u}_2 = 1$. Then
+$x_0^\top P y = (u^\top \tilde x_0)(u^\top \tilde y)$ and similarly for
+$D, E$, so with $w = ((u^\top \tilde x_0), (u^\top \tilde y))^\top /
+\sqrt n$,
+\begin{equation}\label{eq:appcont-emp-ellipse}
+        \hat\rho(u u^\top)
+        =
+        \frac{(\hat\Sigma_n)_{12} - w_1 w_2}
+        {\sqrt{ \left( (\hat\Sigma_n)_{11} - w_1^2 \right)
+        \left( (\hat\Sigma_n)_{22} - w_2^2 \right)}} .
+\end{equation}
+As $u$ ranges over the unit sphere of $\operatorname{Im}(\Pi)$, whose
+dimension is $p \ge 3$ eventually, $w$ ranges over the whole closed
+ellipsoid $\{ \hat\Sigma_{\kappa,n}^{1/2} \nu : \norm{\nu}_2 \le 1 \}$:
+indeed $w = \hat\Sigma_{\kappa,n}^{1/2} \nu$ with
+$\norm{\nu}_2 \le 1$ for every such $u$, and conversely any
+$\norm{\nu}_2 \le 1$ is realized by a unit $u$ obtained by adding to a
+preimage a component in the kernel of the map. Hence, by
+Lemma~\ref{lem:cont-rank-one-t},
+$\hat\rho^\star = F(\hat\Sigma_n, \hat\Sigma_{\kappa,n})$.
+
+\emph{Step 3: the hypotheses of Lemma~\ref{lem:cont-rank-one-t}.} The
+denominator floors hold with probability tending to one by
+Lemmas~\ref{lem:cont-floor} and~\ref{lem:cont-gram}, the second floor
+converging to $(1-\kappa) \sigma_\zeta^2 > 0$. For the upper bound on
+$\hat\rho^\star$: for $P \in \mathcal P_s$ the Gram matrix
+$\hat G_P$ of $((I-P)x_0, (I-P)y)/\sqrt n$ satisfies
+$\hat\Sigma_n \succeq \hat G_P \succeq \hat\Sigma_n -
+\hat\Sigma_{\kappa,n} \succeq 0$, because the removed matrix is the Gram
+of $(P x_0, P y)/\sqrt n$ and is dominated by that of
+$(\Pi x_0, \Pi y)/\sqrt n$ by Lemma~\ref{lem:cont-floor}. Monotonicity of
+the determinant on the positive semidefinite order then gives
+\begin{equation}\label{eq:appcont-uniform-gap}
+        1 - \hat\rho(P)^2
+        =
+        \frac{\det \hat G_P}{(\hat G_P)_{11} (\hat G_P)_{22}}
+        \;\ge\;
+        \frac{\det ( \hat\Sigma_n - \hat\Sigma_{\kappa,n} )}
+        {(\hat\Sigma_n)_{11} (\hat\Sigma_n)_{22}}
+        \;\toP\;
+        \frac{\det(\Sigma - \Sigma_\kappa)}{\sigma_0^2\, \sigma_y^2}
+        \;>\; 0,
+\end{equation}
+uniformly in $P$, so $\hat\rho^\star$ is bounded away from $1$. For the
+lower bound, the eigenvalue computation of
+Lemma~\ref{lem:cont-rank-one} applied to the pair
+$(\tilde x_0, -\tilde y)$ shows that some rank-one $P \in \mathcal P_s$
+achieves $-x_0^\top P y = \tfrac12 ( \norm{\tilde x_0} \norm{\tilde y}
+- \tilde x_0^\top \tilde y )$, so
+$\hat\rho^\star \ge \left[ (\hat\Sigma_n)_{12}
++ \tfrac12 ( \sqrt{ (\hat\Sigma_{\kappa,n})_{11}
+(\hat\Sigma_{\kappa,n})_{22} } - (\hat\Sigma_{\kappa,n})_{12} ) \right]
+/ (\hat\Sigma_n)_{11}^{1/2} (\hat\Sigma_n)_{22}^{1/2}$, whose limit is a
+positive multiple of $\phi(0)$, positive by Step 6 below. Hence
+$0 < \hat\rho^\star < 1$ with probability tending to one.
+
+\emph{Step 4: passage to the limit.} By Lemma~\ref{lem:cont-gram},
+$(\hat\Sigma_n, \hat\Sigma_{\kappa,n}) \toP (\Sigma, \Sigma_\kappa)$
+with $\Sigma_\kappa \succeq 0$ and, since $\sigma_\varepsilon^2 > 0$,
+$\Sigma - \Sigma_\kappa \succ 0$ by \eqref{eq:appcont-outside}. Step 1
+and the continuous mapping theorem give
+$\hat\rho^\star \toP F(\Sigma, \Sigma_\kappa) = \tau^\star$; the
+identification of \eqref{eq:appcont-F} with \eqref{eq:cont-tstat-limit}
+is the observation that the maximum over the closed ellipsoid is
+attained on its boundary, which is Lemma~\ref{lem:cont-rank-one-t}
+applied to the limiting pair. Finally
+\eqref{eq:appcont-dof-sandwich} gives
+\begin{equation*}
+        \sqrt{\frac{n-2}{n}}\; \hat\rho^\star
+        \;\le\;
+        \frac{\hat t_{0,s}^\star}{\sqrt n}
+        \;\le\;
+        \sqrt{\frac{n-1}{n}}\; \hat\rho^\star,
+\end{equation*}
+so $\hat t_{0,s}^\star / \sqrt n \toP \tau^\star$, for every $s \ge 1$
+and with no other dependence on $s$.
+
+\emph{Step 5: $\tau^\star < 1$.} For $w = \Sigma_\kappa^{1/2} u$ with
+$\norm{u}_2 \le 1$ one has $w^\top \Sigma^{-1} w \le
+u^\top \Sigma_\kappa^{1/2} \Sigma^{-1} \Sigma_\kappa^{1/2} u < 1$, since
+$\Sigma_\kappa \prec \Sigma$ implies
+$\Sigma_\kappa^{1/2}\Sigma^{-1}\Sigma_\kappa^{1/2} \prec I$. Writing
+$G = \Sigma - w w^\top$ for the residual matrix, the matrix determinant
+lemma gives $\det G = \det \Sigma\, (1 - w^\top \Sigma^{-1} w) > 0$,
+while the maximand of \eqref{eq:appcont-F} is
+$G_{12} / \sqrt{G_{11} G_{22}}$; hence
+$1 - \left( G_{12}/\sqrt{G_{11}G_{22}} \right)^2
+= \det G / (G_{11} G_{22}) > 0$ uniformly over the compact constraint
+set, so $\tau^\star < 1$.
+
+\emph{Step 6: the sign of $\tau^\star$.} The maximum of
+$-w_1 w_2 $ over the ellipse is $\tfrac12(\sqrt{A A_y} - A_{0y})$ by the
+eigenvalue computation of Lemma~\ref{lem:cont-rank-one}, so
+$\tau^\star > 0$ if and only if
+$\sigma_{0y} + \tfrac12 (\sqrt{A A_y} - A_{0y}) > 0$, which is
+$\phi(0) > 0$ for the function $\phi$ of \eqref{eq:appcont-phi-lim}; as
+$\phi$ is strictly decreasing with unique zero $t^\star$, this is
+equivalent to $t^\star > 0$, i.e.\ to positivity of the limit
+\eqref{eq:continuous-limit}.}
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:cont-fisher}]
+\tc{If $d = 0$ and $\beta_{-0} = 0$ then
+$A = \kappa \sigma_0^2$, $A_{0y} = \kappa \beta_0 \sigma_0^2
+= \kappa \sigma_{0y}$ and
+$A_y = \kappa(\beta_0^2 \sigma_0^2 + \sigma_\varepsilon^2)
+= \kappa \sigma_y^2$, i.e.\ $\Sigma_\kappa = \kappa \Sigma$. The
+maximand of \eqref{eq:cont-tstat-limit} is a correlation, hence
+invariant under $(x_0, y) \mapsto (a x_0, b y)$ for $a, b > 0$, so one
+may take $\Sigma = R := \left(\begin{smallmatrix} 1 & \rho_0 \\ \rho_0 & 1
+\end{smallmatrix}\right)$. With $w = \sqrt\kappa\, R^{1/2} u$ the residual
+matrix is
+\begin{equation}\label{eq:appcont-fisherG}
+        G(u) = R - w w^\top
+        = R^{1/2} \left( I - \kappa\, u u^\top \right) R^{1/2},
+        \qquad
+        \det G = \det R \cdot (1 - \kappa)
+        \quad (\norm{u}_2 = 1),
+\end{equation}
+a constant. Therefore
+$\left( G_{12} / \sqrt{G_{11}G_{22}} \right)^2
+= 1 - \det G / (G_{11} G_{22})$ is increasing in $G_{11} G_{22}$, and
+maximizing the (signed) ratio amounts to maximizing $G_{11} G_{22}$ over
+$\{ G_{12} > 0 \}$. Set $v = R^{1/2} u$, so that
+$G_{11} = 1 - \kappa v_1^2$, $G_{22} = 1 - \kappa v_2^2$,
+$G_{12} = \rho_0 - \kappa v_1 v_2$; with
+$u = (\cos\varphi, \sin\varphi)$ and the eigenvectors
+$(1, \pm 1)/\sqrt 2$ of $R$,
+\begin{equation*}
+        v_1^2 + v_2^2 = (1+\rho_0) z + (1-\rho_0)(1-z),
+        \qquad
+        v_1 v_2 = \tfrac12 \left[ (1+\rho_0) z - (1-\rho_0)(1-z) \right],
+        \qquad z = \cos^2 \varphi .
+\end{equation*}
+Then $G_{11} G_{22} = 1 - \kappa (v_1^2 + v_2^2) + \kappa^2 (v_1v_2)^2$
+is a convex quadratic in $z$ and $G_{12}$ is affine decreasing in $z$, so
+$\{ G_{12} \ge 0 \}$ is an interval $[0, z_0]$ and the maximum of
+$G_{11}G_{22}$ on it is at an endpoint; the endpoint $z_0$ gives ratio
+$0$, so the maximum is at $z = 0$, i.e.\ $u \propto (1,-1)$. There
+$v_1 v_2 = -\tfrac12 (1-\rho_0)$ and $v_1^2 + v_2^2 = 1 - \rho_0$, so
+\begin{equation*}
+        \tau^\star
+        =
+        \frac{\rho_0 + \tfrac{\kappa}{2}(1-\rho_0)}
+        {1 - \tfrac{\kappa}{2}(1-\rho_0)},
+        \qquad\text{whence}\qquad
+        \frac{1 + \tau^\star}{1 - \tau^\star}
+        =
+        \frac{1 + \rho_0}{(1 - \rho_0)(1 - \kappa)},
+\end{equation*}
+which is \eqref{eq:cont-fisher}. Under $\beta_0 = 0$, $\rho_0 = 0$ and
+$\tau^\star = \kappa/(2-\kappa)$. For the two-sided statement, the
+alternative endpoint $z = 1$ gives
+$\operatorname{artanh}$-value $\operatorname{artanh}\rho_0
++ \tfrac12 \log(1-\kappa)$, of larger absolute value exactly when
+$\rho_0 < 0$; combining the two branches as in
+Remark~\ref{rem:appcont-others} replaces $\rho_0$ by $|\rho_0|$.}
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:cont-tstat-null}]
+\tc{If $d = 0$ and $\beta_0 = 0$ then $\sigma_{0y} = 0$ and
+$A_{0y} = 0$, so both matrices are diagonal:
+$\Sigma = \diag(\sigma_0^2, \sigma_w^2)$ and
+$\Sigma_\kappa = \diag(A, A_y)$ with $A = \kappa \sigma_0^2$. Writing
+$w = (\sqrt A \cos\varphi, \sqrt{A_y} \sin\varphi)$ and
+$z = \cos^2\varphi$, and taking the branch
+$\cos\varphi \sin\varphi < 0$ that makes the numerator positive,
+\begin{equation}\label{eq:appcont-nullratio}
+        \tau^{\star 2}
+        =
+        \max_{z \in (0,1)}
+        \frac{a\, c\; z (1-z)}{(1 - a z)\left( 1 - c(1-z) \right)},
+        \qquad
+        a = \frac{A}{\sigma_0^2} = \kappa,
+        \qquad
+        c = \frac{A_y}{\sigma_w^2} .
+\end{equation}
+Substituting $z = 1/(1+\tau)$, $\tau > 0$, and writing
+$\bar a = 1 - a$, $\bar c = 1 - c$, the reciprocal of the maximand is
+\begin{equation*}
+        \frac{(1 - az)(1 - c(1-z))}{a c\, z(1-z)}
+        =
+        \frac{1}{ac} \cdot \frac{(\bar a + \tau)(1 + \bar c \tau)}{\tau}
+        =
+        \frac{1}{ac}
+        \left( \frac{\bar a}{\tau} + \bar c\, \tau
+        + 1 + \bar a \bar c \right),
+\end{equation*}
+minimized over $\tau > 0$ at $\tau = \sqrt{\bar a / \bar c}$ by the
+arithmetic--geometric mean inequality, with minimum
+$\left( 1 + \sqrt{\bar a \bar c} \right)^2 / (ac)$. Inverting gives
+\eqref{eq:cont-tstat-null}.}
+\end{proof}
+
+% Verification record: supporting/continuous-geometry-certification.md
+% (Monte Carlo at n up to 4000 across Gaussian and Rademacher designs,
+% C = I, AR(1) and spread-diagonal, kappa in [0.2, 0.7], experimental and
+% confounded; symbolic checks of the quadratic root, of the Fisher-z law
+% and of the null closed form; scripts under supporting/scripts/).

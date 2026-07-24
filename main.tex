@@ -18,7 +18,8 @@
 \showcommentsfalse
 % Text to check (under review): wrap in \tc{...} ("to check"). Remove the
 % wrapper (or redefine \tc to {#1}) once the content is accepted.
-\definecolor{tccolor}{rgb}{0.4,0.5,0.95}
+%\definecolor{tccolor}{rgb}{0.4,0.5,0.95}
+\definecolor{tccolor}{rgb}{0,0,0}
 \newcommand{\tc}[1]{{\color{tccolor}#1}}
 % Reviewer comments (Nic): footnote, coloured; hidden when \showcommentsfalse.
 \definecolor{niccolor}{rgb}{0.75,0.1,0.1}
@@ -77,6 +78,8 @@
 \input{sections/plugin_approximation}
 \input{sections/preprocessing_continuous}
 \input{sections/discussion}
+
+\input{sections/appendix}
 
 \bibliography{bibliography}
 

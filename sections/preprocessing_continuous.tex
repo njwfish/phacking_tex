@@ -12,12 +12,75 @@
 % - allow variable representation / preprocessing choices
 % - this changes the available search geometry
 
-\subsection{Continuous Relaxation}
+\tc{The searches of Sections~\ref{sec:bounds} and~\ref{sec:plugin} select
+among the observed controls: the analyst reports $\hat\beta_{0,S}$ for a
+subset $S$ of the columns of $X_{-0}$, and the result is stated in the
+basis those columns happen to provide. Two limitations follow, both raised
+in the introduction. The bounds are basis-dependent --- a linear change of
+controls $X_{-0} \mapsto X_{-0} T$, the most elementary pre-processing,
+moves them --- and they are proved below the proportional regime
+$p \asymp n$ that governs high-dimensional practice. This section enlarges
+the admissible degree of freedom from coordinate selection to arbitrary
+linear pre-processing: the analyst may residualize against any rank-$\le s$
+subspace of the control span, not only against the span of $s$ named
+columns. This is the basis search of \eqref{eq:relaxed-search},
+\begin{equation*}
+        \hat\beta_{0,s}^\star
+        =
+        \sup_{\substack{\operatorname{Im}(P) \subseteq \operatorname{span}(X_{-0})\\
+        \operatorname{rank}(P) \le s}}
+        \hat\beta_0^{(P)},
+        \qquad
+        \hat\beta_0^{(P)} = \frac{x_0^\top (I - P)\, y}{x_0^\top (I - P)\, x_0},
+\end{equation*}
+which dominates coordinate search pathwise,
+$\sup_{|S| = s} \hat\beta_{0,S} \le \hat\beta_{0,s}^\star$, since
+$P = P_S$ is admissible. It is not a literal model of routine robustness
+checks; it is the benchmark for the largest displacement any linear
+representation search can produce, and --- unlike coordinate search --- it
+admits a sharp limit in the proportional regime.}
 
-% Note item:
-% - continuous/projector relaxation
-% - low-rank representation search
-% - benchmark for general preprocessing degrees of freedom
+% AUTHOR NOTE (design assumption): stated as a concrete whitened linear
+% design (independent coordinates) rather than an abstract "quadratic forms
+% self-average" hypothesis. It is a structural, not a tail, strengthening of
+% Assumption 1(i), so it does not create a Gaussian-vs-subgaussian tier; the
+% limit depends only on covariance invariants (universality), so the
+% independent-coordinate model is the vehicle, not the restriction. Swap for
+% a self-averaging hypothesis if preferred.
+% AUTHOR NOTE (kappa clash): bare kappa = lim p/n here (matching intro
+% eq:relaxed-rmt), while Section 2 uses kappa_s(C) for the restricted
+% condition number. Subscript disambiguates and the intro already lives with
+% it; flag if a rename (e.g. gamma = lim p/n) is wanted.
+
+\tc{In the proportional regime the design of Assumption~\ref{ass:dgp}(i) is
+taken in whitened form, the structure under which the projected quadratic
+forms entering the searched ratio self-average to deterministic limits.}
+
+\begin{assumption}[Continuous-search regime]\label{ass:continuous}
+\tc{The controls follow the linear model $X_{-0} = Z\, C^{1/2}$, where
+$Z \in \R^{n \times p}$ has i.i.d.\ entries that are centered, of unit
+variance, and $K_\psi$-subgaussian, and the treatment decomposes as
+\begin{equation*}
+        x_0 = X_{-0}\, C^{-1} d + u,
+\end{equation*}
+with $u \in \R^n$ having i.i.d.\ centered $K_\psi$-subgaussian entries of
+variance $\sigma_0^2 - d^\top C^{-1} d$, independent of $Z$ and of
+$\varepsilon$. The dimensions grow proportionally,
+$p / n \to \kappa \in (0,1)$, and the search budget satisfies
+$1 \le s \le p$, fixed or growing with $n$ at any rate.}
+\end{assumption}
+
+\tc{The whitened form specializes the subgaussian design of
+Assumption~\ref{ass:dgp}(i): it preserves the row second moments
+($\Cov(X_{-0}) = C$, $\Var(x_0) = \sigma_0^2$,
+$\Cov(x_0, X_{-0}) = d$) while adding the coordinate independence under
+which the searched quadratic forms concentrate. It is the only place
+independence across covariates is used, and the conclusion below depends on
+$(C, \beta_{-0}, d)$ through three scalar invariants alone
+(Remark~\ref{rem:cont-invariants}), so the whitened model is the vehicle
+rather than a restriction. The strict inequality $\kappa < 1$ keeps
+$\operatorname{span}(X_{-0})$ a proper subspace of $\R^n$, so the searched
+denominator stays bounded away from zero.}
 
 \subsection{Scalar Limit}
 
@@ -27,9 +90,356 @@
 % - applies to the relaxed continuous case
 % - use as benchmark for both experimental and confounded geometries
 
-\subsection{Theory Takeaway}
+\begin{theorem}[Basis search under proportional asymptotics]
+\label{thm:continuous}
+\tc{Let Assumptions~\ref{ass:dgp}(i) and~\ref{ass:continuous} hold,
+together with the non-degenerate-overlap condition of
+Assumption~\ref{ass:observational}(i),
+$d^\top C^{-1} d \le (1 - c_{\mathrm{ov}})\, \sigma_0^2$. Then, as
+$n, p \to \infty$ with $p / n \to \kappa$, for every admissible budget
+$1 \le s \le p$,
+\begin{equation}\label{eq:continuous-limit}
+        \hat\beta_{0,s}^\star
+        \;\toP\;
+        \beta_0 + q
+        + \underbrace{\sqrt{\frac{1}
+        {(1-\kappa)\!\left(1 - \frac{d^\top C^{-1} d}{\sigma_0^2}\right)}
+        - 1}}_{\text{variance inflation}}\;
+        \underbrace{\sqrt{\frac{\beta_{-0}^\top C \beta_{-0}
+        + \kappa\, \sigma_\varepsilon^2}{4\, \sigma_0^2} - q^2}}_{%
+        \text{exploitable outcome energy}},
+        \qquad
+        q = \frac{d^\top \beta_{-0}}{2\, \sigma_0^2},
+\end{equation}
+a limit that does not depend on the search budget $s$. The energy radical
+is nonnegative: by Cauchy--Schwarz and the overlap condition,
+$(d^\top \beta_{-0})^2 \le (d^\top C^{-1} d)(\beta_{-0}^\top C \beta_{-0})
+< \sigma_0^2\, \beta_{-0}^\top C \beta_{-0}
+\le \sigma_0^2 (\beta_{-0}^\top C \beta_{-0} + \kappa\, \sigma_\varepsilon^2)$.}
+\end{theorem}
+
+\begin{remark}[The optimum is a single linear combination]
+\label{rem:cont-rank-one}
+\tc{Write $\Pi_{-0}$ for the orthogonal projector onto
+$\operatorname{span}(X_{-0})$ and, at a candidate level $t$,
+$\tilde x_0 = \Pi_{-0} x_0$, $\tilde c_t = \Pi_{-0}(y - t x_0)$. For every
+$s \ge 1$,
+\begin{equation}\label{eq:cont-rank-one}
+        \sup_{\substack{\operatorname{Im}(P) \subseteq \operatorname{span}(X_{-0})\\
+        \operatorname{rank}(P) \le s}}
+        x_0^\top (I - P)(y - t x_0)
+        =
+        x_0^\top (y - t x_0)
+        + \tfrac12\!\left(\norm{\tilde x_0}\, \norm{\tilde c_t}
+        - \tilde x_0^\top \tilde c_t\right),
+\end{equation}
+the maximizer being the rank-one projector onto a single direction of
+$\operatorname{span}(\tilde x_0, \tilde c_t)$: the symmetrized rank-one form
+$\tfrac12(\tilde x_0 \tilde c_t^\top + \tilde c_t \tilde x_0^\top)$ has
+exactly one negative eigenvalue, so removing more than one direction buys
+nothing. Since $\hat\beta_{0,s}^\star$ is the largest zero-crossing of
+\eqref{eq:cont-rank-one} in $t$, its budget-independence in
+\eqref{eq:continuous-limit} is not asymptotic slack: a single, optimally
+chosen linear combination of the controls already extracts everything that
+arbitrarily rich rank-$s$ pre-processing could. Where coordinate search
+pays $s \log(ep/s)/n$ per unit of budget
+(Theorem~\ref{thm:experimental-matching}), basis search has no budget
+currency --- the active degree of freedom is the freedom to form linear
+combinations, not how many are formed.}
+\end{remark}
+
+\begin{remark}[Two-sided search]\label{rem:cont-twosided}
+\tc{Searching $\{\,|\hat\beta_0^{(P)}|\,\}$ replaces the single negative
+eigenvalue of \eqref{eq:cont-rank-one} by the extremal eigenvalue of either
+sign, so the same rank-one reduction applies and the limit is the
+two-sided analogue of \eqref{eq:continuous-limit}, with the deterministic
+shift $q$ entering symmetrically: the method covers the absolute searched
+coefficient at no extra cost, as claimed in the introduction.}
+\end{remark}
+
+\begin{remark}[A basis-free benchmark; three invariants]
+\label{rem:cont-invariants}
+\tc{The estimator $\hat\beta_{0,s}^\star$ depends on the controls only
+through $\operatorname{span}(X_{-0})$: any invertible reparametrization
+$X_{-0} \mapsto X_{-0} T$ leaves the projector class, and hence the
+supremum, unchanged. The limit \eqref{eq:continuous-limit} is
+correspondingly a function of the aspect ratio $\kappa$ and three
+population invariants only --- the overlap $d^\top C^{-1} d$, the explained
+outcome energy $\beta_{-0}^\top C \beta_{-0}$, and the alignment
+$d^\top \beta_{-0}$ --- with the individual geometry of $C$ washed out.
+This is the sense in which the continuous relaxation is the basis-free
+benchmark: the coordinate results of Sections~\ref{sec:bounds}
+and~\ref{sec:plugin} are stated in the observed basis of $X_{-0}$ and are
+not invariant to linear pre-processing, whereas \eqref{eq:continuous-limit}
+measures exactly the researcher discretion that survives it. The relevant
+degree of freedom is the dimension of the representation class, not the
+number of named controls.}
+\end{remark}
+
+\begin{remark}[The price of dimension, and the experimental collapse]
+\label{rem:cont-dimension}
+\tc{Set $A = d^\top C^{-1} d + \kappa(\sigma_0^2 - d^\top C^{-1} d)$, the
+limiting treatment energy lying inside the control span,
+$A = \lim n^{-1}\, x_0^\top \Pi_{-0} x_0$. The variance-inflation factor is
+then $\sqrt{A / (\sigma_0^2 - A)}$, the ratio of in-span to out-of-span
+treatment energy, and dimension enters \eqref{eq:continuous-limit} only
+twice: through this ratio and through the harvestable noise
+$\kappa\, \sigma_\varepsilon^2$, both ordinary high-dimensional prices
+rather than a search-specific penalty. Two readings follow. Under
+randomization ($d = 0$) the overlap and $q$ vanish, the factor is
+$\sqrt{\kappa/(1-\kappa)}$, and the displacement collapses to
+\begin{equation*}
+        \sqrt{\frac{\kappa}{1-\kappa}}\;
+        \frac{\sqrt{\beta_{-0}^\top C \beta_{-0}
+        + \kappa\, \sigma_\varepsilon^2}}{2\, \sigma_0},
+\end{equation*}
+centered at $\beta_0$: search inflates the spread around the truth without
+shifting it, and vanishes like $\sqrt\kappa$ as $\kappa \to 0$, so basis
+search bites only in genuinely high dimensions. Under confounding the
+center sits at $\beta_0 + q$, and since the no-control estimator satisfies
+$\hat\beta_{0,\emptyset} \toP \beta_0 + d^\top \beta_{-0}/\sigma_0^2
+= \beta_0 + 2q$, the deterministic part of the basis-search displacement is
+exactly half the unadjusted omitted-variable bias, with the searched
+inflation added on top. As $\kappa \uparrow 1$ or
+$d^\top C^{-1} d \uparrow \sigma_0^2$ the factor diverges: controls
+spanning the sample and near-perfect confounding are the degenerate
+boundaries the regime conditions hold away from.}
+\end{remark}
+
+\begin{remark}[Envelope over coordinate search]\label{rem:cont-envelope}
+\tc{The pathwise domination $\sup_{|S| = s} \hat\beta_{0,S} \le
+\hat\beta_{0,s}^\star$ makes \eqref{eq:continuous-limit} an upper envelope
+for the coordinate displacement of Sections~\ref{sec:bounds}
+and~\ref{sec:plugin}. The two are calibrated in different regimes, however
+--- coordinate search at the critical scale $n \asymp s \log(ep/s)$, basis
+search at $p \asymp n$ --- so the inequality is a qualitative statement of
+how much a richer representation class can add, not a sharp numerical
+comparison at a shared scaling. The striking contrast is structural: the
+coordinate displacement grows with the budget through $s \log(ep/s)$, while
+its continuous relaxation does not grow with $s$ at all.}
+\end{remark}
+
+\begin{remark}[The overlap obstruction, resolved]\label{rem:cont-overlap}
+\tc{Under confounding the factor depends on $C$, $d$ through the overlap
+$d^\top C^{-1} d$ --- the same residual-treatment-variance quantity that
+Remark~\ref{rem:obs-obstruction} flags as the obstruction to a universal
+matching lower bound in the discrete observational case. Enlarging the
+search to the full linear class removes the combinatorial structure of the
+menu and leaves this overlap as the sole channel through which the
+treatment--control geometry enters, now in the closed form
+$\sqrt{A/(\sigma_0^2 - A)}$ of Remark~\ref{rem:cont-dimension}.}
+\end{remark}
+
+\subsection{The Searched t-Statistic}
 
 % Note item:
-% - dimension / representation is the relevant degree of freedom
-% - takeaway should cover both experimental and confounded cases
-% - clarify when controls matter and when the representation class dominates
+% - studentization changes the variational problem itself (rank-0/1/2, not
+%   the rank-1 of the coefficient); no one-line transfer as in Section 2.4
+% - own proportional-regime limit; natural next benchmark
+% AUTHOR NOTE: introduces the continuous t-stat notation
+% (\hat t^{(P)}_0, \hat t^\star_{0,s}), the projector analogue of the
+% coordinate \hat t_{0,S} of eq:tstat-def. Flag if the intro should own it.
+
+\tc{Searching the studentized statistic over the same projector class,
+\begin{equation}\label{eq:cont-tstat}
+        \hat t_{0,s}^\star
+        =
+        \sup_{\substack{\operatorname{Im}(P) \subseteq \operatorname{span}(X_{-0})\\
+        \operatorname{rank}(P) \le s}}
+        \hat t_0^{(P)},
+        \qquad
+        \hat t_0^{(P)}
+        =
+        \sqrt{n - \operatorname{rank}(P) - 1}\;
+        \frac{x_0^\top (I - P)\, y}
+        {\sqrt{x_0^\top (I - P)\, x_0}\,\sqrt{y^\top (I - P)\, y}},
+\end{equation}
+is not reducible to the searched coefficient. In the coordinate model the
+searched $t$-statistic followed from the searched coefficient by the
+one-line comparison of Section~\ref{sec:tstat}, with no structure of $C$
+entering the passage. Here that reduction fails at its source: studentizing
+adds the residual outcome energy $y^\top (I - P)\, y$ to the denominator, so
+the projector acts on three quadratic forms rather than two, and the
+optimizer trades the numerator against both denominators instead of
+maximizing a single ratio. The searched $t$-statistic is thus a genuinely
+distinct object, with its own proportional-regime limit rather than a
+$\sqrt n$-rescaling of \eqref{eq:continuous-limit}. What does survive the
+passage is the mechanism: the optimum is again attained at a rank-one
+projector, so one manufactured control still carries the entire
+displacement (Remark~\ref{rem:cont-tstat-rankone}).}
+
+\tc{Two population matrices carry the limit --- the covariance of the
+reported pair, and the part of it the control span can reach:
+\begin{equation}\label{eq:cont-gram}
+        \Sigma
+        =
+        \begin{pmatrix}
+        \sigma_0^2 & \sigma_{0y} \\ \sigma_{0y} & \sigma_y^2
+        \end{pmatrix},
+        \qquad
+        \Sigma_\kappa
+        =
+        \begin{pmatrix}
+        A & A_{0y} \\ A_{0y} & A_y
+        \end{pmatrix},
+        \qquad
+        \sigma_{0y} = \Cov(x_0^{(i)}, y^{(i)})
+        = \beta_0 \sigma_0^2 + d^\top \beta_{-0},
+\end{equation}
+with $\sigma_y^2$ the outcome variance \eqref{eq:sigma-y}, $A$ the
+in-span treatment energy of Remark~\ref{rem:cont-dimension}, and
+\begin{equation}\label{eq:cont-gram-span}
+        A = d^\top C^{-1} d + \kappa\,(\sigma_0^2 - d^\top C^{-1} d),
+        \quad
+        A_{0y} = \beta_0 A + d^\top \beta_{-0},
+        \quad
+        A_y = \beta_0^2 A + 2 \beta_0\, d^\top \beta_{-0}
+        + \beta_{-0}^\top C \beta_{-0} + \kappa\, \sigma_\varepsilon^2 .
+\end{equation}
+Here $\Sigma$ is the population covariance of $(x_0^{(i)}, y^{(i)})$ and
+$\Sigma_\kappa$ the limit of $n^{-1}$ times the Gram matrix of the
+projected pair $(\Pi_{-0} x_0, \Pi_{-0} y)$; the difference
+$\Sigma - \Sigma_\kappa
+= (1-\kappa)\, \Cov\big( ( u^{(i)},\, \beta_0 u^{(i)}
++ \varepsilon^{(i)} ) \big)$, the covariance of the parts of the pair
+lying outside the control span, is the geometry search cannot touch, and
+it is positive definite exactly when the outcome noise is
+non-degenerate.}
+
+\begin{theorem}[Studentized basis search]\label{thm:continuous-tstat}
+\tc{Let the assumptions of Theorem~\ref{thm:continuous} hold, with in
+addition $\sigma_\varepsilon^2 > 0$. Then, as $n, p \to \infty$ with
+$p / n \to \kappa$, for every admissible budget $1 \le s \le p$,
+\begin{equation}\label{eq:cont-tstat-limit}
+        \frac{\hat t_{0,s}^\star}{\sqrt n}
+        \;\toP\;
+        \tau^\star
+        :=
+        \max_{\norm{u}_2 = 1}\;
+        \frac{\sigma_{0y} - \alpha_u \beta_u}
+        {\sqrt{\left(\sigma_0^2 - \alpha_u^2\right)
+        \left(\sigma_y^2 - \beta_u^2\right)}},
+        \qquad
+        \begin{pmatrix} \alpha_u \\ \beta_u \end{pmatrix}
+        = \Sigma_\kappa^{1/2}\, u,
+\end{equation}
+a limit that does not depend on the search budget $s$ and satisfies
+$\tau^\star < 1$. It is positive precisely when the limit
+\eqref{eq:continuous-limit} of the searched coefficient is positive, and
+whenever it is, the maximum in \eqref{eq:cont-tstat-limit} is attained,
+and the supremum defining $\hat t_{0,s}^\star$ is attained at a rank-one
+projector.}
+\end{theorem}
+
+\begin{remark}[One manufactured control, again]
+\label{rem:cont-tstat-rankone}
+\tc{The pair $(\alpha_u, \beta_u)$ is the covariance of the treatment and
+of the outcome with a single unit-variance control $z$ synthesized from
+the control span, and the ellipse
+$\{\Sigma_\kappa^{1/2} u : \norm{u}_2 = 1\}$ is exactly the set of
+covariance pairs such a $z$ can realize; the ratio in
+\eqref{eq:cont-tstat-limit} is then the partial correlation of $x_0$ and
+$y$ given $z$. The searched $t$-statistic is therefore $\sqrt n$ times
+the largest partial correlation obtainable by conditioning on one
+manufactured control --- the studentized form of the budget-independence
+of Remark~\ref{rem:cont-rank-one}, and the reason
+\eqref{eq:cont-tstat-limit} is again free of $s$. The mechanism is
+different, though: for the coefficient the rank-one optimum came from a
+symmetrized rank-one form carrying a single negative eigenvalue, whereas
+here it comes from the same count applied to the objective linearized at
+the optimal studentizing weight (Appendix~\ref{app:continuous}), the
+inertia being governed by $\tau^\star < 1$.}
+\end{remark}
+
+\begin{corollary}[Irrelevant controls: a Fisher-$z$ budget]
+\label{cor:cont-fisher}
+\tc{Suppose the controls carry neither confounding nor outcome signal,
+$d = 0$ and $\beta_{-0} = 0$, so that $\Sigma_\kappa = \kappa\, \Sigma$.
+Then, with $\rho_0 = \sigma_{0y} / (\sigma_0 \sigma_y)$ the population
+correlation of treatment and outcome,
+\begin{equation}\label{eq:cont-fisher}
+        \operatorname{artanh} \tau^\star
+        =
+        \operatorname{artanh} \rho_0
+        \;+\;
+        \tfrac12 \log \frac{1}{1 - \kappa},
+        \qquad\text{equivalently}\qquad
+        \tau^\star
+        =
+        \frac{\rho_0 + \tfrac{\kappa}{2}(1 - \rho_0)}
+        {1 - \tfrac{\kappa}{2}(1 - \rho_0)} .
+\end{equation}
+Since the unsearched statistic satisfies
+$\hat t_{0,\emptyset} / \sqrt n \toP \rho_0$, basis search adds a fixed
+budget $\tfrac12 \log(1-\kappa)^{-1}$ on the Fisher $z$-scale, whatever
+the effect: it does not multiply the evidence, it translates it. Under
+the null $\beta_0 = 0$ this is $\tau^\star = \kappa / (2 - \kappa)$, and
+searching $|\hat t_0^{(P)}|$ replaces $\rho_0$ by $|\rho_0|$
+in \eqref{eq:cont-fisher}.}
+\end{corollary}
+
+\begin{corollary}[The experimental null]\label{cor:cont-tstat-null}
+\tc{Suppose the treatment is randomized and has no effect, $d = 0$ and
+$\beta_0 = 0$, and let
+\begin{equation*}
+        a = \frac{A}{\sigma_0^2} = \kappa,
+        \qquad
+        c = \frac{A_y}{\sigma_y^2}
+        = \frac{\beta_{-0}^\top C \beta_{-0}
+        + \kappa\, \sigma_\varepsilon^2}
+        {\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}
+\end{equation*}
+be the shares of the treatment and outcome energies lying inside the
+control span. Then
+\begin{equation}\label{eq:cont-tstat-null}
+        \tau^\star
+        =
+        \frac{\sqrt{a\,c}}{1 + \sqrt{(1-a)(1-c)}} .
+\end{equation}
+The two shares enter symmetrically, but they are set by different things:
+randomization pins $a$ to the aspect ratio $\kappa$, so dimension alone
+governs what the span takes from the treatment, while $c$ rises with the
+outcome variance the controls explain and reaches one when they explain
+it entirely. That second channel is the sharper one --- as $c \to 1$ the
+limit is $\tau^\star \to \sqrt \kappa$, a square root rather than the
+$\kappa / (2-\kappa)$ returned at $\beta_{-0} = 0$: a well-explained
+outcome makes the null far more hackable at the same dimension.}
+\end{corollary}
+
+\begin{remark}[Significance at the parametric rate]
+\label{rem:cont-tstat-rate}
+\tc{The searched $t$-statistic grows like $\tau^\star \sqrt n$ with
+$\tau^\star$ a fixed constant --- under the null as much as under an
+effect --- so in the proportional regime basis search manufactures
+significance at the parametric rate, at any budget $s \ge 1$. Coordinate
+search reaches the same order only at its critical scaling: combining
+Theorems~\ref{thm:experimental-matching}
+and~\ref{thm:tstat-transfer}
+gives $\sup_{|S| = s} \hat t_{0,S} \asymp s \log(ep/s) / \sqrt n$, which
+attains the order $\sqrt n$ only when $s \log(ep/s) \asymp n$, the very
+boundary of the regime where those theorems hold. The ceiling is
+structural: $\hat t_0^{(P)}$ is $\sqrt{n - \rank(P) - 1}$ times a cosine,
+so no search can exceed $\sqrt{n-1}$, and $\tau^\star$ is the fraction of
+that ceiling the control span concedes --- $1 - \tau^{\star 2}$ is
+governed by the outcome variance sitting outside the span, which is why
+$\sigma_\varepsilon^2 > 0$ is exactly the condition for
+$\tau^\star < 1$.}
+\end{remark}
+
+\begin{remark}[Why the transfer of Section~\ref{sec:tstat} does not
+extend]\label{rem:cont-tstat-notransfer}
+\tc{Theorem~\ref{thm:tstat-transfer} equates the searched $t$-statistic
+with $\sqrt n\, \sigma_0 / \sigma_y$ times the searched coefficient up to
+constants. Those constants cannot be taken uniform in $\kappa$. In the
+pure case $d = 0$, $\beta_{-0} = 0$, $\beta_0 = 0$, Theorem~\ref{thm:continuous}
+gives a searched coefficient of $\kappa \sigma_\varepsilon /
+(2 \sigma_0 \sqrt{1-\kappa}\,)$, so the transfer predicts
+$\kappa / (2\sqrt{1-\kappa}\,)$ for $\hat t_{0,s}^\star/\sqrt n$ where
+the truth is $\kappa/(2-\kappa)$: the two agree to first order in
+$\kappa$ --- the coordinate regime's verdict survives at low dimension
+--- and their ratio $(2-\kappa) / (2\sqrt{1-\kappa}\,)$ diverges as
+$\kappa \uparrow 1$. Studentization caps what the raw coefficient does
+not: the same near-degenerate span that sends the searched coefficient to
+infinity inflates the residual outcome energy in step, and the ratio
+stays below one.}
+\end{remark}
