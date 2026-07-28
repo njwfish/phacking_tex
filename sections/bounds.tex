@@ -26,10 +26,10 @@ into a single scale,
 the order of the restricted isometry constant at sparsity $2s$ of an
 i.i.d.\ subgaussian design
 \citep{candesTao2005decoding,baraniuk2008simple}. Fixing the size of the
-reported specification is a convenience rather
-than a restriction: allowing the analyst to report fewer than $s$
-controls changes nothing in what follows, for the reason given in
-Remark~\ref{rem:menu-convention} at the end of the section.
+reported specification is a convenience rather than a restriction, since
+allowing the analyst to report fewer than $s$ controls changes nothing in
+what follows, the two families of specifications being of the same size
+on the logarithmic scale that governs every bound below.
 
 The following assumptions are shared by the experimental and
 the observational regimes.
@@ -174,13 +174,23 @@ scale of $\beta_0$ itself.
 The bound depends on two terms,
 $\delta_{s,n,p}^2 \sqrt{\beta_{-0}^\top C \beta_{-0}
 + \sigma_\varepsilon^2} / \sigma_0$ and
-$\delta_{s,n,p} \Psi_s / \sigma_0$. When data are abundant and the budget
-$s$ is small, $\delta_{s,n,p}$ is small and the term in $\Psi_s$ is the
-larger of the two. When few controls actually contribute, however,
-$\Psi_s$ stops growing once $s$ passes $\norm{\beta_{-0}}_0$, being
-pinned at $\sqrt{\beta_{-0}^\top C \beta_{-0}}$ from there on while
-$\delta_{s,n,p}$ keeps rising with the budget, so the first term takes
-over.
+$\delta_{s,n,p} \Psi_s / \sigma_0$. Writing
+\begin{equation}\label{eq:explained-share}
+        \theta_s
+        =
+        \frac{\Psi_s^2}
+        {\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}
+\end{equation}
+for the share of the outcome variance, net of the treatment, that the
+best $s$ controls explain in population,
+the second term is the larger exactly when
+$\theta_s \ge \delta_{s,n,p}^2$, which is the case when data are abundant
+and the budget $s$ is small. Since the best $s$ controls explain no more than all of
+them, $\Psi_s^2 \le \beta_{-0}^\top C \beta_{-0}$ at every budget, and
+when few controls actually contribute $\Psi_s$ stops growing once $s$
+passes $\norm{\beta_{-0}}_0$, being pinned at that value from there on
+while $\delta_{s,n,p}$ keeps rising with the budget, so the first term
+takes over.
 
 The theorem is to be compared with the scale of a single fixed
 configuration,
@@ -190,10 +200,12 @@ configuration,
         \frac{\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}
         {n\, \sigma_0^2}.
 \end{equation*}
-The relative displacement is then worth up to $\sqrt{s \log(ep/s)}$,
-which does not decay even at a fixed budget, and while it stays small
-against the true effect size $\beta_0$, this will become problematic for
-hypothesis testing, the subject of Section~\ref{sec:tstat}.
+The relative displacement is then
+$\sqrt{s \log(ep/s)}\, \sqrt{\theta_s + \delta_{s,n,p}^2}$, at most
+$\sqrt{s \log(ep/s)}$, and it does not decay at a fixed budget. So while
+the displacement stays small against the true effect size $\beta_0$, this
+will become problematic for hypothesis testing, the subject of
+Section~\ref{sec:tstat}.
 
 \subsection{The Observational Case}
 \label{sec:observational-extensions}
@@ -201,17 +213,17 @@ hypothesis testing, the subject of Section~\ref{sec:tstat}.
 % Contribution 2, case 2: confounded (d != 0).
 
 Allowing the treatment to correlate with the controls, $d \ne 0$,
-changes the problem in ways that are subtle but decisive, and in general
-the two ends of the bound no longer match, diagonal population covariance
-matrices under additional assumptions being the exception, and the upper
-bound acquires a new factor, the restricted condition number
-$\kappa_s(C)$ of Assumption~\ref{ass:observational}(ii), which equals one
-for diagonal $C$. The searched supremum is now compared with
-$\hat\beta_{0,S^\star}$, where $S^\star$ maximizes the population
-coefficient and depends on population quantities alone, so that
-identifying it is itself a combinatorial problem over the
-$\binom{p}{s}$ configurations, which this work does not take up. The
-lower bound calls for further arguments still.
+changes the problem in one important aspect, the population coefficients
+$\beta^\star_{0,S}$ no longer agreeing across configurations. The searched
+supremum needs now to be compared with $\hat\beta_{0,S^\star}$
+($S^\star \in \arg\max_{|S| = s} \beta^\star_{0,S}$), which splits the
+problem in two, the choice of the most biased specification and what
+search adds on top of it, and without further assumptions identifying
+$S^\star$ may be a combinatorial problem over the $\binom{p}{s}$
+configurations, out of the scope of this work. The upper bound also
+acquires a new factor, the restricted condition number $\kappa_s(C)$ of
+Assumption~\ref{ass:observational}(ii), and the two ends no longer match
+in general.
 
 \begin{assumption}[Observational regime]\label{ass:observational}
 The following two conditions hold.
@@ -237,14 +249,19 @@ $K \ge 1$,
 \end{enumerate}
 \end{assumption}
 
+The restricted condition number constrains the covariance only
+through the small blocks search can reach, and since every such block
+inherits the spectrum of the full matrix,
+$\kappa_s(C) \le \kappa(C) := \lambda_{\max}(C)/\lambda_{\min}(C)$, the
+hypothesis is weaker than the bounded condition number routinely assumed
+in random-matrix work.
+
 \begin{theorem}[Upper bound for observational coordinate search]
 \label{thm:observational-bounds}
-Fix a drift-maximizing configuration
-$S^\star \in \arg\max_{|S| = s} \beta^\star_{0,S}$. Under
+Let $S^\star \in \arg\max_{|S| = s} \beta^\star_{0,S}$. Under
 Assumptions~\ref{ass:dgp} and~\ref{ass:observational}, there are
 constants $C_u, c, C > 0$, depending only on the constants of the
-assumptions, such
-that, with probability at least
+assumptions, such that, with probability at least
 $1 - C e^{-c\, s \log(ep/s)}$,
 \begin{equation}\label{eq:observational-upper}
         \sup_{S \subseteq [p],\, |S| = s} \hat \beta_{0, S}
@@ -257,49 +274,41 @@ $1 - C e^{-c\, s \log(ep/s)}$,
 \end{equation}
 \end{theorem}
 
-The restricted condition number constrains the covariance only
-through the small blocks search can reach, and since every such block
-inherits the spectrum of the full matrix,
-$\kappa_s(C) \le \kappa(C) := \lambda_{\max}(C)/\lambda_{\min}(C)$, the
-hypothesis is strictly weaker than the bounded condition number
-routinely assumed in random-matrix work. Essentially, it prohibits
-near-duplicate controls among the covariates, a single pair at
-correlation $1-\varepsilon$ already forcing
-$\kappa_s(C) \ge (2-\varepsilon)/\varepsilon$ at every budget, since the
-blocks range over $2s$ controls.
+Two features distinguish this statement from
+Theorem~\ref{thm:experimental-matching}, the factor
+$\sqrt{\kappa_s(C)}$, which $d = 0$ removes, and the centering at
+$\hat\beta_{0,S^\star}$, which leaves the stochastic part alone on the
+left.
 
-\tc{The gap between a configuration's population coefficient and the
-effect of interest is the omitted-variable drift
-$b(S) = \beta^\star_{0,S} - \beta_0$, explicitly
+Turning to lower bounds, it is now required to introduce the population
+process $\{ \beta^\star_{0,S} \}_{|S| = s}$, what the searched process
+becomes once the sampling randomness is removed, explicitly defined as
 \begin{equation}\label{eq:drift}
+        \beta^\star_{0,S} = \beta_0 + b(S),
+        \qquad
         b(S)
         =
         \frac{\beta_{-0,S^c}^\top
         \left( d_{S^c} - C_{S^c S}\, C_{SS}^{-1}\, d_S \right)}
-        {\sigma_0^2 - d_S^\top C_{SS}^{-1} d_S}:
+        {\sigma_0^2 - d_S^\top C_{SS}^{-1} d_S}.
 \end{equation}
-the numerator collects the outcome signal on the omitted controls,
-weighted by the part of their confounding that the included controls
-leave unexplained, and the denominator is the treatment variance left
-after adjustment. How much of the upper bound search can realize is
-governed not by the size of the menu but by the entropy of its
-near-maximal part: for $\delta \ge 0$,
+We may define its entropy, the number of configurations whose population
+coefficient lies within a margin $\delta \ge 0$ of the largest, as
 \begin{equation}\label{eq:landscape-entropy}
         \ell_\delta
         =
         \log \left| \left\{ S \subseteq [p] : |S| = s,\;
-        b(S) \ge b(S^\star) - \delta \right\} \right|
+        \beta^\star_{0,S} \ge \beta^\star_{0,S^\star} - \delta
+        \right\} \right| .
 \end{equation}
-counts the configurations whose drift lies within $\delta$ of the
-best.}
 
-\begin{theorem}[Landscape lower bound]
+\begin{theorem}[Lower bound for observational coordinate search]
 \label{thm:observational-lower}
-\tc{Assume, in addition to the hypotheses of
+Assume, in addition to the hypotheses of
 Theorem~\ref{thm:observational-bounds}, Assumption~\ref{ass:lower}.
-There are constants
-$c_\ell, c, C > 0$, depending only on the constants of the assumptions,
-such that, for every $\delta \ge 0$, with probability at least
+There are constants $c_\ell, c, C > 0$, depending only on the constants
+of the assumptions, such that, for every $\delta \ge 0$, with
+probability at least
 $1 - C e^{-c\, \ell_\delta} - C e^{-c\, s \log(ep/s)}$,
 \begin{equation}\label{eq:observational-lower}
         \sup_{S \subseteq [p],\, |S| = s} \hat \beta_{0, S}
@@ -309,82 +318,41 @@ $1 - C e^{-c\, \ell_\delta} - C e^{-c\, s \log(ep/s)}$,
         \frac{\sqrt{\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}}
         {\sigma_0}\, \frac{\ell_\delta}{n}
         \;-\; \delta.
-\end{equation}}
+\end{equation}
 \end{theorem}
 
-\tc{Centering at the estimator of a drift-maximizing configuration removes
-the sampling noise common to all specifications, exactly as
-$\hat\beta_{0,\emptyset}$ does in the experimental case. The
-population-centered reading follows by adding back
-$\hat\beta_{0,S^\star} - \sup_{|S| = s} \beta^\star_{0,S}$, the ordinary
-sampling noise of one configuration, of order $1/\sqrt n$: the searched
-estimate exceeds the largest population coefficient by the fluctuation
-term whenever the latter dominates, and fluctuates around it otherwise.}
-
-\tc{The center of the bounds is itself a searched quantity: where
-randomization pins every configuration at $\beta_0$, confounding gives each
-set its own population value, and the reported estimate concentrates
-around the largest of the $\binom{p}{s}$ population coefficients. This
-center does not shrink with $n$: more data tightens the fluctuation
-interval but leaves $\sup_S \beta^\star_{0,S}$ untouched, so specification
-search in observational designs is a population problem before it is a
-sampling one, and the population side inherits the combinatorial structure
-of the menu: evaluating $\sup_S \beta^\star_{0,S}$ requires optimizing
-over the same $\binom{p}{s}$ sets the analyst searches. This combinatorial
-explosion, absent under randomization, is the substantive difference
-between the two regimes. At $d = 0$ every $\beta^\star_{0,S} = \beta_0$,
-any configuration is drift-maximizing, $\ell_0 = \log\binom{p}{s}
-\ge \tfrac{2}{5}\, s\log(ep/s)$ for $s \le p/2$, and the two theorems
-recover the order of Theorem~\ref{thm:experimental-matching}, with
-$\hat\beta_{0,S^\star}$ in place of $\hat\beta_{0,\emptyset}$ and up to
-the factor $\sqrt{\kappa_s(C)}$ on the upper bound, which the
-experimental case shows to be removable.}
-
-\begin{remark}[The drift landscape]
-\label{rem:obs-obstruction}
-\tc{The lower bound is landscape-adaptive: the entropy $\ell_\delta$ of
-the near-maximal family replaces the entropy $s\log(ep/s)$ of the full
-menu, and $\delta$ trades resolution against richness. On flat
-landscapes --- whenever no single control carries a decisive share of
-the confounding, so that one-control swaps move $b$ by less than the
-fluctuation scale --- taking $\delta$ a small multiple of
-$\sqrt{\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}\,
-s\log(ep/s)/(\sigma_0 n)$ gives $\ell_\delta$ of order
-$s\log(ep/s)$ and the two bounds match up to $\sqrt{\kappa_s(C)}$. Some
-landscape dependence is unavoidable: with $d \ne 0$ and general $C$ the
-family $\{ b(S) \}$ can encode hard combinatorial structure, and when a
-single dominant confounder separates the drifts by more than the
-fluctuation scale, every useful resolution leaves $\ell_\delta$ of
-order one --- search cannot combine a near-extremal drift with a
-near-extremal fluctuation, and how much of the upper bound is attained
-is a property of the landscape, not of the sample. Whether the factor
-$\sqrt{\kappa_s(C)}$ is attained under confounding is open: search now
-moves the residualized treatment itself, gaining access to the
-conditioning of $C$ through the overlap quantities
-$d_S^\top C_{SS}^{-1} d_S$.}
-\end{remark}
-
-% Applied ensemble view:
-% - from an applied perspective, document the point of view of the ensemble
-% - not only one single configuration / preferred specification
-% - understand the structure of the reasonable specifications
-% - show how confounding structure appears across the menu
+Whether upper and lower bounds match, even having ruled out the
+$\kappa_s(C)$ factor by setting $C = I$, is decided by $\ell_\delta$. On
+the one hand, uniform loadings $d_j = \rho\, \sigma_0 / \sqrt p$ and
+$\beta_{-0,j} = b / \sqrt p$ give every configuration the same drift, so
+that $\ell_\delta = \log \binom{p}{s} \ge \tfrac{2}{5}\, s \log(ep/s)$
+(for $s \le p/2$) at every margin and, in the critical regime, both ends
+are of order
+$\delta_{s,n,p}^2 \sqrt{b^2 + \sigma_\varepsilon^2} / \sigma_0$. On the
+other hand, when the supremum of the population process is well
+separated, as when the same design is perturbed to distinct loadings and
+the maximizer, which keeps the $s$ smallest of them, leads its runner-up
+by $\rho\, \sigma_0 (\beta_{-0,(s+1)} - \beta_{-0,(s)})
+/ (\sqrt p\, \sigma_0^2)$, a gap above the fluctuation scale leaves
+$\ell_\delta = 0$. In this latter case the potential for hacking through
+stochastic effects is lower, and more accurately described by the lower
+bound.
 
 \subsection{The t-Statistic and Consequences for Replicability}
 \label{sec:tstat}
 
-\tc{That searching specifications inflates nominal significance is a
-classical observation: regressors selected on the very data used for
-testing bias fit and test statistics upward, and screened noise covariates
-routinely deliver significant $t$- and $F$-statistics
-\citep{rencherPun1980inflation, lovell1983data, freedman1983screening,
-denton1985industry}. The data-snooping corrections of
-\citet{white2000reality} and \citet{romanoWolf2005stepwise} answer by
-calibrating tests on the distribution of the maximal statistic over the
-searched family.}
-
-\tc{The object here is that maximal statistic itself, the
-searched t-statistic
+This section covers the behaviour of the $t$-statistic in a testing
+problem, and through it the extent to which researcher degrees of freedom
+bear on statistical significance. Compared to raw estimation,
+substituting one set of controls for another when focusing on the
+$t$-statistic amounts to testing related hypotheses with different
+estimands, the difficulty being that a reader is shown only the null and
+the alternative that ended up being compared. We work under a global null
+hypothesis, stated below, with an analyst who computes a $t$-statistic
+for each set of controls considered, and study how much that statistic
+may be inflated by the comparison of configurations. Instead of the raw
+coefficient, substituting controls now modifies two quantities, the
+numerator and the residual sum of squares that studentizes it,
 \begin{equation}\label{eq:tstat-def}
         \hat t_{0,S}
         =
@@ -394,100 +362,101 @@ searched t-statistic
         \frac{x_0^\top M_S\, y}
         {\sqrt{x_0^\top M_S\, x_0}\, \sqrt{y^\top M_S\, y}},
         \qquad
-        \hat\sigma_S^2 = \frac{y^\top M_S\, y}{n-s-1}.
+        \hat\sigma_S^2 = \frac{y^\top M_S\, y}{n-s-1},
 \end{equation}
-In the coordinate model, the complexity of searched significance is
-contained in the geometry of the raw coefficient: the searched t-statistic
-follows from the searched suprema of Sections~\ref{sec:sparse-search}
-and~\ref{sec:observational-extensions} by a one-line comparison, and no
-structure of $C$ enters the passage beyond two variance floors. This is a
-statement about coordinate selection only; for the continuous search of
-Section~\ref{sec:continuous-relaxation}, studentization changes the
-variational problem itself and no such reduction holds. The mechanism sits
-in the denominator: relative to $\hat\beta_{0,S}$, half a power of
-$x_0^\top M_S x_0$ is removed and half a power of $y^\top M_S y$ is added.
-The added half-power closes one hacking channel: omitting a contributing
-covariate ($\beta_j \neq 0$) inflates the residual outcome energy
-$y^\top M_S y$ and pushes significance further away, while the denominator
-of the raw coefficient never sees the outcome.}
+where $\hat\sigma_S^2$ is formed from the residuals of $y$ on $X_S$
+alone, so that $\hat t_{0,S} = \sqrt{n-s-1}\, \hat\rho_S$ with
+$\hat\rho_S$ the sample partial correlation of $x_0$ and $y$ given $X_S$,
+the least-squares $t$-statistic being
+$\hat t_{0,S} / \sqrt{1 - \hat\rho_S^2}$, an increasing function of it
+with the same maximizer.
 
-\tc{The comparison requires the two studentizing energies to be
-non-degenerate. The population outcome variance and the outcome analogue
-of the overlap quantities,
-\begin{equation}\label{eq:sigma-y}
-        \sigma_y^2
-        =
-        \beta_0^2 \sigma_0^2
-        + 2 \beta_0\, d^\top \beta_{-0}
-        + \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2,
-        \qquad
-        c_{y,S}
-        =
-        \beta_0\, d_S + (C \beta_{-0})_S,
-\end{equation}
-describe them at the population level:
-$c_{y,S}^\top C_{SS}^{-1} c_{y,S}$ is the outcome variance explained by
-the controls in $S$.}
-
-\begin{assumption}[Outcome floor]\label{ass:outcome-floor}
-\tc{There is a constant $c_y \in (0, 1]$ such that
+\begin{assumption}[Testing regime]\label{ass:testing}
+The effect is null, $\beta_0 = 0$, and the following two conditions
+hold.
+\begin{enumerate}
+\item[(i)] \emph{Local alternatives.} No admissible specification is
+significant on its own, in the sense that, for a constant $K_\rho$,
 \begin{equation*}
-        \sigma_y^2
-        - \sup_{S \subseteq [p],\, |S| = s}
-        c_{y,S}^\top C_{SS}^{-1} c_{y,S}
-        \;\ge\;
-        c_y\, \sigma_y^2:
+        \sqrt n \max_{|S| \le s}
+        \left| \Corr\big( x_0^{(i)}, y^{(i)} \mid X_S^{(i)} \big) \right|
+        \;\le\; K_\rho .
 \end{equation*}
-no $s$ controls explain more than a fixed fraction of the outcome
-variance.}
+\item[(ii)] \emph{Outcome floor.} The explained share
+\eqref{eq:explained-share} stays away from one, $\theta_s \le 1 - c_y$
+for a constant $c_y \in (0, 1]$.
+\end{enumerate}
 \end{assumption}
 
-\begin{theorem}[Transfer to the searched t-statistic]
-\label{thm:tstat-transfer}
-\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii), \ref{ass:observational}(i)
-and~\ref{ass:outcome-floor} hold (under Assumption~\ref{ass:experimental},
-Assumption~\ref{ass:observational}(i) holds with $c_{\mathrm{ov}} = 1$).
-There are constants $C_t \ge c_t > 0$ and $c, C > 0$, depending only on
-$(K_\psi, c_{\mathrm{ov}}, c_y, C_0)$, such that, with probability at
-least $1 - C e^{-c\, s \log(ep/s)}$, on the event
-$\sup_{|S| = s} \hat\beta_{0,S} \ge 0$,
-\begin{equation}\label{eq:tstat-transfer}
-        c_t\, \sqrt{n}\; \frac{\sigma_0}{\sigma_y}
-        \sup_{S \subseteq [p],\, |S| = s} \hat \beta_{0, S}
-        \;\le\;
-        \sup_{S \subseteq [p],\, |S| = s} \hat t_{0, S}
-        \;\le\;
-        C_t\, \sqrt{n}\; \frac{\sigma_0}{\sigma_y}
-        \sup_{S \subseteq [p],\, |S| = s} \hat \beta_{0, S}.
-\end{equation}}
+The effect being null, what a specification actually tests is
+$\rho(S) = \Corr(x_0^{(i)}, y^{(i)} \mid X_S^{(i)}) = 0$, which the null
+on $\beta_0$ leaves open as soon as the treatment is confounded, and
+condition (i) admits such alternatives at the local scale $n^{-1/2}$
+alone (as local asymptotic analyses do for a single configuration
+\citep{vaart1998asymptotic}, keeping the signal comparable with the noise
+of that configuration). Here, imposed across the population process, the
+same condition keeps the displacement search reaches at that same size,
+so that signal, noise and search are commensurable and the power of a
+searched test remains a meaningful quantity. The condition holds as soon
+as the confounding is of bounded order on that scale, studentization
+leaving $\rho(S)^2 \le d^\top C^{-1} d / \sigma_0^2$, so that
+$n\, d^\top C^{-1} d = O(\sigma_0^2)$ suffices, and randomization gives
+it with $d = 0$ and $\rho(S) = 0$ for every $S$. Condition (ii) asks the
+best $s$ controls not to explain the outcome entirely, so that the
+residual sum of squares $y^\top M_S y$ of \eqref{eq:tstat-def} keeps a
+share $c_y$ of the outcome variance; it is implied by
+$\Psi_s^2 \le \beta_{-0}^\top C \beta_{-0}$, which leaves the noise share
+$\sigma_\varepsilon^2 / (\beta_{-0}^\top C \beta_{-0}
++ \sigma_\varepsilon^2)$ as an admissible $c_y$.
+
+\begin{theorem}[Searched significance under the null]\label{thm:tstat}
+Under Assumptions~\ref{ass:dgp}, \ref{ass:lower}
+and~\ref{ass:testing}, there are constants $C_t \ge c_t > 0$ and
+$c, C > 0$, depending only on the constants of the assumptions, such
+that, with probability at least $1 - C e^{-c\, s \log(ep/s)}$,
+\begin{equation}\label{eq:tstat-rate}
+        \sup_{S \subseteq [p],\, |S| = s} \hat t_{0,S}
+        - \hat t_{0,\emptyset}
+        \;\in\;
+        [c_t,\, C_t]\;
+        \sqrt{ s \log(ep/s) }\,
+        \sqrt{ \theta_s + \delta_{s,n,p}^2 }
+        \;+\; [-C,\, C] .
+\end{equation}
 \end{theorem}
 
-\tc{The searched t-statistic is $\sqrt n$ times the standardized searched
-coefficient, up to constants: given the two floors, no further structure of
-$C$ enters the comparison, and every bound of
-Theorems~\ref{thm:experimental-matching}
-and~\ref{thm:observational-bounds} transfers to the t-statistic after
-multiplication by $\sqrt n\, \sigma_0/\sigma_y$. In the experimental null
-case the transfer applied to Theorem~\ref{thm:experimental-matching} gives
-$\sup_{|S|=s} \hat t_{0,S} \asymp s \log(ep/s)/\sqrt n$, the source of the
-significance budget $\sqrt n / \log(ep/s)$, a full factor $\sqrt n$ below
-the budget $n / \log(ep/s)$ at which search displaces the raw coefficient
-by the order of the effect itself: with that many useless
-covariates the searched t-statistic reaches any fixed threshold, and at
-the critical scaling $n \asymp s \log(ep/s)$ it grows like
-$\sqrt{s \log(ep/s)}$.}
+The radical adds two coefficients of determination. The isometry
+scale $\delta_{s,n,p}^2 = s\log(ep/s)/n$ is the one search manufactures,
+the largest in-sample fit reached by the best of the $\binom{p}{s}$
+configurations when the controls explain nothing, and the explained share
+$\theta_s$ of \eqref{eq:explained-share} is the one the controls
+genuinely have. Significance is bought either way, and the test breaks as
+soon as either exceeds $1/(s\log(ep/s))$,
+\begin{equation*}
+        s \log(ep/s)
+        \;\gtrsim\;
+        \min\left\{ \sqrt n,\; \theta_s^{-1} \right\} .
+\end{equation*}
 
-\begin{remark}[Reporting fewer than $s$ controls]\label{rem:menu-convention}
-\tc{Every result of this section was stated for specifications of exact
-size $s$, the convention announced in Section~\ref{sec:setup}. Nothing
-changes if the analyst may report any specification with at most $s$
-controls. The lower bounds transfer at once, the larger menu containing
-the smaller one. The upper bounds transfer because the two menus are of
-the same size on the logarithmic scale that governs every bound above:
-the sample-size requirement of Assumption~\ref{ass:dgp}(ii) and the rate
-$s \log(ep/s) / n$ are untouched, and only the constants move. The same
-applies to the searched $t$-statistic.}
-\end{remark}
+Which of the two sets the budget is decided by $\theta_s$ against
+$n^{-1/2}$, the manufactured fit taking over below that point, and for
+uncorrelated controls of unit variance $\theta_s$ is the share of
+$\norm{\beta_{-0}}_2^2 + \sigma_\varepsilon^2$ carried by the $s$ largest
+coordinates of $\beta_{-0}$ in absolute value. Where few controls contribute,
+$\theta_s$ is pinned at $\norm{\beta_{-0}}_2^2
+/ (\norm{\beta_{-0}}_2^2 + \sigma_\varepsilon^2)$ from
+$s \ge \norm{\beta_{-0}}_0$ on and the test breaks at
+$s\log(ep/s) \gtrsim 1 + \sigma_\varepsilon^2 / \norm{\beta_{-0}}_2^2$, a
+threshold set by the outcome's signal-to-noise ratio and not by the
+sample size, provided it both covers
+$\norm{\beta_{-0}}_0 \log(ep/\norm{\beta_{-0}}_0)$ and stays below
+$\sqrt n$.
+Coordinates of equal magnitude spread over a support larger than the
+budget give $\theta_s$ that same share times $s / \norm{\beta_{-0}}_0$,
+which passes below $n^{-1/2}$ once $\norm{\beta_{-0}}_0$ exceeds
+$s \sqrt n$ times that share, itself a demand on how many controls there
+are to choose from, and there the $\sqrt n$ budget binds instead.
+
 
 % Simulations and discussion:
 % - show the theory is sharp; conventional inference over-rejects

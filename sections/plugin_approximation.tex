@@ -8,136 +8,119 @@
 \subsection{A Separable Approximation of Coordinate Search}
 \label{sec:plugin-regression}
 
-\tc{The bounds of Section~\ref{sec:bounds} identify the scale of the
-searched supremum but leave its distribution implicit: applied to a given
-study, they return an order of magnitude, not a number. This section
-approximates the supremum itself by a separable surrogate, a sum of order
-statistics of independent products of Gaussians built from population
-quantities alone. Separability is not available in general: the
-covariance $C$ may encode combinatorial structure --- clusters of
-near-duplicate controls, say --- that no coordinatewise object can
-capture.
+\tc{The results of Section~\ref{sec:bounds} take the form of bounds,
+which do not characterize the law of the searched supremum. That law is
+in general hard to reach: the supremum in \eqref{eq:searched-sup} can
+encode combinatorial hardness in $C$, $\beta_{-0}$ and $d$, and even
+where it does not, the process resists direct study. This section
+proposes to work instead with a surrogate process, separable, whose
+supremum matches the searched one with vanishing relative error. This
+requires excluding the critical regime $s\log(ep/s) \asymp n$, where only
+an $O(1)$ relative error remains, and working at $s\log(ep/s) = o(n)$,
+alongside stronger assumptions on the design covariance $C$, but it
+provides a plug-in computable from simple order statistics, usable in a
+given application to study how far the choice of specification could have
+moved the estimate.
 
-The price of a law is therefore a strictly stronger hypothesis than the
-one the bounds were proved under, and it is worth naming the increment.
-Section~\ref{sec:bounds} asked for subgaussian tails, a sample-size
-floor $n \ge C_0\, s\log(ep/s)$, and a restricted condition number
-bounded by a constant; the experimental upper bound consumed no
-condition on $C$ whatever. None of that suffices here. Where
-the restricted conditioning of Assumption~\ref{ass:observational}(ii)
-tolerates correlation at
-any fixed level
---- equicorrelated controls keep $\kappa_s(C)$ bounded at fixed $s$ ---
-the assumption below asks that
-correlation vanish at the scale search reaches; where the bounds needed
-$n$ merely to clear the floor, the approximation needs
-$s\log(ep/s) = o(n)$, so the critical regime in which search moves the
-estimate by the order of the effect is now excluded; and where the
-bounds constrained no moment beyond the subgaussian tail, the
-approximation constrains the fourth. The assumption also excludes
-systematic means beyond the scale that search itself generates. None of
-this can be read as defensive bookkeeping that a user of the surrogate
-might safely ignore: what a violation costs is not a conservative error
-but an error of either sign, as Remark~\ref{rem:plugin-direction}
-records. Correlation at a fixed level, carried by few directions, is the
-subject of Remark~\ref{rem:plugin-factors}. Throughout the section the
-controls are normalized to
-unit variance, so that $C$ is a correlation matrix, and local geometry
-is measured by
+Some notation is needed to state assumptions. The variance of the outcome
+net of the treatment is written
+$\varsigma^2 = \Var(y^{(i)} - \beta_0 x_0^{(i)})
+= \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2$. For centered
+variables, $\kappa_4$ denotes the joint fourth cumulant, which vanishes
+identically when the four are jointly Gaussian,
+\begin{equation*}
+        \kappa_4(a, b, c, d) = \E[abcd]
+        - \E[ab]\,\E[cd] - \E[ac]\,\E[bd] - \E[ad]\,\E[bc].
+\end{equation*}
+The geometry of the controls is measured on the correlation blocks search
+can reach,
 \begin{equation}\label{eq:local-isotropy}
         \rho_s(C) = \sup_{|J| \le 2s}
-        \left\| C_{JJ} - I \right\|_{\mathrm{op}}.
+        \big\| \diag(C_{JJ})^{-1/2}\, C_{JJ}\, \diag(C_{JJ})^{-1/2}
+        - I \big\|_{\mathrm{op}} .
 \end{equation}}
 
 \begin{assumption}[Plug-in regularity]\label{ass:plugin}
-\tc{The controls have unit variance, and the following hold as
-$n, p \to \infty$.
+\tc{The following hold.
 \begin{enumerate}
 \item[(i)] \emph{Local isotropy.} The controls are uncorrelated at the
 scale search works on: $\rho_s(C) = o(1)$.
 \item[(ii)] \emph{No control is a visible proxy for the treatment or
-for the outcome.} The confounding and the outcome signal stay,
-coordinate by coordinate, at the $t$-scale
-$\sqrt{\log(ep/s)}$ that search itself generates,
+for the outcome.} There is a constant $C_t$ such that
 \begin{equation*}
-        \sqrt n\, \max_{k \le p}
-        \left( \frac{|d_k|}{\sigma_0}
-        + \frac{|(C\beta_{-0})_k|}
-        {\sqrt{\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}} \right)
-        = O\big(\sqrt{\log(ep/s)}\big).
-\end{equation*}
-\item[(iii)] \emph{The treatment is nearly uncorrelated with the
-outcome material.}
-$|\Cov(x_0^{(i)},\, y^{(i)} - \beta_0 x_0^{(i)})| = |d^\top \beta_{-0}|
-= o\big(\sigma_0 \sqrt{(\beta_{-0}^\top C \beta_{-0}
-+ \sigma_\varepsilon^2)\, s \log(ep/s) / n}\big)$.
-\item[(iv)] \emph{Fourth moments as under a Gaussian design.} Write
-$\varsigma^2 = \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2$ for the
-variance of $y^{(i)} - \beta_0 x_0^{(i)}$. Every second moment of the
-searched products $x_0^{(i)} X_k^{(i)}$ and
-$(y^{(i)} - \beta_0 x_0^{(i)}) X_k^{(i)}$ agrees with the value it takes
-for a Gaussian row of the same covariance, up to an error negligible
-against the relevant one of $\sigma_0^2$, $\varsigma^2$ and
-$\sigma_0 \varsigma$: uniformly over $j \ne k$,
-\begin{equation*}
-        \Var(x_0^{(i)} X_k^{(i)}) = \sigma_0^2\,(1 + o(1)),
+        \max_{k \le p} \big| \Corr(x_0^{(i)}, X_k^{(i)}) \big|
+        \;\le\; C_t \sqrt{\frac{\log(ep/s)}{n}},
         \qquad
-        \Cov(x_0^{(i)} X_j^{(i)},\, x_0^{(i)} X_k^{(i)})
-        = \sigma_0^2\, C_{jk} + o(\sigma_0^2),
+        \max_{k \le p}
+        \big| \Corr(y^{(i)} - \beta_0 x_0^{(i)}, X_k^{(i)}) \big|
+        \;\le\; C_t \sqrt{\frac{\log(ep/s)}{n}} .
 \end{equation*}
-and likewise for the pairs built from $y^{(i)} - \beta_0 x_0^{(i)}$ alone,
-and from it together with $x_0^{(i)}$, the latter centered at
-$d^\top \beta_{-0} + o(\sigma_0 \varsigma)$.
+\item[(iii)] \emph{The treatment is nearly uncorrelated with the outcome
+material.} Its alignment with the part of the outcome the controls carry
+sits below the scale at which search moves the estimate,
+\begin{equation*}
+        \big| d^\top \beta_{-0} \big|
+        = o\big( \sigma_0\, \varsigma\, \delta_{s,n,p} \big).
+\end{equation*}
+\item[(iv)] \emph{Negligible fourth cumulants.} The fourth cumulants of
+the searched pairs are negligible against the products they perturb:
+uniformly over $j, k \le p$,
+\begin{equation*}
+\begin{aligned}
+        &\kappa_4\big(x_0^{(i)}, X_j^{(i)}, x_0^{(i)}, X_k^{(i)}\big)
+        = o(\sigma_0^2),
+        \qquad
+        \kappa_4\big(x_0^{(i)}, X_j^{(i)},
+        y^{(i)} - \beta_0 x_0^{(i)}, X_k^{(i)}\big)
+        = o(\sigma_0 \varsigma),
+        \\
+        &\kappa_4\big(y^{(i)} - \beta_0 x_0^{(i)}, X_j^{(i)},
+        y^{(i)} - \beta_0 x_0^{(i)}, X_k^{(i)}\big)
+        = o(\varsigma^2).
+\end{aligned}
+\end{equation*}
 \end{enumerate}}
 \end{assumption}
 
-\tc{Each condition closes one channel along which the surrogate can be
-broken, and Remark~\ref{rem:plugin-sharpness} records where the
-boundaries are attained. Condition (i) is the local isotropy announced
-in the introduction, and it is the substantive restriction of the
-section: every group of $2s$ controls search can reach must be
-near-orthogonal, which at fixed $s$ is the requirement that pairwise
-correlations vanish. The unit-variance normalization is without loss,
-since $\hat\beta_{0,S}$ depends on $X_S$ only through its span, so a
-diagonal covariance becomes $C = I$ and satisfies (i) exactly. What (i)
-rules out is correlation at a fixed level, and it rules it out for a
-reason of proof rather than of substance;
-Remark~\ref{rem:plugin-factors} states the extension. It also absorbs
-the restricted conditioning of Section~\ref{sec:bounds}: local isotropy
-drives $\kappa_s(C)$ to $1$, so the restricted conditioning is not
-cited again here, and becomes load-bearing only in the extension, where
-$C$ itself is no longer locally isotropic.
+\tc{Condition (i) is what supports separability and is the strong
+assumption of the section. It is not a conditioning assumption: a spike
+whose direction is delocalized carries correlations of order $\theta/p$,
+so that $\rho_s(C) = O(s \theta / p)$ and any strength $\theta = o(p/s)$
+is admitted, including strengths that send the condition number of $C$ to
+infinity. What it excludes is correlation among neighbours: the Toeplitz
+design $C_{jk} = \rho^{|j-k|}$ has a bounded spectrum and a bounded
+condition number, yet $\rho_s(C) \ge \rho$ already at $s = 1$, so that
+(i) forces $\rho \to 0$. The section then shows that a design separable
+in this sense at the population level stays separable in the empirical
+process, below the isometry scaling of Section~\ref{sec:bounds}.
 
-Condition (ii) asks that no control be a visible proxy, on the treatment
-side as well as the outcome side: no control's population association
-with either exceeds the $t$-scale $\sqrt{\log(ep/s)}$ that search itself
-generates, so no coordinate is visible before the search begins. Past that scale the surrogate
-double-counts, explained variance being sub-additive over correlated
-coordinates where the surrogate's means simply add; the cap also makes
-every searched denominator concentrate at a common value, so no separate
-overlap condition is needed. Condition (iii) bounds a single scalar
-playing two roles: $d^\top \beta_{-0}$ is the population covariance
-between the two factors of each searched product, which the surrogate
-takes independent, and it is the center of the common sampling noise
-$\hat\beta_{0,\emptyset} - \beta_0$, which search cannot reach. Asking
-the corresponding correlation to sit below $\sqrt{s\log(ep/s)/n}$, the
-relative scale at which search operates, keeps that noise out of the
-searched coordinates. Condition (iv) asks that the
-design's fourth moments be the ones the surrogate's Gaussian variances
-presuppose; a Gaussian design satisfies every identity exactly given
-(ii), so (iv) restricts fourth cross-cumulants only.}
+Condition (ii) asks that no control correlate with the treatment or with
+the outcome by more than $\sqrt{\log(ep/s)/n}$, the size of the largest
+correlation search manufactures from noise alone across $p$ coordinates,
+and controls that explain a constant share of the outcome must then
+spread it over a support of order $n/\log(ep/s)$, so that the design
+described is diffuse rather than sparse. Condition (iii) asks the
+confounding of the omitted-variable kind to be small,
+$d^\top \beta_{-0}$ being the covariance between the treatment and the
+outcome net of it, and may be read as a non-triviality assumption: where
+it fails the question is a different and an easier one, the displacement
+being governed by $d^\top \beta_{-0}$ itself rather than by search, and
+randomization gives it outright. Condition (iv) is a technical
+strengthening of the subgaussian hypothesis of
+Assumption~\ref{ass:dgp}(i), which the vanishing relative error requires
+and which subgaussian tails do not deliver on their own.}
 
 \begin{theorem}[Separable approximation]\label{thm:plugin-separable}
-\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:plugin} hold,
-with $s \log(ep/s) = o(n)$ and $p/s \to \infty$. On
+\tc{Let Assumption~\ref{ass:dgp}(i) and Assumption~\ref{ass:plugin} hold,
+with $s \log(ep/s) = o(n)$, $p/s \to \infty$, and the controls scaled to
+unit variance, which changes no $\hat\beta_{0,S}$. On
 the same probability space as the data one can construct Gaussian
 variables $(\xi_{1k})_{k \le p}$ and $(\xi_{2k})_{k \le p}$, all $2p$ of
 them mutually independent, with
 \begin{equation*}
         \xi_{1k} \sim N\big(\sqrt n\, d_k,\ \sigma_0^2\big),
         \qquad
-        \xi_{2k} \sim N\big(\sqrt n\, (C\beta_{-0})_k,\
-        \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2 \big),
+        \xi_{2k} \sim N\big(\sqrt n\, (C\beta_{-0})_k,\ \varsigma^2 \big),
 \end{equation*}
 such that
 \begin{equation}\label{eq:plugin-theorem}
@@ -149,107 +132,45 @@ such that
         + o_{\mathbb P}\!\left( \frac{s \log(ep/s)}{n} \right),
 \end{equation}
 where $\{-\xi_{1k}\, \xi_{2k}\}_{(j)}$ denotes the $j$-th largest of the
-$p$ products: the searched supremum equals the surrogate up to an error
-vanishing relative to the searched displacement.}
+$p$ products.}
 \end{theorem}
 
 \tc{The surrogate replaces a search over $\binom{p}{s}$ overlapping
 configurations by $p$ independent coordinates, of which the largest $s$
-products are kept. Each coordinate multiplies the two channels search
-can exploit: $\xi_{1k}$ carries the alignment of the treatment with
-control $k$, centered at the confounding $\sqrt n\, d_k$, and $\xi_{2k}$
-the alignment of the outcome material $y - \beta_0 x_0$ with control $k$,
-centered at
-the signal $\sqrt n\, (C\beta_{-0})_k$; the common sampling noise
-$\hat\beta_{0,\emptyset}$, beyond the reach of search, enters as a shared
-shift. Taking expectations of the top-$s$ sum recovers the rate
-$s \log(ep/s)/n$ of Section~\ref{sec:bounds}; the surrogate refines the
-bounds by supplying a law around that rate. In simulations the
-approximation error concentrates at the sharper scale
-$s \log(ep/s)/n^{3/2}$, one factor $\sqrt n$ inside the displacement,
-uniformly over the designs tried.}
+products are kept. Each coordinate is a product of two Gaussians rather
+than a Gaussian, one carrying the alignment of the treatment with control
+$k$, shifted by the confounding $\sqrt n\, d_k$, the other that of the
+outcome net of the treatment, shifted by the signal
+$\sqrt n\, (C\beta_{-0})_k$. When $d^\top \beta_{-0} = 0$ the two factors
+are independent, and it is the excess kurtosis $6$ of their product
+rather than its variance that sets the growth of the maximum, of order
+$\log p$ against the $\sqrt{2 \log p}$ of a Gaussian field, so that a
+small budget buys a large displacement. Taking expectations of the
+top-$s$ sum recovers the rate $s\log(ep/s)/n$ of
+Section~\ref{sec:bounds}, and the surrogate refines it by supplying a law
+around that rate.}
 
-\begin{remark}[Designs with fixed correlation]\label{rem:plugin-factors}
-\tc{Local isotropy is more restrictive than it looks: for
-equicorrelated controls $\rho_s(C) = \rho\,(2s-1)$, so
-Assumption~\ref{ass:plugin}(i) forces $\rho \to 0$ and excludes every
-design carrying correlation at a fixed level, factor structures among
-them. The display survives such
-designs when the correlation is carried by few directions and the
-budget can shed them. Remove from $C$ a bounded number $M$ of
-orthonormal eigenvectors $f_1, \dots, f_M$, delocalized in the sense
-$p \max_{m,k} f_{mk}^2 = O(1)$; the equicorrelated matrix is this with
-$M = 1$ and $f_1 = \1/\sqrt p$, leaving
-$(1 - \rho)(I - \1 \1^\top / p)$, whose correlation matrix is locally
-isotropic. Whenever what is left behind is locally isotropic in this
-sense, the confounding and signal carried by the removed directions
-obey the cap of (ii) with room to spare, and the budget exceeds the
-number of directions removed, $s \ge M + 1$, the conclusion of
-Theorem~\ref{thm:plugin-separable} is unchanged; the argument is given
-in Appendix~\ref{app:plugin-factors}, where one step at fixed factor
-strength remains open. The budget floor is not an artifact of that
-argument. At $s = 1$ under a single equicorrelated factor of
-correlation $0.5$, the searched supremum falls short of the surrogate
-by the factor $0.74$ at $p = 100$ and $0.71$ at $p = 400$, a deficit of
-order $\rho \log p$, because one coordinate offers no span freedom;
-from $s = 2$ on, search sheds the direction through in-span contrasts
-and the display is restored.}
-\end{remark}
+\tc{Computing the surrogate in an application needs four population
+quantities, the covariances $d$ and $C\beta_{-0}$ of the treatment and of
+the outcome with each control, and the two variances $\sigma_0^2$ and
+$\varsigma^2$; checking the hypotheses needs in addition the conditioning
+of the small blocks of $C$. The two vectors are the difficulty, their
+coordinatewise sampling error being of the same order as the means they
+carry, so that a direct plug-in reports the search realized in the
+dataset at hand rather than the population surrogate, and a debiased
+estimate would be needed where $p$ is proportional to $n$. What the
+display supports is therefore a sensitivity statement in the sense of
+Section~\ref{sec:discussion}: given a published specification, how far a
+search with budget $s$ could have moved the coefficient.}
 
-\begin{remark}[Direction of the failure]\label{rem:plugin-direction}
-\tc{It would be convenient if the surrogate erred in a known direction
-when the assumption fails, so that a violation cost only conservatism
-and the plug-in could be read as an upper bound on what search can
-reach. It does not. Which way it errs is decided by which side of the
-model is disturbed, and
-Appendix~\ref{app:plugin-direction} tabulates the two regimes,
-violating one condition at a time and leaving the rest in force.
+% Archive anchor: no-hidden-quantities (plug-in) variant,
+% technical-draft.tex 2176-2191 (stated without rate; uniform
+% sparse-submatrix consistency is the sufficient condition).
+% The fixed-budget EVT calibration (Gumbel / Poisson-process limit,
+% verified 2026-07-24 by claim2_evt.py) was moved out of the main text on
+% 2026-07-27 and now appears as Proposition~\ref{prop:plugin-calibration}
+% in Appendix~\ref{app:plugin}.
 
-Disturbances of the outcome channel are conservative. Correlated
-controls carrying co-aligned signal have sub-additive sparse explained
-variance where the surrogate's means simply add, so the surrogate
-overstates, by up to a factor two at equicorrelation $0.8$; the budget
-floor of Remark~\ref{rem:plugin-factors} is conservative for a companion
-reason, the maximum of $p$ correlated coordinate statistics growing like
-$(1-\rho)\log p$ rather than $\log p$. Disturbances of the treatment
-channel are not. Sub-additivity is a property of the alignment between
-$C\beta_{-0}$ and the eigenbasis of $C_{JJ}$, not of correlation as
-such --- for two equicorrelated controls the relevant ratio is
-$1/(1+\rho)$ when the signal is aligned but $1/(1-\rho)$ when it
-alternates in sign --- and confounding at the cap of (ii) under fixed
-correlation buys search a freedom among spans that no coordinatewise
-object tracks. In both cases the searched supremum exceeds the
-surrogate, by half again as much in the second at equicorrelation
-$0.8$. Alignment of positive sign and product variances above the value
-condition (iv) fixes fail in the same direction.
-
-Two consequences. The surrogate is a conservative diagnostic only
-under hypotheses that are themselves one-sided, so restricting the
-claim of Theorem~\ref{thm:plugin-separable} to its upper half would not
-buy weaker hypotheses --- in particular condition (iv) is needed
-whichever direction is wanted, since a heavy-tailed common row scale
-inflates the truth without bound. And the conservative cases should not
-be read as a safety margin: they are as large as the anti-conservative
-ones, so a violation is a reason to distrust the surrogate in either
-direction rather than to discount it.}
-\end{remark}
-
-\begin{remark}[Sharpness of the hypotheses]\label{rem:plugin-sharpness}
-\tc{Two further hypotheses sit exactly at the boundary of validity, by
-direct falsification. The sub-critical condition
-$s\log(ep/s) = o(n)$ is exact: the relative error of the display equals
-$0.57\, s\log(ep/s)/n$ across $n/(s\log(ep/s)) \in [5, 40]$. And if the
-variance identities of condition (iv) fail --- as they do for designs
-with heavy fourth cross-cumulants, such as rows sharing a random
-scale --- the display fails by exactly the variance mismatch, and the
-theorem then holds verbatim with the product variances
-$\Var(x_0^{(i)} X_k^{(i)})$ and
-$\Var((y^{(i)} - \beta_0 x_0^{(i)}) X_k^{(i)})$ in place of $\sigma_0^2$
-and $\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2$; no such repair exists for the
-cross-coordinate identities of (iv). The alignment ceiling of
-condition (iii) is attained by densely aligned confounding and is
-conservative for sparse alignment.}
-\end{remark}
 % Simulation certification (2026-07-14 and 2026-07-24, see
 % supporting/plugin-certification-evt-calibration.md): ratio of means
 % 0.963-1.008 and KS at null level across pure, outcome-signal, and
@@ -264,56 +185,6 @@ conservative for sparse alignment.}
 % 1958-2007; no-hidden-quantities remark 2176-2191; (A1)-(A3) 1440-1456.
 % The archive proves the machinery only; the display itself is new
 % (conjectured-to-be-proved).
-
-\begin{corollary}[Exact calibration at a fixed budget]
-\label{cor:plugin-calibration}
-\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:experimental}
-hold with $\beta_{-0} = 0$, unit-variance controls and
-$\rho_s(C) \log p = o(1)$; let $s$ be fixed and $n, p \to \infty$ with
-$\log p = o(n^{1/3})$. Set
-$b_p = \log p - \tfrac12 \log \log p - \tfrac12 \log 2\pi$. Then
-\begin{equation}\label{eq:plugin-calibration}
-        \frac{\sigma_0\, n}{\sigma_\varepsilon}
-        \left( \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S}
-        - \hat\beta_{0,\emptyset} \right)
-        - s\, b_p
-        \;\Rightarrow\;
-        \sum_{k=1}^{s} \left( -\log \Gamma_k \right),
-        \qquad
-        \Gamma_k = E_1 + \dots + E_k,
-\end{equation}
-with $E_1, E_2, \dots$ independent standard exponential variables: the
-limit is the law of the sum of the top $s$ points of a Poisson point
-process with intensity $e^{-x}\, dx$. For $s = 1$ it is a standard
-Gumbel law.}
-\end{corollary}
-
-\tc{The calibration quantifies how much more dangerous searched products
-are than searched Gaussians: a supremum of $p$ single Gaussians grows
-like $\sqrt{2 \log p}$, while the product coordinates have
-exponential-type tails and excess kurtosis $6$, so their maximum grows
-like $\log p$ and a budget of $s$ controls buys $s$ full factors of
-$\log p$ --- a small budget moves the estimate a lot. The correction
-terms in $b_p$ are quantitatively essential: calibrating at the naive
-$\log p$ overstates the center by about $2$ even at $p = 10^6$, while
-$b_p$ is accurate up to a $O(1/\log p)$ term at realistic sizes.}
-% Verified 2026-07-24 (claim2_evt.py): tail P(Z_1 Z_2 > x)
-% = e^{-x} (2 pi x)^{-1/2} (1 - 5/(8x) + O(x^{-2})); a_p = 1;
-% KS 0.02-0.07 across p = 1e4-1e6; top-3 sum matches the
-% Poisson-process limit (sd 2.357 vs 2.357 at p = 1e6).
-
-\tc{In applications the surrogate is computable from $p$ univariate
-quantities --- the sample covariances of the treatment and of the
-outcome with each control, together with variance estimates --- without
-visiting any of the $\binom{p}{s}$ configurations; under
-Assumption~\ref{ass:dgp}(i) these sample counterparts are uniformly
-consistent at the required scale. The result is a sensitivity analysis
-in the sense of Section~\ref{sec:discussion}: given a published
-specification, the analyst can report how far a coordinate search with
-budget $s$ could have moved the coefficient in the dataset at hand.}
-% Archive anchor: no-hidden-quantities (plug-in) variant,
-% technical-draft.tex 2176-2191 (stated without rate; uniform
-% sparse-submatrix consistency is the sufficient condition).
 
 % Placeholder -- Section 3.2, extension to weighting and doubly robust
 % estimators (lower priority; fixed-budget benchmark only):

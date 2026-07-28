@@ -540,10 +540,28 @@ deficit $\delta$ gives \eqref{eq:observational-lower}.
 }
 \end{proof}
 
-\subsection{Proof of Theorem~\ref{thm:tstat-transfer}}
+\subsection{Proof of Theorem~\ref{thm:tstat}}
 \label{app:tstat}
 
-\tc{The transfer theorem is a sandwich of the studentizing factor: the
+\tc{The searched $t$-statistic is reached through the studentizing
+factor, and the engine is Lemma~\ref{lem:tstat-transfer} below, a
+sandwich valid for every $\beta_0$, from which the null statement of
+Theorem~\ref{thm:tstat} follows by combining it with
+Theorem~\ref{thm:experimental-matching}. Throughout, the outcome
+quantities are
+\begin{equation}\label{eq:sigma-y}
+        \sigma_y^2
+        = \beta_0^2 \sigma_0^2 + 2\beta_0\, d^\top \beta_{-0}
+        + \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2,
+        \qquad
+        c_{y,S} = \beta_0\, d_S + (C\beta_{-0})_S,
+\end{equation}
+which under Assumption~\ref{ass:testing} reduce to
+$\sigma_y^2 = \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2$ and
+$c_{y,S} = (C\beta_{-0})_S$, so that
+$\sup_{|S| = s} c_{y,S}^\top C_{SS}^{-1} c_{y,S} = \Psi_s^2$ and
+condition (ii) of that assumption is the outcome floor
+$\sigma_{y \cdot S}^2 \ge c_y \sigma_y^2$ used below. The sandwich is the
 identity $\hat t_{0,S} = Z_S A_S B_S$ splits the t-statistic into the
 numerator normalized by the unprojected energies and the denominator
 factors, and the overlap and outcome floors imply that both studentizing
@@ -616,7 +634,7 @@ $|S| \le s$,
         \qquad
         c_y\, \sigma_y^2 \le \sigma_{y \cdot S}^2 \le \sigma_y^2:
 \end{equation}
-the second pair restates Assumption~\ref{ass:outcome-floor} together
+the second pair restates the outcome floor together
 with $c_{y,S}^\top C_{SS}^{-1} c_{y,S} \ge 0$, and the first follows
 from Assumption~\ref{ass:observational}(i) and the variational
 monotonicity
@@ -637,7 +655,7 @@ the middle inequality extending $\gamma$ by zero off $S$; the same
 zero-extension, applied to $c_{y,S}$ inside any menu superset of $S$,
 shows $\sigma_{y \cdot S}^2$ is nonincreasing under inclusion and
 carries the outcome floor from the menu of
-Assumption~\ref{ass:outcome-floor} to all $|S| \le s$. The scale
+the floor to all $|S| \le s$. The scale
 $\sigma_y$ is nondegenerate: the Cauchy--Schwarz inequality and
 \eqref{eq:appc-monotone} give
 $(d^\top \beta_{-0})^2
@@ -696,7 +714,7 @@ every $S \subseteq [p]$ with $|S| \le s$,
         \tfrac{3}{2}\, \sigma_{y \cdot S}^2;
 \end{equation}
 in particular, by \eqref{eq:appc-floors}, under
-Assumption~\ref{ass:outcome-floor} the two studentizing energies lie in
+the outcome floor the two studentizing energies lie in
 the brackets
 $x_0^\top M_S x_0 / n \in
 [ \tfrac49\, c_{\mathrm{ov}}\, \sigma_0^2,\ \tfrac32\, \sigma_0^2 ]$
@@ -982,7 +1000,7 @@ and \eqref{eq:appc-E3-union}, the proof is complete.}
         { y^\top M_S\, y } }.
 \end{equation}
 On the event of Lemma~\ref{lem:energy-conc}, under
-Assumptions~\ref{ass:observational}(i), \ref{ass:outcome-floor},
+Assumptions~\ref{ass:observational}(i), \ref{ass:testing}(ii),
 and~\ref{ass:dgp}(ii) with $C_0 \ge 4$, every $\hat t_{0,S}$ is well
 defined, satisfies the
 exact identity $\hat t_{0,S} = \hat\beta_{0,S}\, F_S$, and,
@@ -1115,8 +1133,31 @@ maximizing over $S$ gives
 $\sup_{|S| = s} \hat t_{0,S} \le C_*\, \hat\beta^\star$.}
 \end{proof}
 
-\begin{proof}[Proof of Theorem~\ref{thm:tstat-transfer}]
-\tc{First, the parenthetical of the statement: under
+\begin{lemma}[Studentizing transfer]\label{lem:tstat-transfer}
+\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:observational}(i)
+hold, together with the outcome floor
+$\sigma_{y \cdot S}^2 \ge c_y \sigma_y^2$ for every $|S| \le s$. There
+are constants $C_t \ge c_t > 0$, depending only on
+$(c_{\mathrm{ov}}, c_y)$, and $c, C > 0$ depending only on
+$(K_\psi, C_0)$, such that, with probability at least
+$1 - C e^{-c\, s\log(ep/s)}$, on the event
+$\sup_{|S| = s} \hat\beta_{0,S} \ge 0$,
+\begin{equation}\label{eq:tstat-transfer}
+        c_t\, \sqrt n\, \frac{\sigma_0}{\sigma_y}
+        \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S}
+        \;\le\;
+        \sup_{S \subseteq [p],\, |S| = s} \hat t_{0,S}
+        \;\le\;
+        C_t\, \sqrt n\, \frac{\sigma_0}{\sigma_y}
+        \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S} .
+\end{equation}
+The same sandwich holds for $\sup_{|S| = s} |\hat t_{0,S}|$ against
+$\sup_{|S| = s} |\hat\beta_{0,S}|$ on no event at all, since
+$|\hat t_{0,S}| = |\hat\beta_{0,S}| F_S$ pointwise.}
+\end{lemma}
+
+\begin{proof}
+\tc{First, the experimental case: under
 Assumption~\ref{ass:experimental},
 \begin{equation}\label{eq:appc-cov-one}
         d = \Cov( x_0^{(i)}, X_{-0}^{(i)} ) = 0
@@ -1155,8 +1196,33 @@ $(c_*, C_*)$ yields \eqref{eq:tstat-transfer} with
         \qquad
         C_t = \frac{2}{ \sqrt{c_y} },
 \end{equation}
-constants depending only on
-$(K_\psi, c_{\mathrm{ov}}, c_y, C_0)$ as claimed.}
+constants depending only on $(c_{\mathrm{ov}}, c_y)$, the tail constants
+$(K_\psi, C_0)$ entering the probability alone. The dependence
+$C_t \asymp c_y^{-1/2}$ is attained, so the sandwich loses nothing beyond
+the range of $\sqrt{\eta(S)} / \sigma_{y \cdot S}$ over the menu.}
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:tstat}]
+\tc{Under Assumption~\ref{ass:testing} the population coefficients obey
+$\beta^\star_{0,S} = \rho(S) \sigma_{y \cdot S} / \sqrt{\eta(S)}
+= O(n^{-1/2})$, so the drift contributes at most $C K_\rho$ once
+multiplied by the studentizing factor of
+Lemma~\ref{lem:tstat-transfer}. Applying that lemma to the two ends of
+Theorem~\ref{thm:experimental-matching}, centred at
+$\hat\beta_{0,\emptyset}$ and multiplied by
+$\sqrt n\, \sigma_0 / \sigma_y$, turns the radical
+$\delta_{s,n,p} \sqrt{\Psi_s^2 + \delta_{s,n,p}^2 \sigma_y^2} / \sigma_0$
+into the rate of \eqref{eq:tstat-rate}, since
+$\sqrt n\, \delta_{s,n,p} = \sqrt{s\log(ep/s)}$ and
+$\sigma_y^2 = \beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2$ under
+the null, which is \eqref{eq:tstat-rate}.
+% GAP: the centred transfer. The lemma sandwiches the sup, not the
+% excess over beta-hat_empty; carrying the centring through requires
+% controlling sup_S |F_S - F_empty|, the studentizer channel, which is
+% O(delta_{s,n,p}) on the t-scale under the outcome floor and is
+% dominated by G_s only when Psi_s is bounded away from sigma_y. To be
+% closed with the uniform expansion of the sample partial correlation.
+}
 \end{proof}
 
 % ------------------------------------------------------------------
@@ -1176,7 +1242,7 @@ $(K_\psi, c_{\mathrm{ov}}, c_y, C_0)$ as claimed.}
 \label{app:plugin}
 
 % Proof of Theorem~\ref{thm:plugin-separable} and
-% Corollary~\ref{cor:plugin-calibration}.
+% Proposition~\ref{prop:plugin-calibration}.
 
 \tc{Throughout the appendix we normalize $\sigma_0 = \sigma_w = 1$
 (replace $x_0$ by $x_0/\sigma_0$ and $w$ by $w/\sigma_w$; the statement
@@ -1187,9 +1253,9 @@ $\bar a := \sqrt n \max_k |d_k| \le C_t \sqrt L$ and
 $\bar b := \sqrt n \max_k |(C\beta_{-0})_k| \le C_t \sqrt L$. All
 statements hold on events of probability $\to 1$; constants $C, c$
 depend only on the constants of the assumptions and may change from
-line to line. Subsection~\ref{app:plugin-factors} treats the extension
-of Remark~\ref{rem:plugin-factors} to designs carrying correlation at a
-fixed level; the chain below is self-contained under
+line to line. Subsection~\ref{app:plugin-factors} extends the chain to
+designs carrying correlation at a fixed level, which
+Assumption~\ref{ass:plugin}(i) excludes; the chain below is self-contained under
 Assumption~\ref{ass:plugin} as stated.}
 
 \begin{lemma}[Centering identity]\label{lem:plugin-identity}
@@ -1269,7 +1335,15 @@ exactly, and
 $|\hat\beta_w| \sup_S x_0^\top P_S x_0
 \le (o(\delta_n) + C \delta_n)\, C sL = o(sL)$,
 using Assumption~\ref{ass:plugin}(iii) for the mean of $\hat\beta_w$
-and Lemma~\ref{lem:plugin-event}(c) for its fluctuation. Since
+and Lemma~\ref{lem:plugin-event}(c) for its fluctuation.
+% GAP (recorded 2026-07-24, supporting/plugin-certification-evt-
+% calibration.md sec. 4d, defect (d)): this step consumes (iii) only at
+% strength o(sigma_0 varsigma), yet the display fails empirically at
+% alignment 7.9 x the ceiling (ratio 1.97), which that weaker form
+% admits. A denominator x alignment term, d^T beta_{-0} sum_{k in S}
+% d_k^2 / sigma_0^2, is missing from the written chain. (iii) is
+% therefore NOT to be weakened to o(sigma_0 varsigma) without supplying
+% that term. Since
 $|\sup A_S - \sup B_S| \le \sup|A_S - B_S|$, the display follows.}
 \end{proof}
 
@@ -1394,13 +1468,45 @@ and the common randomness that matters is carried entirely by
 $\hat\beta_{0,\emptyset}$.}
 \end{proof}
 
-\begin{proof}[Proof of Corollary~\ref{cor:plugin-calibration}]
-\tc{Under the corollary's hypotheses ($\beta_{-0} = 0$,
+\tc{At a fixed budget and under experimental sampling the surrogate
+admits an exact limit law, which quantifies how much more dangerous
+searched products are than searched Gaussians: a supremum of $p$
+Gaussians grows like $\sqrt{2\log p}$, while the product coordinates have
+exponential-type tails and excess kurtosis $6$, so that their maximum
+grows like $\log p$ and each control in the budget buys a full factor of
+$\log p$. The correction terms in $b_p$ are quantitatively essential,
+calibrating at the naive $\log p$ overstating the center by about $2$
+even at $p = 10^6$.}
+
+\begin{proposition}[Exact calibration at a fixed budget]
+\label{prop:plugin-calibration}
+\tc{Let Assumptions~\ref{ass:dgp}(i)--(ii) and~\ref{ass:experimental}
+hold with $\beta_{-0} = 0$, unit-variance controls and
+$\rho_s(C) \log p = o(1)$; let $s$ be fixed and $n, p \to \infty$ with
+$\log p = o(n^{1/3})$. Set
+$b_p = \log p - \tfrac12 \log \log p - \tfrac12 \log 2\pi$. Then
+\begin{equation}\label{eq:plugin-calibration}
+        \frac{\sigma_0\, n}{\sigma_\varepsilon}
+        \left( \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S}
+        - \hat\beta_{0,\emptyset} \right)
+        - s\, b_p
+        \;\Rightarrow\;
+        \sum_{k=1}^{s} \left( -\log \Gamma_k \right),
+        \qquad
+        \Gamma_k = E_1 + \dots + E_k,
+\end{equation}
+with $E_1, E_2, \dots$ independent standard exponential variables: the
+limit is the law of the sum of the top $s$ points of a Poisson point
+process with intensity $e^{-x}\, dx$. For $s = 1$ it is a standard
+Gumbel law.}
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:plugin-calibration}]
+\tc{Under the hypotheses above ($\beta_{-0} = 0$,
 $d = 0$, $s$ fixed) the chain above holds at the finer tolerance
 $o_{\mathbb P}(1)$ on the $\sigma_0 n / \sigma_\varepsilon$ scale: the
 reduction and additivity errors are
-$O(\rho_s(C) L + \delta_n L) = o(1)$ under the corollary's inline
-conditions $\rho_s(C) \log p = o(1)$ and $\log p = o(n^{1/3})$, and
+$O(\rho_s(C) L + \delta_n L) = o(1)$ under the inline conditions $\rho_s(C) \log p = o(1)$ and $\log p = o(n^{1/3})$, and
 the tilting error $x^{3/2}/\sqrt n = O((\log p)^{3/2}/\sqrt n) = o(1)$.
 The searched statistic is thus, up to $o_{\mathbb P}(1)$, the top-$s$
 sum of $p$ independent copies of $\zeta = \zeta_1 \zeta_2$, a product
@@ -1421,7 +1527,7 @@ Gumbel law.}
 \label{app:plugin-factors}
 
 \tc{This subsection proves the extension announced in
-Remark~\ref{rem:plugin-factors}, in which
+Section~\ref{sec:plugin-regression}, in which
 Assumption~\ref{ass:plugin}(i) is replaced by the following. There are
 a bounded integer $M$ and orthonormal eigenvectors $f_1, \dots, f_M$
 of $C$, with eigenvalues $\theta_1, \dots, \theta_M$, delocalized in
@@ -1604,8 +1710,7 @@ absorbed at $o(\sqrt L)$ by \eqref{eq:factor-mean-cap}.}
 \label{app:plugin-direction}
 
 \tc{This subsection records what the surrogate does when
-Assumption~\ref{ass:plugin} fails, which is the evidence behind
-Remark~\ref{rem:plugin-direction}. Each row violates one condition and
+Assumption~\ref{ass:plugin} fails. Each row violates one condition and
 leaves the others in force. Write
 \begin{equation*}
         T = \sup_{S \subseteq [p],\, |S| = s} \hat\beta_{0,S}
@@ -1689,7 +1794,7 @@ spans, not in the modelling of the coordinates. Third, condition (iv)
 breaks by exactly $\sqrt{v_1 v_2}$, the ratio of the true product
 standard deviations to those the surrogate uses, stably in $n$ up to
 $n = 64000$ and at both $s = 1$ and $s = 2$ --- which is why
-Remark~\ref{rem:plugin-sharpness} can offer a repair there and nowhere
+Section~\ref{sec:plugin-regression} can offer a repair there and nowhere
 else, and why (iv) cannot be dropped even if only the upper direction
 is wanted.}
 
@@ -1714,9 +1819,7 @@ is wanted.}
 
 \tc{This appendix proves Theorems~\ref{thm:continuous}
 and~\ref{thm:continuous-tstat}, together with the identities behind
-Remarks~\ref{rem:cont-rank-one}, \ref{rem:cont-twosided},
-\ref{rem:cont-invariants}, \ref{rem:cont-envelope}
-and~\ref{rem:cont-tstat-rankone}. The architecture differs from
+Remark~\ref{rem:cont-tstat-rankone}. The architecture differs from
 Appendices~\ref{app:bounds} and~\ref{app:plugin}: no entropy enters, and
 nothing is uniform over a menu. Two exact finite-sample reductions, both
 instances of Ky Fan's variational principle, collapse each search to a
@@ -1836,7 +1939,7 @@ if and only if $t \le \hat\beta_{0,s}^\star$.}
         + \tfrac12 \left( \norm{\tilde x_0}\, \norm{\tilde c_t}
         - \tilde x_0^\top \tilde c_t \right),
 \end{equation}
-which is \eqref{eq:cont-rank-one}; the supremum is attained at the
+the supremum being attained at the
 rank-one projector onto the direction
 $\norm{\tilde c_t}\, \tilde x_0 - \norm{\tilde x_0}\, \tilde c_t$ of
 $\operatorname{span}(\tilde x_0, \tilde c_t)$ whenever that vector is
@@ -1970,17 +2073,17 @@ $\hat t_0^{(P)} \le \sqrt{n-1}\, \hat\rho(P) \le \sqrt{n-1}\, \rho$.}
 \begin{lemma}[Self-averaging]\label{lem:cont-gram}
 \tc{Let Assumptions~\ref{ass:dgp}(i) and~\ref{ass:continuous} hold. With
 probability at least $1 - C e^{-cn}$ the matrix $X_{-0}$ has rank $p$,
-and, with $\hat\Sigma_n$ and $\hat\Sigma_{\kappa,n}$ the empirical Gram
+and, with $\hat\Omega_n$ and $\hat\Omega_{\kappa,n}$ the empirical Gram
 matrices
 \begin{equation}\label{eq:appcont-emp-gram}
-        \hat\Sigma_n
+        \hat\Omega_n
         =
         \frac1n
         \begin{pmatrix}
         x_0^\top x_0 & x_0^\top y \\ x_0^\top y & y^\top y
         \end{pmatrix},
         \qquad
-        \hat\Sigma_{\kappa,n}
+        \hat\Omega_{\kappa,n}
         =
         \frac1n
         \begin{pmatrix}
@@ -1988,13 +2091,13 @@ matrices
         \tilde x_0^\top \tilde y & \tilde y^\top \tilde y
         \end{pmatrix},
 \end{equation}
-one has $\hat\Sigma_n = \Sigma + O_\Prob(n^{-1/2})$ and
-$\hat\Sigma_{\kappa,n} = \Sigma_\kappa + O_\Prob(n^{-1/2})$ with
-$\Sigma, \Sigma_\kappa$ of
+one has $\hat\Omega_n = \Omega + O_\Prob(n^{-1/2})$ and
+$\hat\Omega_{\kappa,n} = \Omega_\kappa + O_\Prob(n^{-1/2})$ with
+$\Omega, \Omega_\kappa$ of
 \eqref{eq:cont-gram}--\eqref{eq:cont-gram-span}. Moreover
-$\hat\Sigma_n - \hat\Sigma_{\kappa,n} \succeq 0$ always, and
+$\hat\Omega_n - \hat\Omega_{\kappa,n} \succeq 0$ always, and
 \begin{equation}\label{eq:appcont-outside}
-        \Sigma - \Sigma_\kappa
+        \Omega - \Omega_\kappa
         =
         (1-\kappa)
         \begin{pmatrix}
@@ -2002,10 +2105,10 @@ $\hat\Sigma_n - \hat\Sigma_{\kappa,n} \succeq 0$ always, and
         \beta_0 \sigma_u^2 & \beta_0^2 \sigma_u^2 + \sigma_\varepsilon^2
         \end{pmatrix},
         \qquad
-        \det (\Sigma - \Sigma_\kappa)
+        \det (\Omega - \Omega_\kappa)
         = (1-\kappa)^2 \sigma_u^2\, \sigma_\varepsilon^2,
 \end{equation}
-so that $\Sigma - \Sigma_\kappa \succ 0$ if and only if
+so that $\Omega - \Omega_\kappa \succ 0$ if and only if
 $\sigma_\varepsilon^2 > 0$.}
 \end{lemma}
 
@@ -2063,12 +2166,12 @@ $\norm{\eta}^2 = \beta_0^2 d^\top C^{-1} d + 2\beta_0 d^\top \beta_{-0}
 + \beta_{-0}^\top C \beta_{-0}$, together with $\Var(u) = \sigma_u^2$,
 $\Cov(u, \zeta) = \beta_0 \sigma_u^2$, $\Var(\zeta) = \sigma_\zeta^2$,
 gives the six limits: the unprojected ones sum to
-$\Sigma$ --- for instance
+$\Omega$ --- for instance
 $\sigma_0^2 = d^\top C^{-1} d + \sigma_u^2$ and
 $\sigma_{0y} = \beta_0 d^\top C^{-1}d + d^\top \beta_{-0}
 + \beta_0 \sigma_u^2 = \beta_0 \sigma_0^2 + d^\top \beta_{-0}$ --- and
 the projected ones, carrying the factor $\kappa$ on the $\xi$ part only,
-sum to $\Sigma_\kappa$, since
+sum to $\Omega_\kappa$, since
 $A = d^\top C^{-1} d + \kappa \sigma_u^2$,
 $A_{0y} = \beta_0 d^\top C^{-1} d + d^\top \beta_{-0}
 + \kappa \beta_0 \sigma_u^2$ and
@@ -2077,7 +2180,7 @@ $A_y = \norm{\eta}^2 + \kappa \sigma_\zeta^2$ agree with
 \eqref{eq:appcont-outside}, whose determinant is
 $(1-\kappa)^2 \sigma_u^2 (\sigma_\zeta^2 - \beta_0^2 \sigma_u^2)
 = (1-\kappa)^2 \sigma_u^2 \sigma_\varepsilon^2$; positivity of
-$\hat\Sigma_n - \hat\Sigma_{\kappa,n}$ holds pathwise, being the Gram
+$\hat\Omega_n - \hat\Omega_{\kappa,n}$ holds pathwise, being the Gram
 matrix of $((I-\Pi) x_0, (I-\Pi) y) / \sqrt n$.}
 \end{proof}
 
@@ -2087,7 +2190,7 @@ matrix of $((I-\Pi) x_0, (I-\Pi) y) / \sqrt n$.}
 \begin{proof}
 \tc{\emph{Step 1: the limiting root process.} By
 Lemmas~\ref{lem:cont-floor} and~\ref{lem:cont-gram},
-$\inf_{\mathcal P_s} D / n \ge (\hat\Sigma_n - \hat\Sigma_{\kappa,n})_{11}
+$\inf_{\mathcal P_s} D / n \ge (\hat\Omega_n - \hat\Omega_{\kappa,n})_{11}
 \toP \sigma_0^2 - A = V > 0$, so the event of
 Lemma~\ref{lem:cont-root} has probability tending to one and
 $\hat\beta_{0,s}^\star$ is the unique zero of $\Phi_n$. By
@@ -2095,15 +2198,15 @@ Lemma~\ref{lem:cont-rank-one},
 \begin{equation}\label{eq:appcont-phi-emp}
         \frac{\Phi_n(t)}{n}
         =
-        \left( \hat\Sigma_n \right)_{12} - t \left( \hat\Sigma_n \right)_{11}
+        \left( \hat\Omega_n \right)_{12} - t \left( \hat\Omega_n \right)_{11}
         + \frac12 \left(
-        \sqrt{ \left( \hat\Sigma_{\kappa,n} \right)_{11}
-        \; v_t^\top \hat\Sigma_{\kappa,n}\, v_t }
-        \;-\; e_1^\top \hat\Sigma_{\kappa,n}\, v_t \right),
+        \sqrt{ \left( \hat\Omega_{\kappa,n} \right)_{11}
+        \; v_t^\top \hat\Omega_{\kappa,n}\, v_t }
+        \;-\; e_1^\top \hat\Omega_{\kappa,n}\, v_t \right),
         \qquad
         v_t = \begin{pmatrix} -t \\ 1 \end{pmatrix},
 \end{equation}
-a continuous function of $(\hat\Sigma_n, \hat\Sigma_{\kappa,n})$ for each
+a continuous function of $(\hat\Omega_n, \hat\Omega_{\kappa,n})$ for each
 fixed $t$. Lemma~\ref{lem:cont-gram} and the continuous mapping theorem
 give, for every fixed $t$,
 \begin{equation}\label{eq:appcont-phi-lim}
@@ -2119,7 +2222,7 @@ give, for every fixed $t$,
 
 \emph{Step 2: $\phi$ is strictly decreasing.} Since
 $(A_{0y} - tA)^2 \le A\,(A_y - 2tA_{0y} + t^2 A)$ --- the difference is
-$\det \Sigma_\kappa \ge 0$ --- the derivative of the radical is bounded
+$\det \Omega_\kappa \ge 0$ --- the derivative of the radical is bounded
 by $\sqrt A$ in absolute value, so
 $\phi'(t) \in [-\sigma_0^2, -(\sigma_0^2 - A)] = [-\sigma_0^2, -V]$.
 Hence $\phi$ is strictly decreasing with $\phi(\mp\infty) = \pm\infty$
@@ -2176,13 +2279,13 @@ Assumption~\ref{ass:observational}(i).
 \emph{Step 5: budget-freeness.} Nothing above used $s$ beyond
 $s \ge 1$ in Lemma~\ref{lem:cont-rank-one}, and the identity
 \eqref{eq:appcont-rank-one} holds at finite $n$, which is the content of
-Remark~\ref{rem:cont-rank-one}.}
+the budget statement of Section~\ref{sec:continuous-relaxation}.}
 \end{proof}
 
 \begin{remark}[The remaining claims of Section~\ref{sec:continuous-relaxation}]
 \label{rem:appcont-others}
 \tc{Three of the section's remarks follow from the same proof.
-\emph{Two-sided search} (Remark~\ref{rem:cont-twosided}): since $D > 0$
+\emph{Two-sided search}: since $D > 0$
 on $\mathcal P_s$, $\sup_P |\hat\beta_0^{(P)}|
 = \max \{ \sup_P \hat\beta_0^{(P)},\ \sup_P (-\hat\beta_0^{(P)}) \}$,
 and the second supremum is the first for the data $(x_0, -y)$, i.e.\ for
@@ -2190,10 +2293,10 @@ the parameters $(-\beta_0, -\beta_{-0}, -\varepsilon)$, under which $q$
 changes sign while $Q$ and the inflation factor do not; the limit is
 therefore $|\beta_0 + q|$ plus the same inflation--energy product. The
 $t$-statistic is likewise governed by
-$\max\{ \tau^\star(\Sigma, \Sigma_\kappa),\
-\tau^\star(J \Sigma J, J \Sigma_\kappa J) \}$ with
+$\max\{ \tau^\star(\Omega, \Omega_\kappa),\
+\tau^\star(J \Omega J, J \Omega_\kappa J) \}$ with
 $J = \diag(1,-1)$. \emph{Basis invariance and the three invariants}
-(Remark~\ref{rem:cont-invariants}): for invertible $T$,
+(Section~\ref{sec:continuous-relaxation}): for invertible $T$,
 $\operatorname{span}(X_{-0} T) = \operatorname{span}(X_{-0})$ leaves
 $\mathcal P_s$ and hence both searched suprema pathwise unchanged, while
 on the population side
@@ -2201,34 +2304,34 @@ $(C, d, \beta_{-0}) \mapsto (T^\top C T, T^\top d, T^{-1}\beta_{-0})$
 leaves $d^\top C^{-1} d$, $\beta_{-0}^\top C \beta_{-0}$ and
 $d^\top \beta_{-0}$ --- the only population inputs of
 \eqref{eq:continuous-limit} and \eqref{eq:cont-tstat-limit} --- fixed.
-\emph{Envelope} (Remark~\ref{rem:cont-envelope}): $P_S \in \mathcal P_s$
+\emph{Envelope} (Section~\ref{sec:continuous-relaxation}): $P_S \in \mathcal P_s$
 for $|S| = s$, so $\sup_{|S|=s} \hat\beta_{0,S} \le
 \hat\beta_{0,s}^\star$ and $\sup_{|S|=s} \hat t_{0,S} \le
 \hat t_{0,s}^\star$ pathwise, the second because $\hat t_{0,S}$ is
 $\hat t_0^{(P_S)}$ with $\tr(P_S) = |S|$.}
 \end{remark}
 
-\subsection{Proof of Theorem~\ref{thm:continuous-tstat} and its corollaries}
+\subsection{Proof of Theorem~\ref{thm:continuous-tstat} and the two propositions}
 \label{app:cont-tstat}
 
 \begin{proof}[Proof of Theorem~\ref{thm:continuous-tstat}]
 \tc{\emph{Step 1: a continuous functional of the two Gram matrices.} For
-a pair of symmetric matrices $(\Sigma', \Sigma'')$ with
-$\Sigma'' \succeq 0$ and $\Sigma' - \Sigma'' \succ 0$, set
+a pair of symmetric matrices $(\Omega', \Omega'')$ with
+$\Omega'' \succeq 0$ and $\Omega' - \Omega'' \succ 0$, set
 \begin{equation}\label{eq:appcont-F}
-        F(\Sigma', \Sigma'')
+        F(\Omega', \Omega'')
         =
         \max_{\norm{u}_2 \le 1}
-        \frac{\Sigma'_{12} - w_1 w_2}
-        {\sqrt{ \left( \Sigma'_{11} - w_1^2 \right)
-        \left( \Sigma'_{22} - w_2^2 \right) }},
+        \frac{\Omega'_{12} - w_1 w_2}
+        {\sqrt{ \left( \Omega'_{11} - w_1^2 \right)
+        \left( \Omega'_{22} - w_2^2 \right) }},
         \qquad
-        w = (\Sigma'')^{1/2} u .
+        w = (\Omega'')^{1/2} u .
 \end{equation}
-The constraint set is compact, and $|w_i| \le \norm{(\Sigma'')^{1/2}e_i}
-= \sqrt{\Sigma''_{ii}}$ gives $\Sigma'_{ii} - w_i^2 \ge
-\Sigma'_{ii} - \Sigma''_{ii} > 0$, so the maximand is jointly continuous
-in $(u, \Sigma', \Sigma'')$ on a neighbourhood of any such pair, and $F$
+The constraint set is compact, and $|w_i| \le \norm{(\Omega'')^{1/2}e_i}
+= \sqrt{\Omega''_{ii}}$ gives $\Omega'_{ii} - w_i^2 \ge
+\Omega'_{ii} - \Omega''_{ii} > 0$, so the maximand is jointly continuous
+in $(u, \Omega', \Omega'')$ on a neighbourhood of any such pair, and $F$
 is continuous there.
 
 \emph{Step 2: the empirical statistic is $F$ evaluated at the empirical
@@ -2240,19 +2343,19 @@ $D, E$, so with $w = ((u^\top \tilde x_0), (u^\top \tilde y))^\top /
 \begin{equation}\label{eq:appcont-emp-ellipse}
         \hat\rho(u u^\top)
         =
-        \frac{(\hat\Sigma_n)_{12} - w_1 w_2}
-        {\sqrt{ \left( (\hat\Sigma_n)_{11} - w_1^2 \right)
-        \left( (\hat\Sigma_n)_{22} - w_2^2 \right)}} .
+        \frac{(\hat\Omega_n)_{12} - w_1 w_2}
+        {\sqrt{ \left( (\hat\Omega_n)_{11} - w_1^2 \right)
+        \left( (\hat\Omega_n)_{22} - w_2^2 \right)}} .
 \end{equation}
 As $u$ ranges over the unit sphere of $\operatorname{Im}(\Pi)$, whose
 dimension is $p \ge 3$ eventually, $w$ ranges over the whole closed
-ellipsoid $\{ \hat\Sigma_{\kappa,n}^{1/2} \nu : \norm{\nu}_2 \le 1 \}$:
-indeed $w = \hat\Sigma_{\kappa,n}^{1/2} \nu$ with
+ellipsoid $\{ \hat\Omega_{\kappa,n}^{1/2} \nu : \norm{\nu}_2 \le 1 \}$:
+indeed $w = \hat\Omega_{\kappa,n}^{1/2} \nu$ with
 $\norm{\nu}_2 \le 1$ for every such $u$, and conversely any
 $\norm{\nu}_2 \le 1$ is realized by a unit $u$ obtained by adding to a
 preimage a component in the kernel of the map. Hence, by
 Lemma~\ref{lem:cont-rank-one-t},
-$\hat\rho^\star = F(\hat\Sigma_n, \hat\Sigma_{\kappa,n})$.
+$\hat\rho^\star = F(\hat\Omega_n, \hat\Omega_{\kappa,n})$.
 
 \emph{Step 3: the hypotheses of Lemma~\ref{lem:cont-rank-one-t}.} The
 denominator floors hold with probability tending to one by
@@ -2260,8 +2363,8 @@ Lemmas~\ref{lem:cont-floor} and~\ref{lem:cont-gram}, the second floor
 converging to $(1-\kappa) \sigma_\zeta^2 > 0$. For the upper bound on
 $\hat\rho^\star$: for $P \in \mathcal P_s$ the Gram matrix
 $\hat G_P$ of $((I-P)x_0, (I-P)y)/\sqrt n$ satisfies
-$\hat\Sigma_n \succeq \hat G_P \succeq \hat\Sigma_n -
-\hat\Sigma_{\kappa,n} \succeq 0$, because the removed matrix is the Gram
+$\hat\Omega_n \succeq \hat G_P \succeq \hat\Omega_n -
+\hat\Omega_{\kappa,n} \succeq 0$, because the removed matrix is the Gram
 of $(P x_0, P y)/\sqrt n$ and is dominated by that of
 $(\Pi x_0, \Pi y)/\sqrt n$ by Lemma~\ref{lem:cont-floor}. Monotonicity of
 the determinant on the positive semidefinite order then gives
@@ -2270,10 +2373,10 @@ the determinant on the positive semidefinite order then gives
         =
         \frac{\det \hat G_P}{(\hat G_P)_{11} (\hat G_P)_{22}}
         \;\ge\;
-        \frac{\det ( \hat\Sigma_n - \hat\Sigma_{\kappa,n} )}
-        {(\hat\Sigma_n)_{11} (\hat\Sigma_n)_{22}}
+        \frac{\det ( \hat\Omega_n - \hat\Omega_{\kappa,n} )}
+        {(\hat\Omega_n)_{11} (\hat\Omega_n)_{22}}
         \;\toP\;
-        \frac{\det(\Sigma - \Sigma_\kappa)}{\sigma_0^2\, \sigma_y^2}
+        \frac{\det(\Omega - \Omega_\kappa)}{\sigma_0^2\, \sigma_y^2}
         \;>\; 0,
 \end{equation}
 uniformly in $P$, so $\hat\rho^\star$ is bounded away from $1$. For the
@@ -2282,19 +2385,19 @@ Lemma~\ref{lem:cont-rank-one} applied to the pair
 $(\tilde x_0, -\tilde y)$ shows that some rank-one $P \in \mathcal P_s$
 achieves $-x_0^\top P y = \tfrac12 ( \norm{\tilde x_0} \norm{\tilde y}
 - \tilde x_0^\top \tilde y )$, so
-$\hat\rho^\star \ge \left[ (\hat\Sigma_n)_{12}
-+ \tfrac12 ( \sqrt{ (\hat\Sigma_{\kappa,n})_{11}
-(\hat\Sigma_{\kappa,n})_{22} } - (\hat\Sigma_{\kappa,n})_{12} ) \right]
-/ (\hat\Sigma_n)_{11}^{1/2} (\hat\Sigma_n)_{22}^{1/2}$, whose limit is a
+$\hat\rho^\star \ge \left[ (\hat\Omega_n)_{12}
++ \tfrac12 ( \sqrt{ (\hat\Omega_{\kappa,n})_{11}
+(\hat\Omega_{\kappa,n})_{22} } - (\hat\Omega_{\kappa,n})_{12} ) \right]
+/ (\hat\Omega_n)_{11}^{1/2} (\hat\Omega_n)_{22}^{1/2}$, whose limit is a
 positive multiple of $\phi(0)$, positive by Step 6 below. Hence
 $0 < \hat\rho^\star < 1$ with probability tending to one.
 
 \emph{Step 4: passage to the limit.} By Lemma~\ref{lem:cont-gram},
-$(\hat\Sigma_n, \hat\Sigma_{\kappa,n}) \toP (\Sigma, \Sigma_\kappa)$
-with $\Sigma_\kappa \succeq 0$ and, since $\sigma_\varepsilon^2 > 0$,
-$\Sigma - \Sigma_\kappa \succ 0$ by \eqref{eq:appcont-outside}. Step 1
+$(\hat\Omega_n, \hat\Omega_{\kappa,n}) \toP (\Omega, \Omega_\kappa)$
+with $\Omega_\kappa \succeq 0$ and, since $\sigma_\varepsilon^2 > 0$,
+$\Omega - \Omega_\kappa \succ 0$ by \eqref{eq:appcont-outside}. Step 1
 and the continuous mapping theorem give
-$\hat\rho^\star \toP F(\Sigma, \Sigma_\kappa) = \tau^\star$; the
+$\hat\rho^\star \toP F(\Omega, \Omega_\kappa) = \tau^\star$; the
 identification of \eqref{eq:appcont-F} with \eqref{eq:cont-tstat-limit}
 is the observation that the maximum over the closed ellipsoid is
 attained on its boundary, which is Lemma~\ref{lem:cont-rank-one-t}
@@ -2310,13 +2413,13 @@ applied to the limiting pair. Finally
 so $\hat t_{0,s}^\star / \sqrt n \toP \tau^\star$, for every $s \ge 1$
 and with no other dependence on $s$.
 
-\emph{Step 5: $\tau^\star < 1$.} For $w = \Sigma_\kappa^{1/2} u$ with
-$\norm{u}_2 \le 1$ one has $w^\top \Sigma^{-1} w \le
-u^\top \Sigma_\kappa^{1/2} \Sigma^{-1} \Sigma_\kappa^{1/2} u < 1$, since
-$\Sigma_\kappa \prec \Sigma$ implies
-$\Sigma_\kappa^{1/2}\Sigma^{-1}\Sigma_\kappa^{1/2} \prec I$. Writing
-$G = \Sigma - w w^\top$ for the residual matrix, the matrix determinant
-lemma gives $\det G = \det \Sigma\, (1 - w^\top \Sigma^{-1} w) > 0$,
+\emph{Step 5: $\tau^\star < 1$.} For $w = \Omega_\kappa^{1/2} u$ with
+$\norm{u}_2 \le 1$ one has $w^\top \Omega^{-1} w \le
+u^\top \Omega_\kappa^{1/2} \Omega^{-1} \Omega_\kappa^{1/2} u < 1$, since
+$\Omega_\kappa \prec \Omega$ implies
+$\Omega_\kappa^{1/2}\Omega^{-1}\Omega_\kappa^{1/2} \prec I$. Writing
+$G = \Omega - w w^\top$ for the residual matrix, the matrix determinant
+lemma gives $\det G = \det \Omega\, (1 - w^\top \Omega^{-1} w) > 0$,
 while the maximand of \eqref{eq:appcont-F} is
 $G_{12} / \sqrt{G_{11} G_{22}}$; hence
 $1 - \left( G_{12}/\sqrt{G_{11}G_{22}} \right)^2
@@ -2334,15 +2437,40 @@ equivalent to $t^\star > 0$, i.e.\ to positivity of the limit
 \eqref{eq:continuous-limit}.}
 \end{proof}
 
-\begin{proof}[Proof of Corollary~\ref{cor:cont-fisher}]
+\begin{proposition}[Irrelevant controls: a Fisher-$z$ budget]
+\label{prop:cont-fisher}
+\tc{Suppose the controls carry neither confounding nor outcome signal,
+$d = 0$ and $\beta_{-0} = 0$, so that $\Omega_\kappa = \kappa\, \Omega$.
+Then, with $\rho_0 = \sigma_{0y} / (\sigma_0 \sigma_y)$ the population
+correlation of treatment and outcome,
+\begin{equation}\label{eq:cont-fisher}
+        \operatorname{artanh} \tau^\star
+        =
+        \operatorname{artanh} \rho_0
+        \;+\;
+        \tfrac12 \log \frac{1}{1 - \kappa},
+        \qquad\text{equivalently}\qquad
+        \tau^\star
+        =
+        \frac{\rho_0 + \tfrac{\kappa}{2}(1 - \rho_0)}
+        {1 - \tfrac{\kappa}{2}(1 - \rho_0)} .
+\end{equation}
+Since $\hat t_{0,\emptyset} / \sqrt n \toP \rho_0$, basis search adds a
+fixed budget $\tfrac12 \log(1-\kappa)^{-1}$ on the Fisher $z$-scale,
+whatever the effect: it translates the evidence rather than multiplying
+it. Under the null this is $\tau^\star = \kappa / (2 - \kappa)$, and
+searching $|\hat t_0^{(P)}|$ replaces $\rho_0$ by $|\rho_0|$.}
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:cont-fisher}]
 \tc{If $d = 0$ and $\beta_{-0} = 0$ then
 $A = \kappa \sigma_0^2$, $A_{0y} = \kappa \beta_0 \sigma_0^2
 = \kappa \sigma_{0y}$ and
 $A_y = \kappa(\beta_0^2 \sigma_0^2 + \sigma_\varepsilon^2)
-= \kappa \sigma_y^2$, i.e.\ $\Sigma_\kappa = \kappa \Sigma$. The
+= \kappa \sigma_y^2$, i.e.\ $\Omega_\kappa = \kappa \Omega$. The
 maximand of \eqref{eq:cont-tstat-limit} is a correlation, hence
 invariant under $(x_0, y) \mapsto (a x_0, b y)$ for $a, b > 0$, so one
-may take $\Sigma = R := \left(\begin{smallmatrix} 1 & \rho_0 \\ \rho_0 & 1
+may take $\Omega = R := \left(\begin{smallmatrix} 1 & \rho_0 \\ \rho_0 & 1
 \end{smallmatrix}\right)$. With $w = \sqrt\kappa\, R^{1/2} u$ the residual
 matrix is
 \begin{equation}\label{eq:appcont-fisherG}
@@ -2392,11 +2520,38 @@ $\rho_0 < 0$; combining the two branches as in
 Remark~\ref{rem:appcont-others} replaces $\rho_0$ by $|\rho_0|$.}
 \end{proof}
 
-\begin{proof}[Proof of Corollary~\ref{cor:cont-tstat-null}]
+\begin{proposition}[The experimental null]\label{prop:cont-tstat-null}
+\tc{Suppose the treatment is randomized and has no effect, $d = 0$ and
+$\beta_0 = 0$, and let
+\begin{equation*}
+        a = \frac{A}{\sigma_0^2} = \kappa,
+        \qquad
+        c = \frac{A_y}{\sigma_y^2}
+        = \frac{\beta_{-0}^\top C \beta_{-0}
+        + \kappa\, \sigma_\varepsilon^2}
+        {\beta_{-0}^\top C \beta_{-0} + \sigma_\varepsilon^2}
+\end{equation*}
+be the shares of the treatment and outcome energies inside the control
+span. Then
+\begin{equation}\label{eq:cont-tstat-null}
+        \tau^\star
+        =
+        \frac{\sqrt{a\,c}}{1 + \sqrt{(1-a)(1-c)}} .
+\end{equation}
+The two shares enter symmetrically but are set by different things:
+randomization pins $a$ to $\kappa$, so dimension alone governs what the
+span takes from the treatment, while $c$ rises with the outcome variance
+the controls explain. That second channel is the sharper one, since
+$\tau^\star \to \sqrt \kappa$ as $c \to 1$ against the
+$\kappa / (2-\kappa)$ returned at $\beta_{-0} = 0$: a well-explained
+outcome makes the null far more hackable at the same dimension.}
+\end{proposition}
+
+\begin{proof}[Proof of Proposition~\ref{prop:cont-tstat-null}]
 \tc{If $d = 0$ and $\beta_0 = 0$ then $\sigma_{0y} = 0$ and
 $A_{0y} = 0$, so both matrices are diagonal:
-$\Sigma = \diag(\sigma_0^2, \sigma_w^2)$ and
-$\Sigma_\kappa = \diag(A, A_y)$ with $A = \kappa \sigma_0^2$. Writing
+$\Omega = \diag(\sigma_0^2, \sigma_w^2)$ and
+$\Omega_\kappa = \diag(A, A_y)$ with $A = \kappa \sigma_0^2$. Writing
 $w = (\sqrt A \cos\varphi, \sqrt{A_y} \sin\varphi)$ and
 $z = \cos^2\varphi$, and taking the branch
 $\cos\varphi \sin\varphi < 0$ that makes the numerator positive,
