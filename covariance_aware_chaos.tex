@@ -23,7 +23,7 @@
 
 \setlength{\emergencystretch}{3em}
 
-\title{Matched Gaussian Chaos and Greedy Search}
+\title{Matched Gaussian Chaos and Product Approximation}
 \author{Th\'eo Voldoire and Nic Fishman}
 \date{}
 
@@ -36,17 +36,15 @@ For a general control covariance, the largest coefficient obtained by
 searching over $s$ controls reduces to a covariance-normalized bilinear
 functional of two empirical score vectors.  Under relative
 sub-Gaussianity and $[s\log(ep/s)]^4=o(n)$, this functional admits a
-Gaussian approximation with the same score covariance, including its
+Gaussian approximation with a matched score covariance that retains
 fourth-moment dependence.  An oracle Gaussian multiplier gives the
-corresponding conditional approximation from the row scores.
-Conditional-product greedy maximizes the exact Schur-complement increments
-and becomes top-$s$ sorting when the controls are uncorrelated.  For every
-score pair and every control covariance with nonsingular sparse principal
-blocks, its regret is bounded by the aggregate equal-depth variation of
-the coordinate marginals.  The regret bound yields a stochastic
-approximation whenever this variation is negligible.  Local isotropy
-verifies that condition when $\rho_s(C)\sqrt{s}\to0$, giving a
-polynomial-time approximation to the searched coefficient.
+corresponding conditional approximation from the row scores.  Under local
+isotropy, $\rho_s(C)=o(1)$, the Gaussian chaos reduces further to a top-$s$
+sum of score products, without requiring those products to be independent.
+For an arbitrary covariance, every support value remains an exact sum of
+residualized score products.  Taking successive product maxima gives a
+deterministic approximation controlled by the variation of those products
+across preceding supports.
 \end{abstract}
 
 \section{Gaussian score approximation}
@@ -448,11 +446,11 @@ displacement in \eqref{eq:smooth-approximation}.
 Lemma~\ref{lem:multiplier-covariance} gives $\nu_n=o_{\Prob}(1)$.
 Gaussian interpolation between $\Sigma_U$ and $\widehat\Sigma_U$ uses the
 smooth supremum from the proof of Theorem~\ref{thm:matched-chaos}.  With
-$\pi_S$ denoting the softmax weights, its Hessian is
+$\alpha_S$ denoting the softmax weights, its Hessian is
 \begin{equation*}
         \nabla^2 f_\lambda
-        =\sum_S\pi_S\nabla^2\widetilde Q_S
-        +\lambda\operatorname{Cov}_\pi(\nabla\widetilde Q_S).
+        =\sum_S\alpha_S\nabla^2\widetilde Q_S
+        +\lambda\operatorname{Cov}_\alpha(\nabla\widetilde Q_S).
 \end{equation*}
 Differentiating the interpolated expectation of
 $\varphi\{f_\lambda/(sL)\}$ gives
@@ -516,71 +514,197 @@ The Lipschitz bound for \eqref{eq:search-functional}, together with
 error already present in \eqref{eq:empirical-chaos}.
 \end{proof}
 
-\section{Marginal increments and greedy search}
+\section{Product approximation}
 
-Evaluating $T_C(a,b)$ by enumeration is combinatorial for a general
-correlation matrix.  Its exact one-coordinate increment gives a greedy
-search that reduces to top-$s$ sorting when $C=I$.  The construction and
-its deterministic bound require positive definiteness only for principal
-blocks of size at most $s$.  For $j\notin S$, define the conditional
-variance and scores
-\begin{equation}\label{eq:conditional-scores}
-\begin{aligned}
-        c_{j\mid S}
-        &=1-C_{jS}C_{SS}^{-1}C_{Sj},\\
-        a_{j\mid S}
-        &=a_j-C_{jS}C_{SS}^{-1}a_S,\\
-        b_{j\mid S}
-        &=b_j-C_{jS}C_{SS}^{-1}b_S.
-\end{aligned}
+For a general covariance, the product assigned to a coordinate depends on
+the controls selected before it, but the search remains exactly a sum of
+such products.  For $v\in\R^p$, $S\subseteq[p]$ with $|S|<s$, and
+$j\notin S$, define the standardized residual score
+\begin{equation}\label{eq:residual-score}
+        v_{j\mid S}
+        :=\frac{v_j-C_{jS}C_{SS}^{-1}v_S}
+        {\{1-C_{jS}C_{SS}^{-1}C_{Sj}\}^{1/2}},
+        \qquad v_{j\mid\emptyset}:=v_j.
 \end{equation}
-Block inversion gives the marginal increment
-\begin{equation}
-        \Delta_j(S;a,b)
-        :=Q_{S\cup\{j\}}(a,b)-Q_S(a,b)
-        =-\frac{a_{j\mid S}b_{j\mid S}}{c_{j\mid S}}.
+Block inversion gives the exact increment
+\begin{equation}\label{eq:residual-product-increment}
+        Q_{S\cup\{j\}}(a,b)-Q_S(a,b)
+        =-a_{j\mid S}b_{j\mid S}.
 \end{equation}
-Ties are broken according to a fixed deterministic order.
-Conditional-product greedy starts with $S_0=\emptyset$ and, for
-$t=1,\ldots,s$, sets
-\begin{equation}
+
+For distinct $j_1,\ldots,j_s$, let
+$J_t=\{j_1,\ldots,j_t\}$ and $J_0=\emptyset$.  Telescoping
+\eqref{eq:residual-product-increment} gives the ordered-support
+representation
+\begin{equation}\label{eq:residual-product-representation}
+\begin{split}
+        Q_{J_s}(a,b)
+        &=-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}},\\
+        T_C(a,b)
+        &=\max_{\substack{j_1,\ldots,j_s\in[p]\\
+        \text{distinct}}}
+        \left\{-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}\right\}.
+\end{split}
+\end{equation}
+Thus the general search is exactly a maximum over ordered supports of
+residualized score products.  Their sum depends only on the terminal
+support, although the individual products depend on its ordering.
+
+When $C=I$, residualization leaves every coordinate unchanged.  If braces
+denote decreasing order statistics,
+\eqref{eq:residual-product-representation} becomes
+\begin{equation}\label{eq:top-s-products}
+        T_I(a,b)
+        =\max_{|S|=s}\sum_{j\in S}(-a_jb_j)
+        =\sum_{t=1}^s\{-a_kb_k\}_{(t)}.
+\end{equation}
+This is the top-$s$ product form.  Under the unit-variance normalization,
+local isotropy measures how far the reachable covariance blocks depart
+from $I$:
+\begin{equation}\label{eq:local-isotropy}
+        \rho_s(C)
+        :=\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
+\end{equation}
+
+\begin{theorem}[Top-$s$ product approximation]
+\label{thm:top-s-products}
+For every $a,b\in\R^p$,
+\begin{equation}\label{eq:static-product-bound}
+        |T_C(a,b)-T_I(a,b)|
+        \le\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $S$ with $|S|=s$ and put
+$u=C_{SS}^{-1/2}a_S$ and $v=C_{SS}^{-1/2}b_S$.  Then
+\begin{equation*}
+        Q_S(a,b)+a_S^\top b_S
+        =u^\top(C_{SS}-I)v,
+\end{equation*}
+whose absolute value is at most
+$\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}$.  Taking the uniform bound over
+$S$ and using
+$|\max_S x_S-\max_S y_S|\le\max_S|x_S-y_S|$ proves the result.
+\end{proof}
+
+\begin{corollary}[Matched Gaussian products]
+\label{cor:matched-products}
+Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
+$(sL)^4=o(n)$, and $\rho_s(C)=o(1)$.  The coupling in that theorem satisfies
+\begin{equation}\label{eq:matched-product-coupling}
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{1}{n\sigma_0^2}
+        \sum_{t=1}^s\{-Z_{1k}Z_{2k}\}_{(t)}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right).
+\end{equation}
+An independent matched Gaussian draw also gives
+\begin{equation}\label{eq:matched-product-distribution}
+\begin{split}
+        d_3\!\left(
+        \frac{n\sigma_0}{\sigma_rsL}
+        \left\{
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        -\widehat\beta_{0,\emptyset}
+        \right\},
+        \frac{1}{\sigma_0\sigma_rsL}
+        \sum_{t=1}^s\{-Z_{1k}Z_{2k}\}_{(t)}
+        \right)=o(1).
+\end{split}
+\end{equation}
+For jointly Gaussian rows, \eqref{eq:matched-product-coupling} and
+\eqref{eq:matched-product-distribution} hold under the assumptions of
+Corollary~\ref{cor:gaussian}, with $\rho_s(C)=o(1)$ and $sL=o(n)$.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:top-s-products} and
+Lemma~\ref{lem:sparse-score-moments} give
+\begin{equation*}
+        |T_C(Z_1,Z_2)-T_I(Z_1,Z_2)|
+        =O_{\Prob}\{\rho_s(C)\sigma_0\sigma_rsL\}
+        =o_{\Prob}(\sigma_0\sigma_rsL).
+\end{equation*}
+Substitution in \eqref{eq:coupled-approximation} and
+\eqref{eq:smooth-approximation} proves the two displays.  For Gaussian
+rows, use Corollary~\ref{cor:gaussian} and
+$\delta_{s,n,p}^3=o(sL/n)$.
+\end{proof}
+
+The second argument in \eqref{eq:matched-product-distribution} is the
+top-$s$ sum of $p$ covariance-matched score products, which can be sorted
+directly.  The products need not be independent because $\Sigma_U$ retains
+the fourth-moment dependence of the original rows.  The covariance $C$
+governs separability of the search, while $\Sigma_U$ governs dependence
+among the product coordinates.  If
+$\Sigma_U=\diag(\sigma_0^2I,\sigma_r^2I)$, all $2p$ Gaussian score
+coordinates are mutually independent and the top-$s$ sum consists of
+independent Gaussian products.
+
+For the empirical scores, Theorem~\ref{thm:top-s-products} and
+\eqref{eq:score-size} replace $T_C(Z_{1n},Z_{2n})$ in
+\eqref{eq:empirical-chaos} by $T_I(Z_{1n},Z_{2n})$ whenever
+$\rho_s(C)=o(1)$; \eqref{eq:top-s-products} identifies this value with the
+empirical top-$s$ product sum.  For the multiplier scores,
+Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net bound
+give the corresponding sparse-score bounds.  When $\rho_s(C)=o(1)$, the
+same theorem replaces $T_C(\widehat Z_1,\widehat Z_2)$ in
+\eqref{eq:multiplier-statistic} by
+$T_I(\widehat Z_1,\widehat Z_2)$.
+Bounded Lipschitz test functions transfer this conditional approximation
+to the multiplier law.
+
+For covariance structures outside the locally isotropic regime, the exact
+representation \eqref{eq:residual-product-representation} suggests
+retaining the largest available residualized product.
+Ties are broken according to a fixed deterministic order.  Starting from
+$S_0=\emptyset$, for $t=1,\ldots,s$ set
+\begin{equation}\label{eq:successive-products}
         j_t\in\mathop{\arg\max}_{j\notin S_{t-1}}
-        \Delta_j(S_{t-1};a,b),
+        \{-a_{j\mid S_{t-1}}b_{j\mid S_{t-1}}\},
         \qquad
         S_t=S_{t-1}\cup\{j_t\}.
 \end{equation}
-Its terminal value is
-\begin{equation}\label{eq:greedy-value}
-        \widetilde T_C(a,b):=Q_{S_s}(a,b)
-        =\sum_{t=1}^s\Delta_{j_t}(S_{t-1};a,b).
+The resulting product sum is
+\begin{equation}\label{eq:residual-product-value}
+\begin{split}
+        \widetilde T_C(a,b)
+        &:=Q_{S_s}(a,b)
+        =-\sum_{t=1}^s
+        a_{j_t\mid S_{t-1}}b_{j_t\mid S_{t-1}}\\
+        &=\sum_{t=1}^s\max_{j\notin S_{t-1}}
+        \{-a_{j\mid S_{t-1}}b_{j\mid S_{t-1}}\}.
+\end{split}
 \end{equation}
-Given $C$, rank-one updates of \eqref{eq:conditional-scores} compute
-$\widetilde T_C$ without enumerating the $\binom ps$ supports.  When
-$C=I$, the rule selects the largest $s$ products $-a_jb_j$, so
-$\widetilde T_I=T_I$.
+Given $C$, rank-one updates of the residual scores compute
+$\widetilde T_C$ without enumerating the $\binom ps$ supports.
 
-The aggregate marginal variation sums, over distinct coordinates, the
-range of each marginal across supports at the same depth:
-\begin{equation}\label{eq:marginal-variation}
-\begin{aligned}
+The departure from a fixed product list is measured by the range of each
+coordinate product across preceding supports of the same size:
+\begin{equation}\label{eq:product-variation}
         V_C(a,b)
         :=\max_{\substack{j_1,\ldots,j_s\in[p]\\
         \text{distinct}}}
         \sum_{t=1}^s
         \left\{
-        \max_R\Delta_{j_t}(R;a,b)
-        -\min_R\Delta_{j_t}(R;a,b)
+        \max_R(-a_{j_t\mid R}b_{j_t\mid R})
+        -\min_R(-a_{j_t\mid R}b_{j_t\mid R})
         \right\}.
-\end{aligned}
 \end{equation}
 In the $t$th summand, both extrema are over
-$R\subseteq[p]\setminus\{j_t\}$ with $|R|=t-1$.  Thus $V_C$ compares
-a coordinate only across histories of the same size.
+$R\subseteq[p]\setminus\{j_t\}$ with $|R|=t-1$.  The quantity $V_C$
+vanishes when the products do not depend on the preceding support and,
+unlike local isotropy, depends on the realized score pair.
 
-\begin{theorem}[Greedy regret]
-\label{thm:greedy-regret}
-For every $a,b\in\R^p$, conditional-product greedy satisfies
-\begin{equation}
+\begin{theorem}[Residual-product approximation]
+\label{thm:residual-products}
+For every $a,b\in\R^p$, the successive product maxima satisfy
+\begin{equation}\label{eq:residual-product-bound}
         0\le T_C(a,b)-\widetilde T_C(a,b)
         \le V_C(a,b).
 \end{equation}
@@ -591,19 +715,21 @@ Fix an optimal support $J$.  Its elements can be ordered
 $k_1,\ldots,k_s$ so that $k_t\notin S_{t-1}$: choose the order backward,
 noting that $J\setminus S_{t-1}$ contains at least $s-t+1$ elements while
 only $s-t$ later positions have been filled.  Put
-$J_t=\{k_1,\ldots,k_t\}$.  The greedy rule and the availability of $k_t$
-give
+$J_t=\{k_1,\ldots,k_t\}$.  The choice in
+\eqref{eq:successive-products} gives
 \begin{equation*}
-        \Delta_{j_t}(S_{t-1};a,b)
-        \ge\Delta_{k_t}(S_{t-1};a,b).
+        -a_{j_t\mid S_{t-1}}b_{j_t\mid S_{t-1}}
+        \ge-a_{k_t\mid S_{t-1}}b_{k_t\mid S_{t-1}}.
 \end{equation*}
-Telescoping both support values yields
+Using \eqref{eq:residual-product-representation} for the optimal ordered
+support and \eqref{eq:residual-product-value} for the selected support
+yields
 \begin{equation*}
 \begin{split}
         T_C(a,b)-\widetilde T_C(a,b)
         &\le\sum_{t=1}^s\left\{
-        \Delta_{k_t}(J_{t-1};a,b)
-        -\Delta_{k_t}(S_{t-1};a,b)
+        -a_{k_t\mid J_{t-1}}b_{k_t\mid J_{t-1}}
+        +a_{k_t\mid S_{t-1}}b_{k_t\mid S_{t-1}}
         \right\}\\
         &\le V_C(a,b).
 \end{split}
@@ -611,48 +737,29 @@ Telescoping both support values yields
 The lower bound follows from the definition of $T_C$.
 \end{proof}
 
-\begin{corollary}[Empirical greedy reduction]
-\label{cor:empirical-greedy}
-Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold.  If
-\begin{equation}
-        V_C(Z_{1n},Z_{2n})
-        =o_{\Prob}(\sigma_0\sigma_rsL),
-\end{equation}
-then
-\begin{equation}\label{eq:empirical-greedy}
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{\widetilde T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
-        +o_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
-        \right).
-\end{equation}
-\end{corollary}
-
-\begin{proof}
-Theorem~\ref{thm:greedy-regret} and \eqref{eq:empirical-chaos} give the
-result because $\delta_{s,n,p}^3=o(sL/n)$.
-\end{proof}
-
-\begin{corollary}[Matched Gaussian greedy approximation]
-\label{cor:matched-greedy}
+\begin{corollary}[Gaussian residual-product approximation]
+\label{cor:matched-residual-products}
 Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
 $(sL)^4=o(n)$.  If
-\begin{equation}\label{eq:matched-variation}
+\begin{equation}\label{eq:residual-product-variation}
         V_C(Z_1,Z_2)
         =o_{\Prob}(\sigma_0\sigma_rsL),
 \end{equation}
-then the coupling in Theorem~\ref{thm:matched-chaos} satisfies
-\begin{equation}\label{eq:algorithmic-approximator}
+let $S_t$ be generated by \eqref{eq:successive-products} with
+$(a,b)=(Z_1,Z_2)$.  The coupling in Theorem~\ref{thm:matched-chaos}
+satisfies
+\begin{equation}\label{eq:residual-product-coupling}
         \sup_{|S|=s}\widehat\beta_{0,S}
         =\widehat\beta_{0,\emptyset}
-        +\frac{\widetilde T_C(Z_1,Z_2)}{n\sigma_0^2}
+        -\frac{1}{n\sigma_0^2}\sum_{t=1}^s
+        Z_{1,j_t\mid S_{t-1}}Z_{2,j_t\mid S_{t-1}}
         +o_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
         \right).
 \end{equation}
-An independent matched Gaussian draw also gives
-\begin{equation}\label{eq:algorithmic-distribution}
+Rerunning \eqref{eq:successive-products} for an independent matched
+Gaussian draw also gives
+\begin{equation}\label{eq:residual-product-distribution}
 \begin{split}
         d_3\!\left(
         \frac{n\sigma_0}{\sigma_rsL}
@@ -660,150 +767,44 @@ An independent matched Gaussian draw also gives
         \sup_{|S|=s}\widehat\beta_{0,S}
         -\widehat\beta_{0,\emptyset}
         \right\},
-        \frac{\widetilde T_C(Z_1,Z_2)}{\sigma_0\sigma_rsL}
+        -\frac{1}{\sigma_0\sigma_rsL}\sum_{t=1}^s
+        Z_{1,j_t\mid S_{t-1}}Z_{2,j_t\mid S_{t-1}}
         \right)=o(1).
 \end{split}
 \end{equation}
-For jointly Gaussian rows, \eqref{eq:algorithmic-approximator} and
-\eqref{eq:algorithmic-distribution} hold under the assumptions of
+For jointly Gaussian rows, \eqref{eq:residual-product-coupling} and
+\eqref{eq:residual-product-distribution} hold under the assumptions of
 Corollary~\ref{cor:gaussian} and
-\eqref{eq:matched-variation}, with $sL=o(n)$.
+\eqref{eq:residual-product-variation}, with $sL=o(n)$.
 \end{corollary}
 
 \begin{proof}
-Theorem~\ref{thm:greedy-regret} and
-\eqref{eq:matched-variation} show that $T_C(Z_1,Z_2)$ and
+Theorem~\ref{thm:residual-products} and
+\eqref{eq:residual-product-variation} show that $T_C(Z_1,Z_2)$ and
 $\widetilde T_C(Z_1,Z_2)$ differ by
 $o_{\Prob}(\sigma_0\sigma_rsL)$.  Substitution
 in \eqref{eq:coupled-approximation} proves
-\eqref{eq:algorithmic-approximator}.  Since every test function defining
+\eqref{eq:residual-product-coupling}.  Since every test function defining
 $d_3$ is bounded and Lipschitz, the same substitution in
 \eqref{eq:smooth-approximation} proves
-\eqref{eq:algorithmic-distribution}.  For Gaussian rows, use
+\eqref{eq:residual-product-distribution}.  For Gaussian rows, use
 Corollary~\ref{cor:gaussian} and
 $\delta_{s,n,p}^3=o(sL/n)$.
 \end{proof}
 
-\begin{corollary}[Multiplier greedy approximation]
-\label{cor:multiplier-greedy}
-Under the assumptions of Corollary~\ref{cor:multiplier}, suppose that, in
-outer probability,
-\begin{equation}\label{eq:multiplier-variation}
+Theorem~\ref{thm:residual-products} gives the corresponding empirical
+approximation whenever
+$V_C(Z_{1n},Z_{2n})=o_{\Prob}(\sigma_0\sigma_rsL)$.  Under the assumptions
+of Corollary~\ref{cor:multiplier}, it gives the conditional residual-product
+approximation if, in outer probability,
+\begin{equation}\label{eq:multiplier-product-variation}
         V_C(\widehat Z_1,\widehat Z_2)
         =o_{\Prob_e}(\sigma_0\sigma_rsL).
 \end{equation}
-Then the conditional law of
-\begin{equation*}
-        \frac{\widetilde T_C(\widehat Z_1,\widehat Z_2)}
-        {\sigma_0\sigma_rsL}
-\end{equation*}
-has $d_3$ distance $o_{\Prob}(1)$ from the law of the normalized searched
-displacement in \eqref{eq:smooth-approximation}.
-\end{corollary}
-
-\begin{proof}
-Theorem~\ref{thm:greedy-regret} together with
-\eqref{eq:multiplier-variation} implies that the normalized greedy
-regret is negligible in conditional probability.  Boundedness and
-Lipschitz continuity of the test functions defining $d_3$, followed by
-Corollary~\ref{cor:multiplier}, prove the result.
-\end{proof}
-
-Under the unit-variance normalization, the manuscript's local-isotropy
-coefficient is
-\begin{equation}
-        \rho_s(C)
-        =\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
-\end{equation}
-
-\begin{corollary}[Local-isotropy bound]
-\label{cor:local-isotropy}
-If $\rho=\rho_s(C)\le1/2$, then
-\begin{equation}\label{eq:isotropy-variation}
-        V_C(a,b)
-        \lesssim
-        (\rho\sqrt{s}+s\rho^2)
-        \norm{a}_{C,s}\norm{b}_{C,s}.
-\end{equation}
-Consequently, $\rho_s(C)\sqrt{s}\to0$ verifies the variation conditions
-in Corollaries~\ref{cor:empirical-greedy} and
-\ref{cor:matched-greedy}.  Under the assumptions of
-Corollary~\ref{cor:multiplier}, it also verifies
-\eqref{eq:multiplier-variation}.
-\end{corollary}
-
-\begin{proof}
-For $j\notin S$, put
-\begin{equation*}
-        u=C_{jS}C_{SS}^{-1}a_S,
-        \qquad
-        v=C_{jS}C_{SS}^{-1}b_S,
-        \qquad
-        \ell=C_{jS}C_{SS}^{-1}C_{Sj}.
-\end{equation*}
-Cauchy--Schwarz and local isotropy give
-\begin{equation*}
-        \ell\le\frac{\rho^2}{1-\rho},
-        \qquad
-        |u|\le\sqrt\ell\,\norm{a}_{C,s},
-        \qquad
-        |v|\le\sqrt\ell\,\norm{b}_{C,s}.
-\end{equation*}
-The exact identity
-\begin{equation}
-        \Delta_j(S;a,b)+a_jb_j
-        =\frac{a_jv+b_ju-uv-\ell a_jb_j}{1-\ell}
-\end{equation}
-therefore implies, uniformly over $|S|<s$,
-\begin{equation*}
-        |\Delta_j(S;a,b)+a_jb_j|
-        \lesssim
-        \rho\{ |a_j|\norm{b}_{C,s}
-        +|b_j|\norm{a}_{C,s}\}
-        +\rho^2\{\norm{a}_{C,s}\norm{b}_{C,s}+|a_jb_j|\}.
-\end{equation*}
-
-For distinct $j_1,\ldots,j_s$ and $J=\{j_1,\ldots,j_s\}$,
-\begin{equation*}
-\begin{aligned}
-        \sum_{t=1}^s|a_{j_t}|
-        &\le\sqrt{s(1+\rho)}\norm{a}_{C,s},
-        &\sum_{t=1}^s|b_{j_t}|
-        &\le\sqrt{s(1+\rho)}\norm{b}_{C,s},\\
-        \sum_{t=1}^s|a_{j_t}b_{j_t}|
-        &\le(1+\rho)\norm{a}_{C,s}\norm{b}_{C,s}.
-\end{aligned}
-\end{equation*}
-Applying the bound at the two extrema in each summand and then summing
-proves \eqref{eq:isotropy-variation}.
-
-Lemma~\ref{lem:sparse-score-moments} gives
-\begin{equation*}
-\begin{aligned}
-        \norm{Z_{1n}}_{C,s},\ \norm{Z_1}_{C,s}
-        &=O_{\Prob}(\sigma_0\sqrt{sL}),\\
-        \norm{Z_{2n}}_{C,s},\ \norm{Z_2}_{C,s}
-        &=O_{\Prob}(\sigma_r\sqrt{sL}).
-\end{aligned}
-\end{equation*}
-Together with \eqref{eq:isotropy-variation}, these bounds verify the
-variation conditions in Corollaries~\ref{cor:empirical-greedy} and
-\ref{cor:matched-greedy} when $\rho_s(C)\sqrt{s}\to0$.
-
-Under the assumptions of Corollary~\ref{cor:multiplier},
-Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net bound
-give, in outer probability,
-\begin{equation*}
-        \norm{\widehat Z_1}_{C,s}
-        =O_{\Prob_e}(\sigma_0\sqrt{sL}),
-        \qquad
-        \norm{\widehat Z_2}_{C,s}
-        =O_{\Prob_e}(\sigma_r\sqrt{sL}).
-\end{equation*}
-Since $s\rho^2=(\rho\sqrt{s})^2$, substitution in
-\eqref{eq:isotropy-variation} proves
-\eqref{eq:multiplier-variation}.
-\end{proof}
+These score-dependent conditions do not require local isotropy.  In the
+locally isotropic regime, however, Theorem~\ref{thm:top-s-products} is the
+sharper reduction: it yields the fixed top-$s$ product sum under
+$\rho_s(C)=o(1)$.
 
 \section{Manuscript assumptions}
 
@@ -811,15 +812,18 @@ The whitened block-Gram event \eqref{eq:block-gram} is a relative RIP over
 $2s$-coordinate blocks, with error scale $\delta_{s,n,p}$, and controls the
 reduction from the regression search to $T_C$.  Replacing $Z_n$ by $Z$
 requires $(sL)^4=o(n)$, while the direct coupling for Gaussian rows
-requires only $sL=o(n)$.  Marginal variation instead controls the
-computational reduction from $T_C$ to $\widetilde T_C$.  These are
-distinct statistical and computational steps.
-Theorem~\ref{thm:greedy-regret} takes marginal variation as its
-computational condition, and Corollary~\ref{cor:local-isotropy} bounds that
-variation under local isotropy.  The resulting rate
-$\rho_s(C)\sqrt{s}\to0$ is stronger than the manuscript's
-$\rho_s(C)=o(1)$.  Neither the relative RIP nor the variation condition
-implies the other.
+requires only $sL=o(n)$.  Theorem~\ref{thm:top-s-products} then controls
+the reduction from $T_C$ to the top-$s$ product sum.  Its condition
+$\rho_s(C)=o(1)$ is exactly the manuscript's local-isotropy condition.
+The relative RIP is centered at $C$ and therefore does not require $C$ to
+be close to $I$; the two reductions are distinct.
+
+Outside the locally isotropic regime, Theorem~\ref{thm:residual-products}
+retains the product representation but lets the products vary with the
+preceding support.  The corresponding condition is the score-dependent
+variation $V_C$, which controls the reduction from $T_C$ to
+$\widetilde T_C$.  Neither relative RIP nor small product variation implies
+the other.
 
 Under $\rho_s(C)=o(1)$, coordinatewise and invariant proxy bounds are
 related by
@@ -866,10 +870,12 @@ $\Psi_s$ condition, together with small alignment and the first bound in
 \eqref{eq:proxy-energy}, implies the second bound.
 
 All fourth-moment dependence in the matched Gaussian law enters through
-$\Sigma_U$.  Because Theorem~\ref{thm:greedy-regret} is deterministic, it
-applies pointwise to every realized score pair.  For multiplier scores,
-the local-isotropy bound depends on $C$ and on conditional sparse score
-norms; under the assumptions of Corollary~\ref{cor:multiplier},
-Lemma~\ref{lem:multiplier-covariance} controls the latter.
+$\Sigma_U$.  Theorems~\ref{thm:top-s-products} and
+\ref{thm:residual-products} are deterministic and therefore apply
+pointwise to every realized score pair.  For multiplier scores,
+Lemma~\ref{lem:multiplier-covariance} controls the conditional sparse score
+norms used by the top-$s$ product approximation, while
+\eqref{eq:multiplier-product-variation} gives the residual-product
+approximation.
 
 \end{document}
