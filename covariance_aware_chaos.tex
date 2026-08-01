@@ -24,7 +24,7 @@
 
 \setlength{\emergencystretch}{3em}
 
-\title{Matched Gaussian Chaos and Conditional Coordinate Search}
+\title{Matched Gaussian Chaos and Greedy Search}
 \author{Th\'eo Voldoire and Nic Fishman}
 \date{}
 
@@ -33,27 +33,20 @@
 \maketitle
 
 \begin{abstract}
-Because coordinate search is separable only when the covariance blocks it
-reaches are close to diagonal, we instead retain their covariance in the
-approximating process.  Under the sub-Gaussian sampling assumption of the
-main manuscript, the searched treatment coefficient first reduces to a
-covariance-normalized bilinear chaos in two empirical score vectors.  If
-$[s\log(ep/s)]^4=o(n)$, a Lindeberg argument replaces those scores by a
-Gaussian vector with their exact covariance, including every fourth-moment
-contribution.  An oracle Gaussian-multiplier version captures this covariance
-without forming its dense matrix and gives a stochastic approximator beyond
-Gaussian rows.
-We then introduce conditional-product search, which adds the coordinate
-with the largest Schur-complement increment.  It is ordinary top-$s$
-sorting for diagonal covariance.  We prove an additive approximation bound
-for its value, a first-order guarantee under local isotropy, and a
-constant-factor guarantee under restricted conditioning in the aligned
-quadratic case.  The construction uses the assumptions and scales of the
-main manuscript, while separating the statistical approximation from the
-computational restriction imposed by a general signed covariance geometry.
+For a general control covariance, the largest coefficient obtained by
+searching over $s$ controls reduces to a covariance-normalized bilinear
+functional of two empirical score vectors.  Under relative
+sub-Gaussianity and $[s\log(ep/s)]^4=o(n)$, this functional admits a
+Gaussian approximation with the same score covariance, including its
+fourth-moment dependence.  Gaussian multipliers give the corresponding
+conditional approximation from the row scores.  Conditional-product
+greedy maximizes the exact Schur-complement increments and becomes top-$s$
+sorting when the controls are uncorrelated.  The safeguarded search has vanishing error on
+the search scale under local isotropy; for aligned scores, restricted
+conditioning gives a constant-factor guarantee.
 \end{abstract}
 
-\section{The matched score chaos}
+\section{Gaussian score approximation}
 
 For independent and identically distributed observations
 $i=1,\ldots,n$, consider the centered linear model
@@ -73,32 +66,34 @@ independent of the design.  Write
         \qquad
         d=\Cov(X_{-0}^{(i)},x_0^{(i)}),
 \end{equation*}
-where $\sigma_0>0$.  Thus there is a fixed $K_\psi$ such that every
-linear form of the design has $\psi_2$ norm at most $K_\psi$ times its
-standard deviation, with the analogous bound for the noise.  This is the
-distributional assumption used throughout the main manuscript.
+where $\sigma_0>0$.  Every standardized linear form of the design and
+noise has uniformly bounded $\psi_2$ norm.  Rescaling a control leaves
+every selected column span unchanged, so we assume throughout that
+$C_{jj}=1$ for every $j$.
 
-For $S\subseteq[p]$, let $P_S$ project onto the columns of $X_{-0,S}$,
-put $M_S=I-P_S$, and define
+Write $[p]=\{1,\ldots,p\}$.  For $S\subseteq[p]$, let $M_S$ project
+orthogonally off the column span of $X_{-0,S}$, and define
 \begin{equation}\label{eq:searched-coefficient}
         \widehat\beta_{0,S}
         =\frac{x_0^\top M_Sy}{x_0^\top M_Sx_0}.
 \end{equation}
-We study the supremum of \eqref{eq:searched-coefficient} over
-$|S|=s$.  The common part of the outcome is removed by setting
+The target is the supremum of \eqref{eq:searched-coefficient} over
+$|S|=s$.  Define the residual outcome and its score mean by
 \begin{equation}\label{eq:residual-outcome}
 \begin{aligned}
-        \alpha&=\frac{d^\top\beta_{-0}}{\sigma_0^2},
-        &r^{(i)}&=y^{(i)}-\beta_0x_0^{(i)}-\alpha x_0^{(i)},\\
+        r^{(i)}
+        &=y^{(i)}-\beta_0x_0^{(i)}
+        -\frac{d^\top\beta_{-0}}{\sigma_0^2}x_0^{(i)},\\
         h&=\Cov(X_{-0}^{(i)},r^{(i)})
-        =C\beta_{-0}-\alpha d,
+        =C\beta_{-0}
+        -\frac{d^\top\beta_{-0}}{\sigma_0^2}d,
         &\sigma_r^2&=\Var(r^{(i)}).
 \end{aligned}
 \end{equation}
 Then $\Cov(x_0^{(i)},r^{(i)})=0$.  We assume $\sigma_r>0$.
 
-We use the covariance-normalized geometry from the manuscript's
-restricted-isometry argument.  For $v\in\R^p$, define
+For $v\in\R^p$ and $1\le k\le2s$, define the
+covariance-normalized sparse norm
 \begin{equation}\label{eq:sparse-norm}
         \norm{v}_{C,k}
         =\sup_{J\subseteq[p],\,|J|\le k}
@@ -111,25 +106,22 @@ $|J|\le2s$.  Write
         \qquad
         \delta_{s,n,p}=\sqrt{sL/n}.
 \end{equation}
-The two population score means are diffuse when, for a fixed constant
-$K_0$,
+The population score means are diffuse when
 \begin{equation}\label{eq:proxy-energy}
         \norm{d}_{C,2s}
-        \le K_0\sigma_0\delta_{s,n,p},
+        \lesssim\sigma_0\delta_{s,n,p},
         \qquad
         \norm{h}_{C,2s}
-        \le K_0\sigma_r\delta_{s,n,p}.
+        \lesssim\sigma_r\delta_{s,n,p}.
 \end{equation}
 
-For $a,b\in\R^p$, the covariance-aware search functional is
+For $a,b\in\R^p$ and $S\subseteq[p]$ with $|S|\le2s$, put
 \begin{equation}\label{eq:search-functional}
-        T_C(a,b)
-        =\sup_{S\subseteq[p],\,|S|=s}
-        \{-a_S^\top C_{SS}^{-1}b_S\}.
+        Q_S(a,b)=-a_S^\top C_{SS}^{-1}b_S,
+        \qquad
+        T_C(a,b)=\max_{|S|=s}Q_S(a,b).
 \end{equation}
-It preserves the original coordinate subsets and changes only how the
-score of a selected subset is evaluated.  Define the centered row score
-and its covariance by
+Define the centered row score and its covariance by
 \begin{equation}\label{eq:matched-score}
         U^{(i)}=
         \begin{pmatrix}
@@ -139,21 +131,25 @@ and its covariance by
         \qquad
         \Sigma_U=\Var(U^{(i)}),
 \end{equation}
-and let $(G_1,G_2)\sim N(0,\Sigma_U)$.  The matched Gaussian scores are
-\begin{equation}\label{eq:matched-gaussian}
-        Z_1=\sqrt n\,d+G_1,
-        \qquad
-        Z_2=\sqrt n\,h+G_2.
-\end{equation}
-Unlike an independent-coordinate replacement, $\Sigma_U$ retains the
-fourth moments of the design.
-
-The empirical scores below satisfy the exact decomposition
+and collect the empirical scores in
 \begin{equation}\label{eq:score-sum}
-        \begin{pmatrix}A\\B\end{pmatrix}
+        Z_n=\begin{pmatrix}Z_{1n}\\Z_{2n}\end{pmatrix}
+        :=\begin{pmatrix}
+        X_{-0}^\top x_0/\sqrt n\\
+        X_{-0}^\top r/\sqrt n
+        \end{pmatrix}
         =\begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
         +\frac1{\sqrt n}\sum_{i=1}^nU^{(i)}.
 \end{equation}
+The matched Gaussian score vector is
+\begin{equation}\label{eq:matched-gaussian}
+        Z=\begin{pmatrix}Z_1\\Z_2\end{pmatrix}
+        \sim N\!\left(
+        \begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix},
+        \Sigma_U\right).
+\end{equation}
+The covariance $\Sigma_U$ contains the fourth-moment contribution of the
+design.
 
 For a pair $z=(z_1,z_2)$, write
 \begin{equation}\label{eq:standardized-sparse-norm}
@@ -168,7 +164,7 @@ For real random variables $\zeta,\widetilde\zeta$, write
         =\sup_{\varphi}
         |\E\varphi(\zeta)-\E\varphi(\widetilde\zeta)|.
 \end{equation*}
-The supremum is over all three-times continuously differentiable
+The supremum is over all three times continuously differentiable
 $\varphi$ such that
 $\max_{0\le j\le3}\norm{\varphi^{(j)}}_\infty\le1$.
 
@@ -177,15 +173,16 @@ $\max_{0\le j\le3}\norm{\varphi^{(j)}}_\infty\le1$.
 Let $\widetilde U^{(1)},\ldots,\widetilde U^{(n)}$ be independent, with
 each $\widetilde U^{(i)}$ distributed either as $U^{(i)}$ or as a
 centered Gaussian vector with covariance $\Sigma_U$.  Suppose
-$sL=o(n)$.  Uniformly over all such choices and every integer $k\le6$,
+$sL=o(n)$.  Uniformly over all such choices and every integer
+$1\le q\le6$,
 \begin{equation}\label{eq:sparse-score-moments}
 \begin{split}
-        \E|\widetilde U^{(i)}|_s^k&\lesssim(sL)^{k/2},\\
+        \E|\widetilde U^{(i)}|_s^q&\lesssim(sL)^{q/2},\\
         \E\left|
         \begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
         +\frac1{\sqrt n}\sum_{i=1}^n\widetilde U^{(i)}
-        \right|_s^k
-        &\lesssim(sL)^{k/2}.
+        \right|_s^q
+        &\lesssim(sL)^{q/2}.
 \end{split}
 \end{equation}
 \end{lemma}
@@ -211,16 +208,16 @@ For each $J$, a fixed net of the $C_{JJ}$-unit sphere has at most
 $9^{|J|}$ points, and there are at most $(ep/s)^s$ supports.  The
 relative sub-Gaussian assumption and integration of the resulting union
 bound show that the supremum in \eqref{eq:row-score-factorization} has
-$L_k$ norm $O(\sqrt{sL})$ for $k\le12$.  The two scalar factors have
-bounded normalized $L_k$ norms, so H\"older's inequality and
+$L_q$ norm $O(\sqrt{sL})$ for $q\le12$.  The two scalar factors have
+bounded normalized $L_q$ norms, so H\"older's inequality and
 \eqref{eq:proxy-energy} prove the first claim for $U^{(i)}$.  The
 covariance of every normalized projection is uniformly bounded, so the
 same support-net argument proves it for the matched Gaussian choice.
 
-For the second claim, every normalized sparse projection of
-$n^{-1/2}\sum_i\widetilde U^{(i)}$ is either Gaussian or a normalized sum
-of centered products of sub-Gaussian variables.  Bernstein's inequality
-therefore gives
+For the second claim, fix a net direction and let $V_i$ be its centered
+scalar projection of $\widetilde U^{(i)}$.  This projection is either
+Gaussian or a centered sum of products of sub-Gaussian variables, so
+Bernstein's inequality gives
 \begin{equation*}
         \Prob\left(
         \left|\frac1{\sqrt n}\sum_{i=1}^nV_i\right|>t
@@ -229,30 +226,25 @@ therefore gives
 \end{equation*}
 for each net direction, with a uniform constant.  A union over the same
 supports and nets, followed by tail integration, gives an
-$O(\sqrt{sL})$ bound in $L_k$ because $sL=o(n)$.  Finally,
-\eqref{eq:proxy-energy} makes the standardized sparse norm of the
-deterministic mean $O(\sqrt{sL})$.
+$O(\sqrt{sL})$ bound in $L_q$ because $sL=o(n)$.  The proxy-energy
+condition \eqref{eq:proxy-energy} makes the standardized sparse norm of
+the deterministic mean $O(\sqrt{sL})$.
 \end{proof}
 
-\begin{theorem}[Sub-Gaussian matched-chaos approximation]
+\begin{theorem}[Gaussian approximation]
 \label{thm:matched-chaos}
-Suppose the model above satisfies \eqref{eq:proxy-energy},
-$p/s\to\infty$, and $sL=o(n)$.  Then
+Suppose the model above satisfies \eqref{eq:proxy-energy} and
+$sL=o(n)$.  Then
 \begin{equation}\label{eq:empirical-chaos}
 \begin{split}
         \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
         &=\widehat\beta_{0,\emptyset}
-        +\frac{T_C(A,B)}{n\sigma_0^2}
+        +\frac{T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
         +O_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
-        \right),\\
-        A&=\frac{X_{-0}^\top x_0}{\sqrt n},
-        \qquad
-        B=\frac{X_{-0}^\top r}{\sqrt n}.
+        \right).
 \end{split}
 \end{equation}
-Thus the regression reduction holds throughout the subcritical regime of
-the manuscript and does not use Gaussianity.
 
 If in addition $(sL)^4=o(n)$, then the matched Gaussian vector in
 \eqref{eq:matched-gaussian} satisfies
@@ -281,16 +273,16 @@ In particular, the two scalar laws can be coupled so that
 \end{theorem}
 
 \begin{proof}
-The first reduction follows from an exact regression identity.  With
-$\widehat C=X_{-0}^\top X_{-0}/n$ and
-$\widehat\gamma=x_0^\top r/(x_0^\top x_0)$, block projection gives
+The empirical reduction follows from an exact regression identity.  With
+$\widehat C=X_{-0}^\top X_{-0}/n$, block projection gives
 \begin{equation}\label{eq:exact-regression}
         \widehat\beta_{0,S}-\widehat\beta_{0,\emptyset}
         =
-        \frac{-A_S^\top\widehat C_{SS}^{-1}B_S
-        +\widehat\gamma
-        A_S^\top\widehat C_{SS}^{-1}A_S}
-        {x_0^\top x_0-A_S^\top\widehat C_{SS}^{-1}A_S}.
+        \frac{-Z_{1n,S}^\top\widehat C_{SS}^{-1}Z_{2n,S}
+        +\dfrac{x_0^\top r}{x_0^\top x_0}
+        Z_{1n,S}^\top\widehat C_{SS}^{-1}Z_{1n,S}}
+        {x_0^\top x_0-Z_{1n,S}^\top
+        \widehat C_{SS}^{-1}Z_{1n,S}}.
 \end{equation}
 The relative sub-Gaussian assumption and a sparse-net argument yield the
 covariance-normalized block-Gram event
@@ -301,9 +293,9 @@ covariance-normalized block-Gram event
 \end{equation}
 The same argument, now applied to the product scores, gives
 \begin{equation}\label{eq:score-size}
-        \norm{A}_{C,s}=O_{\Prob}(\sigma_0\sqrt{sL}),
+        \norm{Z_{1n}}_{C,s}=O_{\Prob}(\sigma_0\sqrt{sL}),
         \qquad
-        \norm{B}_{C,s}=O_{\Prob}(\sigma_r\sqrt{sL}).
+        \norm{Z_{2n}}_{C,s}=O_{\Prob}(\sigma_r\sqrt{sL}).
 \end{equation}
 The proxy bound \eqref{eq:proxy-energy} covers the means in
 \eqref{eq:score-size}.  The remaining scalar terms satisfy
@@ -311,7 +303,7 @@ The proxy bound \eqref{eq:proxy-energy} covers the means in
         x_0^\top x_0
         =n\sigma_0^2\{1+O_{\Prob}(n^{-1/2})\},
         \qquad
-        \widehat\gamma
+        \frac{x_0^\top r}{x_0^\top x_0}
         =O_{\Prob}\!\left(\frac{\sigma_r}{\sigma_0\sqrt n}\right),
 \end{equation*}
 because $x_0^{(i)}$ and $r^{(i)}$ are uncorrelated sub-Gaussian
@@ -319,24 +311,23 @@ variables.  Substitution into \eqref{eq:exact-regression}, followed by
 the inverse perturbation bound on \eqref{eq:block-gram}, proves
 \eqref{eq:empirical-chaos}.
 
-It remains to replace the empirical score sum by its matched Gaussian
-law.  For the norm in \eqref{eq:standardized-sparse-norm}, write
-$Q_S(z)=-z_{1,S}^\top C_{SS}^{-1}z_{2,S}/(\sigma_0\sigma_r)$.
-For $\lambda>0$, smooth the supremum by
+For the Gaussian approximation, write
+$\widetilde Q_S(z)=Q_S(z_1,z_2)/(\sigma_0\sigma_r)$ and smooth the
+supremum with $\lambda>0$ by
 \begin{equation*}
         f_\lambda(z)
         =\frac1\lambda
-        \log\sum_{|S|=s}\exp\{\lambda Q_S(z)\}.
+        \log\sum_{|S|=s}\exp\{\lambda\widetilde Q_S(z)\}.
 \end{equation*}
 Since $\log\binom ps\le sL$, replacing
-$T_C(z)/(\sigma_0\sigma_rsL)$ by $f_\lambda(z)/(sL)$ costs at most
+$T_C(z_1,z_2)/(\sigma_0\sigma_rsL)$ by $f_\lambda(z)/(sL)$ costs at most
 $1/\lambda$.
 
-The quadratic form obeys, for directions $u,v$,
+Each normalized support value obeys, for directions $u,v$,
 \begin{equation*}
-        |DQ_S(z)[u]|\le |z|_s|u|_s,
+        |D\widetilde Q_S(z)[u]|\le |z|_s|u|_s,
         \qquad
-        |D^2Q_S(z)[u,v]|\le |u|_s|v|_s.
+        |D^2\widetilde Q_S(z)[u,v]|\le |u|_s|v|_s.
 \end{equation*}
 Softmax differentiation therefore gives
 \begin{equation}\label{eq:softmax-derivatives}
@@ -380,33 +371,29 @@ the standard coupling characterization of weak convergence then yields
 \eqref{eq:coupled-approximation}.
 \end{proof}
 
-The covariance $\Sigma_U$ need not be formed as a dense
-$2p$-dimensional matrix before one can simulate the oracle approximator.
-Let $\bar U=n^{-1}\sum_iU^{(i)}$, define
+A Gaussian multiplier estimates $\Sigma_U$ from the row scores.
+Let $\bar U=n^{-1}\sum_iU^{(i)}$ and define
 \begin{equation*}
         \widehat\Sigma_U
         =\frac1n\sum_{i=1}^n
-        (U^{(i)}-\bar U)(U^{(i)}-\bar U)^\top,
+        (U^{(i)}-\bar U)(U^{(i)}-\bar U)^\top.
 \end{equation*}
-draw independent
-$e_i\sim N(0,1)$ conditionally on the data, and set
+Conditionally on the data, let $e_i\sim N(0,1)$ be independent and set
 \begin{equation}\label{eq:multiplier}
-        G^\#
-        =\frac1{\sqrt n}\sum_{i=1}^ne_i(U^{(i)}-\bar U)
-        =\begin{pmatrix}G_1^\#\\G_2^\#\end{pmatrix}.
+        Z^\#=\begin{pmatrix}Z_1^\#\\Z_2^\#\end{pmatrix}
+        :=\begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
+        +\frac1{\sqrt n}\sum_{i=1}^ne_i(U^{(i)}-\bar U).
 \end{equation}
-Conditionally on the observations, this is Gaussian with the empirical
-covariance $\widehat\Sigma_U$ of the row scores.  The construction remains
-oracle because its mean shifts and residual scores use population
-quantities; estimating those objects is the separate plug-in problem in
-the manuscript.
+Conditionally on the observations, $Z^\#$ is Gaussian with the same mean
+as $Z$ and covariance $\widehat\Sigma_U$.  It is oracle because $d$, $h$,
+and $r$ contain population quantities.
 
 \begin{lemma}[Sparse multiplier covariance]
 \label{lem:multiplier-covariance}
-For $J\subseteq[p]$, let $\Sigma_U[J]$ and
+For $J\subseteq[p]$, let $U^{(i)}[J]$, $\Sigma_U[J]$, and
 $\widehat\Sigma_U[J]$ contain both score channels indexed by $J$, and put
 \begin{equation*}
-        \mathcal D_J
+        \mathcal W_J
         =\diag(\sigma_0^{-1}C_{JJ}^{-1/2},
         \sigma_r^{-1}C_{JJ}^{-1/2}).
 \end{equation*}
@@ -416,9 +403,9 @@ Under the assumptions of Theorem~\ref{thm:matched-chaos},
         \eta_n
         &:=
         \sup_{|J|\le2s}
-        \norm{\mathcal D_J
+        \norm{\mathcal W_J
         \{\widehat\Sigma_U[J]-\Sigma_U[J]\}
-        \mathcal D_J^\top}_{\mathrm{op}}\\
+        \mathcal W_J^\top}_{\mathrm{op}}\\
         &=O_{\Prob}\!\left(
         \sqrt{\frac{sL}{n}}+\frac{(sL)^2}{n}
         \right).
@@ -427,45 +414,43 @@ Under the assumptions of Theorem~\ref{thm:matched-chaos},
 \end{lemma}
 
 \begin{proof}
-Every linear form of $\mathcal D_JU_J^{(i)}$ is a sum of centered
+Every linear form of $\mathcal W_JU^{(i)}[J]$ is a sum of centered
 products of normalized sub-Gaussian variables and therefore has uniformly
 bounded $\psi_1$ norm.  Its centered square has bounded
 $\psi_{1/2}$ norm.  A Fuk--Nagaev truncation bound for the average of
 these squares, followed by a $1/4$-net on each sphere and a union over the
-at most $\exp(CsL)$ support-net pairs, gives
+at most $\exp(c_1sL)$ support-net pairs, gives
 \begin{equation*}
         \sqrt{\frac{sL+t}{n}}
-        +\frac{(sL+t+\log n)^2}{n}
+        +\frac{(sL+t)^2}{n}
 \end{equation*}
 with probability at least $1-2e^{-t}$.  Fixed $t$ gives
 \eqref{eq:multiplier-covariance-rate}; the sample-centering term
 $\bar U\bar U^\top$ is smaller by the score-size bound.
 \end{proof}
 
-\begin{corollary}[Gaussian-multiplier approximator]
+\begin{corollary}[Gaussian multiplier]
 \label{cor:multiplier}
 Under the assumptions of Theorem~\ref{thm:matched-chaos}, including
 $(sL)^4=o(n)$, the conditional law of
 \begin{equation}\label{eq:multiplier-statistic}
-        \frac{T_C(\sqrt n\,d+G_1^\#,
-        \sqrt n\,h+G_2^\#)}{\sigma_0\sigma_rsL}
+        \frac{T_C(Z_1^\#,Z_2^\#)}{\sigma_0\sigma_rsL}
 \end{equation}
-approximates the law of the normalized searched displacement in
-\eqref{eq:smooth-approximation} in $d_3$, in probability.
+has $d_3$ distance $o_{\Prob}(1)$ from the law of the normalized searched
+displacement in \eqref{eq:smooth-approximation}.
 \end{corollary}
 
 \begin{proof}
 Lemma~\ref{lem:multiplier-covariance} gives $\eta_n=o_{\Prob}(1)$.
-Gaussian interpolation between $\Sigma_U$ and $\widehat\Sigma_U$, with
-the smooth supremum from the proof of Theorem~\ref{thm:matched-chaos},
-uses
+Gaussian interpolation between $\Sigma_U$ and $\widehat\Sigma_U$ uses the
+smooth supremum from the proof of Theorem~\ref{thm:matched-chaos}.  With
+$\pi_S$ denoting the softmax weights, its Hessian is
 \begin{equation*}
         \nabla^2 f_\lambda
-        =\sum_S\pi_S\nabla^2Q_S
-        +\lambda\operatorname{Cov}_\pi(\nabla Q_S),
+        =\sum_S\pi_S\nabla^2\widetilde Q_S
+        +\lambda\operatorname{Cov}_\pi(\nabla\widetilde Q_S).
 \end{equation*}
-where $\pi_S$ are the softmax weights.  If
-$\Delta=\widehat\Sigma_U-\Sigma_U$, differentiating the interpolated
+If $\Delta=\widehat\Sigma_U-\Sigma_U$, differentiating the interpolated
 expectation of $\varphi\{f_\lambda/(sL)\}$ gives
 \begin{equation}\label{eq:multiplier-interpolation}
 \begin{split}
@@ -482,20 +467,20 @@ union of two such sets.  The definition of $\eta_n$, the score-size bound,
 and \eqref{eq:multiplier-interpolation} therefore bound the normalized
 derivative by $O_{\Prob}(\eta_n+\eta_n\lambda)$.  The smoothing error is
 $1/\lambda$, so $\lambda=\eta_n^{-1/2}$ gives a normalized $d_3$ error
-$O_{\Prob}(\sqrt{\eta_n})$.  Theorem~\ref{thm:matched-chaos} completes
-the comparison.
+$O_{\Prob}(\sqrt{\eta_n})$.  Combining this interpolation bound with
+Theorem~\ref{thm:matched-chaos} proves the corollary.
 \end{proof}
 
-When the design is jointly Gaussian, the approximation is stronger.  In
-that case
+For jointly Gaussian rows, the score covariance is
 \begin{equation}\label{eq:gaussian-score-covariance}
         \Sigma_U=
         \begin{pmatrix}
         \sigma_0^2C+dd^\top&hd^\top\\
         dh^\top&\sigma_r^2C+hh^\top
-        \end{pmatrix},
+        \end{pmatrix}.
 \end{equation}
-and Gaussian regression couples the empirical and matched scores directly.
+Gaussian regression then couples the empirical and matched scores directly
+under $sL=o(n)$.
 
 \begin{corollary}[Gaussian rows]
 \label{cor:gaussian}
@@ -507,7 +492,7 @@ If $(x_0^{(i)},r^{(i)},X_{-0}^{(i)})$ is jointly Gaussian, then under
         +\frac{T_C(Z_1,Z_2)}{n\sigma_0^2}
         +O_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
-        \right)
+        \right),
 \end{equation*}
 on an extension of the data probability space, with $\Sigma_U$ given by
 \eqref{eq:gaussian-score-covariance}.
@@ -522,25 +507,20 @@ matrix.  Replacing that Gram matrix by the identity and coupling the three
 scalar quadratic sums to Gaussian variables costs
 $O_{\Prob}(\delta_{s,n,p})$ in the standardized sparse score norm.
 The Lipschitz bound for \eqref{eq:search-functional}, together with
-\eqref{eq:score-size}, makes this smaller than the block-Gram error already
-present in \eqref{eq:empirical-chaos}.
+\eqref{eq:score-size}, makes the coupling error smaller than the block-Gram
+error already present in \eqref{eq:empirical-chaos}.
 \end{proof}
 
 \section{Conditional coordinate search}
 
-The matched chaos is statistically simulatable for any positive-definite
-searched covariance blocks, but evaluating \eqref{eq:search-functional}
-by enumeration remains combinatorial.  Its exact marginal increment gives
-a coordinate search that reduces to top-$s$ sorting in the diagonal case.
-For
-\begin{equation*}
-        F_C(S)=-a_S^\top C_{SS}^{-1}b_S
-\end{equation*}
-and $j\notin S$, define the conditional covariance and scores
+Evaluating $T_C(a,b)$ by enumeration is combinatorial for a general
+correlation matrix.  Its exact one-coordinate increment gives a greedy
+search that reduces to top-$s$ sorting when $C=I$.  For $j\notin S$,
+define the conditional variance and scores
 \begin{equation}\label{eq:conditional-scores}
 \begin{aligned}
         c_{j\mid S}
-        &=C_{jj}-C_{jS}C_{SS}^{-1}C_{Sj},\\
+        &=1-C_{jS}C_{SS}^{-1}C_{Sj},\\
         a_{j\mid S}
         &=a_j-C_{jS}C_{SS}^{-1}a_S,\\
         b_{j\mid S}
@@ -549,274 +529,253 @@ and $j\notin S$, define the conditional covariance and scores
 \end{equation}
 Block inversion gives the identity
 \begin{equation}\label{eq:conditional-increment}
-        F_C(S\cup\{j\})-F_C(S)
+        Q_{S\cup\{j\}}(a,b)-Q_S(a,b)
         =-\frac{a_{j\mid S}b_{j\mid S}}{c_{j\mid S}}.
 \end{equation}
-Conditional-product greedy starts with $S_0^{\mathrm{gr}}=\emptyset$ and, for
-$t=1,\ldots,s$, chooses
+Conditional-product greedy starts with $S_0=\emptyset$ and, for
+$t=1,\ldots,s$, sets
 \begin{equation}\label{eq:greedy-rule}
-        j_t\in\mathop{\arg\max}_{j\notin S_{t-1}^{\mathrm{gr}}}
+        j_t\in\mathop{\arg\max}_{j\notin S_{t-1}}
         \left\{-\frac{
-        a_{j\mid S_{t-1}^{\mathrm{gr}}}
-        b_{j\mid S_{t-1}^{\mathrm{gr}}}}
-        {c_{j\mid S_{t-1}^{\mathrm{gr}}}}\right\},
+        a_{j\mid S_{t-1}}b_{j\mid S_{t-1}}}
+        {c_{j\mid S_{t-1}}}\right\},
         \qquad
-        S_t^{\mathrm{gr}}=S_{t-1}^{\mathrm{gr}}\cup\{j_t\}.
+        S_t=S_{t-1}\cup\{j_t\}.
 \end{equation}
-The increments telescope, so $F_C(S_s^{\mathrm{gr}})$ is their sum.
-Rank-one updates
-of the conditional covariance and the two conditional score vectors give
-a polynomial-time implementation.  If $C$ is diagonal,
-\eqref{eq:greedy-rule} selects the largest $s$ values of
-$-a_jb_j/C_{jj}$ and is exactly the separable top-$s$ construction.
+The increments telescope, and rank-one updates of the conditional
+variance and scores give a polynomial-time implementation.  When $C=I$,
+the rule selects the largest $s$ products $-a_jb_j$.
 
-The following result quantifies how the greedy path changes when the
-reachable correlation blocks depart from the identity.  Put
-\begin{equation}\label{eq:standardized-objects}
-\begin{aligned}
-        D&=\diag(C),
-        &R&=D^{-1/2}CD^{-1/2},\\
-        \bar a&=D^{-1/2}a,
-        &\bar b&=D^{-1/2}b,
-\end{aligned}
-\end{equation}
-and write
+Write
 \begin{equation}\label{eq:sparse-euclidean-norm}
         \norm{v}_{2,s}
         =\sup_{S\subseteq[p],\,|S|\le s}\norm{v_S}_2.
 \end{equation}
-The manuscript's local-isotropy coefficient is
+The local-isotropy coefficient is
 \begin{equation}\label{eq:local-isotropy}
         \rho_s(C)
-        =\sup_{|J|\le2s}\norm{R_{JJ}-I}_{\mathrm{op}}.
+        =\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
 \end{equation}
 
-\begin{theorem}[Conditional-product search]
+\begin{theorem}[Greedy search under local isotropy]
 \label{thm:conditional-search}
-Suppose $\rho=\rho_s(C)\le1/2$.  The support $S_s^{\mathrm{gr}}$ returned by
-\eqref{eq:greedy-rule} satisfies
+Suppose $\rho=\rho_s(C)\le1/2$, and let $S^\circ$ contain the largest $s$
+singleton scores $w_j=-a_jb_j$.  Let $\widehat S$ be whichever of
+$S^\circ$ and $S_s$ has the larger value of $Q_S(a,b)$.  Then
+\begin{equation}\label{eq:safeguarded-regret}
+        0\le T_C(a,b)-Q_{\widehat S}(a,b)
+        \le\frac{2\rho}{1-\rho}
+        \norm{a}_{2,s}\norm{b}_{2,s}.
+\end{equation}
+The greedy support itself satisfies
 \begin{equation}\label{eq:greedy-regret}
 \begin{split}
-        0\le T_C(a,b)-F_C(S_s^{\mathrm{gr}})
+        0\le T_C(a,b)-Q_{S_s}(a,b)
         \lesssim{}&
-        \rho\norm{\bar a}_{2,s}\norm{\bar b}_{2,s}\\
+        \rho\norm{a}_{2,s}\norm{b}_{2,s}\\
         &+s\rho\left(
-        \norm{\bar a}_\infty\norm{\bar b}_{2,s}
-        +\norm{\bar b}_\infty\norm{\bar a}_{2,s}
+        \norm{a}_\infty\norm{b}_{2,s}
+        +\norm{b}_\infty\norm{a}_{2,s}
         \right)\\
-        &+s\rho^2\norm{\bar a}_{2,s}\norm{\bar b}_{2,s}.
+        &+s\rho^2\norm{a}_{2,s}\norm{b}_{2,s}.
 \end{split}
-\end{equation}
-
-There is also a safeguarded version with the same first-order condition as
-ordinary separability.  Let $S^\circ$ contain the largest $s$ singleton
-scores
-\begin{equation*}
-        w_j=-\bar a_j\bar b_j=-\frac{a_jb_j}{C_{jj}},
-\end{equation*}
-and let $S^{\mathrm{alg}}$ be whichever of $S^\circ$ and
-$S_s^{\mathrm{gr}}$ has the larger value of $F_C$.  Then
-\begin{equation}\label{eq:safeguarded-regret}
-        0\le T_C(a,b)-F_C(S^{\mathrm{alg}})
-        \le\frac{2\rho}{1-\rho}
-        \norm{\bar a}_{2,s}\norm{\bar b}_{2,s}.
 \end{equation}
 \end{theorem}
 
 \begin{proof}
-Write $W(S)=\sum_{j\in S}w_j$.  Restricted inverse perturbation gives
+Restricted inverse perturbation gives, uniformly over $|S|\le s$,
 \begin{equation}\label{eq:objective-error}
-        \epsilon_s
-        :=\sup_{|S|\le s}|F_C(S)-W(S)|
+        \left|Q_S(a,b)-\sum_{j\in S}w_j\right|
         \le\frac{\rho}{1-\rho}
-        \norm{\bar a}_{2,s}\norm{\bar b}_{2,s}.
+        \norm{a}_{2,s}\norm{b}_{2,s}.
 \end{equation}
-For a candidate $j\notin S$, the standardized version of
-\eqref{eq:conditional-increment} is
+The largest sum of $s$ singleton scores is attained at $S^\circ$.
+Applying \eqref{eq:objective-error} to $S^\circ$ and to an optimal support
+proves \eqref{eq:safeguarded-regret}.
+
+For $j\notin S$, local isotropy gives
 \begin{equation*}
-        -\frac{(\bar a_j-u)(\bar b_j-v)}{1-z},
-\end{equation*}
-where
-\begin{equation*}
-        u=R_{jS}R_{SS}^{-1}\bar a_S,
-        \quad
-        v=R_{jS}R_{SS}^{-1}\bar b_S,
-        \quad
-        z=R_{jS}R_{SS}^{-1}R_{Sj}.
-\end{equation*}
-Local isotropy implies
-\begin{equation*}
-        |u|\le\frac{\rho}{1-\rho}\norm{\bar a}_{2,s},
+        |a_j-a_{j\mid S}|
+        \le\frac{\rho}{1-\rho}\norm{a}_{2,s},
         \qquad
-        |v|\le\frac{\rho}{1-\rho}\norm{\bar b}_{2,s},
+        |b_j-b_{j\mid S}|
+        \le\frac{\rho}{1-\rho}\norm{b}_{2,s},
         \qquad
-        0\le z\le\frac{\rho^2}{1-\rho}.
+        0\le1-c_{j\mid S}\le\frac{\rho^2}{1-\rho}.
 \end{equation*}
-It follows that the marginal perturbation
-\begin{equation*}
-        \omega_s
-        :=\sup_{\substack{|S|<s\\j\notin S}}
-        |F_C(S\cup\{j\})-F_C(S)-w_j|
-\end{equation*}
-obeys
+Together with \eqref{eq:conditional-increment}, these bounds imply
 \begin{equation}\label{eq:marginal-error}
-        \omega_s\lesssim
+\begin{split}
+        \sup_{\substack{|S|<s\\j\notin S}}
+        \left|Q_{S\cup\{j\}}(a,b)-Q_S(a,b)-w_j\right|
+        \lesssim{}&
         \rho\left(
-        \norm{\bar a}_\infty\norm{\bar b}_{2,s}
-        +\norm{\bar b}_\infty\norm{\bar a}_{2,s}
+        \norm{a}_\infty\norm{b}_{2,s}
+        +\norm{b}_\infty\norm{a}_{2,s}
         \right)
-        +\rho^2\norm{\bar a}_{2,s}\norm{\bar b}_{2,s}.
+        +\rho^2\norm{a}_{2,s}\norm{b}_{2,s}.
+\end{split}
 \end{equation}
 
-At iteration $t$, at least one of the $t$ largest singleton scores remains
-unselected.  If $w_{(t)}$ is the $t$th largest singleton score, the greedy
-choice and \eqref{eq:marginal-error} give
-\begin{equation*}
-        w_{j_t}\ge w_{(t)}-2\omega_s.
-\end{equation*}
-Summing over $t\le s$ and using \eqref{eq:objective-error} on the greedy
-and optimal supports yields
-\begin{equation*}
-        T_C(a,b)-F_C(S_s^{\mathrm{gr}})
-        \le2s\omega_s+2\epsilon_s,
-\end{equation*}
-which proves \eqref{eq:greedy-regret}.  For the safeguard, the optimal
-value is at most $W(S^\circ)+\epsilon_s$, while
-$F_C(S^\circ)\ge W(S^\circ)-\epsilon_s$.  This proves
-\eqref{eq:safeguarded-regret}.
+Let $w_{(t)}$ be the $t$th largest singleton score.  At iteration $t$, one
+of the $t$ largest scores remains unselected, so the greedy rule and
+\eqref{eq:marginal-error} put $w_{j_t}$ at most twice the right-hand side
+of \eqref{eq:marginal-error} below $w_{(t)}$.  Summing over $t\le s$ and
+applying \eqref{eq:objective-error} to the greedy and optimal supports
+proves \eqref{eq:greedy-regret}.
 \end{proof}
 
-The safeguard is computationally inexpensive, but its role is substantive:
-it keeps the ordinary top-$s$ guarantee when local isotropy already makes
-the objective nearly additive, while conditional-product greedy may improve
-the selected support when the covariance correction matters.
-
-\begin{corollary}[A stochastic conditional top-$s$ approximator]
+\begin{corollary}[Stochastic greedy approximation]
 \label{cor:stochastic-search}
-Retain the sub-Gaussian assumptions of
-Theorem~\ref{thm:matched-chaos} with $(sL)^4=o(n)$, or the jointly
-Gaussian assumptions of Corollary~\ref{cor:gaussian} with $sL=o(n)$.
-Suppose $\rho_s(C)=o(1)$.
-Apply the safeguarded conditional-product algorithm to one draw
-$(Z_1,Z_2)$ from \eqref{eq:matched-gaussian}.  Then
+Suppose $\rho_s(C)=o(1)$ and either the assumptions of
+Theorem~\ref{thm:matched-chaos} hold with $(sL)^4=o(n)$ or the jointly
+Gaussian assumptions of Corollary~\ref{cor:gaussian} hold with
+$sL=o(n)$.  Let $\widehat S$ be the safeguarded support computed from
+$(Z_1,Z_2)$.  Then
 \begin{equation}\label{eq:algorithmic-chaos}
-        T_C(Z_1,Z_2)-F_C(S^{\mathrm{alg}})
-        =o_{\Prob}(\sigma_0\sigma_rsL),
+        T_C(Z_1,Z_2)-Q_{\widehat S}(Z_1,Z_2)
+        =o_{\Prob}(\sigma_0\sigma_rsL).
 \end{equation}
-When this scalar chaos value is coupled to the data as in
-Theorem~\ref{thm:matched-chaos} or Corollary~\ref{cor:gaussian}, the
-searched coefficient is approximated by
+Under the coupling in Theorem~\ref{thm:matched-chaos} or
+Corollary~\ref{cor:gaussian},
 \begin{equation}\label{eq:algorithmic-approximator}
-        \widehat\beta_{0,\emptyset}
-        +\frac{F_C(S^{\mathrm{alg}})}{n\sigma_0^2}
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{Q_{\widehat S}(Z_1,Z_2)}{n\sigma_0^2}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right).
 \end{equation}
-with vanishing normalized additive error on its $sL/n$ search scale.
-An independent matched Gaussian draw gives the corresponding
-distributional approximator rather than a pathwise approximation to the
-realized coefficient.
-For the multiplier draw in \eqref{eq:multiplier}, the corresponding
-safeguarded statistic has the same conditional $d_3$ approximation as in
-Corollary~\ref{cor:multiplier}.
+An independent draw of $Z$ also gives
+\begin{equation}\label{eq:algorithmic-distribution}
+\begin{split}
+        d_3\!\left(
+        \frac{n\sigma_0}{\sigma_rsL}
+        \left\{
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        -\widehat\beta_{0,\emptyset}
+        \right\},
+        \frac{Q_{\widehat S}(Z_1,Z_2)}
+        {\sigma_0\sigma_rsL}
+        \right)=o(1).
+\end{split}
+\end{equation}
+Whenever Corollary~\ref{cor:multiplier} applies, the conditional version
+of \eqref{eq:algorithmic-distribution} holds with
+$Q_{\widehat S^\#}(Z_1^\#,Z_2^\#)$, where $\widehat S^\#$ is the
+safeguarded support computed from $Z^\#$.
 
 The safeguard can be omitted if, in addition,
 \begin{equation}\label{eq:coordinate-proxies}
 \begin{split}
-        \max_{j\le p}\frac{|d_j|}{\sigma_0\sqrt{C_{jj}}}
+        \max_{j\le p}\frac{|d_j|}{\sigma_0}
         &\lesssim\sqrt{\frac{L}{n}},\\
-        \max_{j\le p}\frac{|h_j|}{\sigma_r\sqrt{C_{jj}}}
+        \max_{j\le p}\frac{|h_j|}{\sigma_r}
         &\lesssim\sqrt{\frac{L}{n}},
 \end{split}
 \end{equation}
 and
 \begin{equation}\label{eq:greedy-rate}
         \rho_s(C)
-        \sqrt{\frac{s\log(ep)}{\log(ep/s)}}\longrightarrow0.
+        \sqrt{\frac{s\log(ep)}{L}}\longrightarrow0.
 \end{equation}
-Under \eqref{eq:greedy-rate}, conditional-product greedy itself satisfies
-\eqref{eq:algorithmic-chaos}.
+Under \eqref{eq:greedy-rate}, \eqref{eq:algorithmic-chaos} holds with
+$S_s$ in place of $\widehat S$.
 \end{corollary}
 
 \begin{proof}
-The relative sub-Gaussian assumption and \eqref{eq:proxy-energy} give
+Lemma~\ref{lem:sparse-score-moments} and local isotropy give
 \begin{equation*}
 \begin{aligned}
-        \norm{\overline Z_1}_{2,s}
-        &=O_{\Prob}(\sigma_0\sqrt{sL}),
-        &\norm{\overline Z_2}_{2,s}
-        &=O_{\Prob}(\sigma_r\sqrt{sL}),
+        \E\norm{Z_1}_{2,s}^2
+        &\lesssim\sigma_0^2sL,
+        &\E\norm{Z_2}_{2,s}^2
+        &\lesssim\sigma_r^2sL.
 \end{aligned}
 \end{equation*}
-where $\overline Z_j=D^{-1/2}Z_j$.  Equation
-\eqref{eq:safeguarded-regret} proves \eqref{eq:algorithmic-chaos} under
-$\rho_s(C)=o(1)$.  If \eqref{eq:coordinate-proxies} also holds, then
+Hence the expected value of the normalized regret in
+\eqref{eq:safeguarded-regret} is $O(\rho_s(C))$.  This proves
+\eqref{eq:algorithmic-chaos}.  Combining the regret bound with
+Theorem~\ref{thm:matched-chaos} or Corollary~\ref{cor:gaussian} proves
+\eqref{eq:algorithmic-approximator} and
+\eqref{eq:algorithmic-distribution}.
+
+By Markov's inequality, the moment bounds above also give
+$\norm{Z_1}_{2,s}=O_{\Prob}(\sigma_0\sqrt{sL})$ and
+$\norm{Z_2}_{2,s}=O_{\Prob}(\sigma_r\sqrt{sL})$.  If
+\eqref{eq:coordinate-proxies} holds, then
 \begin{equation*}
-        \norm{\overline Z_1}_\infty
+        \norm{Z_1}_\infty
         =O_{\Prob}(\sigma_0\sqrt{\log(ep)}),
         \qquad
-        \norm{\overline Z_2}_\infty
+        \norm{Z_2}_\infty
         =O_{\Prob}(\sigma_r\sqrt{\log(ep)}).
 \end{equation*}
-Substitution of these four score bounds into \eqref{eq:greedy-regret}
-proves the greedy-only
-claim under \eqref{eq:greedy-rate}.  The statistical conclusions follow
-from Theorem~\ref{thm:matched-chaos}, Corollary~\ref{cor:multiplier}, or
-Corollary~\ref{cor:gaussian}, according to the distributional regime.
-For the multiplier version, Lemma~\ref{lem:multiplier-covariance} and a
-conditional Gaussian net argument give, in outer probability,
+Substituting the four score bounds into \eqref{eq:greedy-regret} proves
+\eqref{eq:algorithmic-chaos} with $S_s$ in place of $\widehat S$.
+
+For the multiplier version of \eqref{eq:algorithmic-distribution}, write
+$\E^\#$ for expectation over the multipliers conditional on the data.
+Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net
+argument give
 \begin{equation*}
-\begin{split}
-        \norm{D^{-1/2}(\sqrt n\,d+G_1^\#)}_{2,s}
-        &=O_{\Prob^\#}(\sigma_0\sqrt{sL}),\\
-        \norm{D^{-1/2}(\sqrt n\,h+G_2^\#)}_{2,s}
-        &=O_{\Prob^\#}(\sigma_r\sqrt{sL}).
-\end{split}
+\begin{aligned}
+        \E^\#\norm{Z_1^\#}_{2,s}^2
+        &=O_{\Prob}(\sigma_0^2sL),
+        &\E^\#\norm{Z_2^\#}_{2,s}^2
+        &=O_{\Prob}(\sigma_r^2sL).
+\end{aligned}
 \end{equation*}
-Thus \eqref{eq:safeguarded-regret} also changes the multiplier chaos by
-$o_{\Prob^\#}(\sigma_0\sigma_rsL)$, which justifies the conditional
-$d_3$ statement.
+The safeguard therefore satisfies
+\begin{equation*}
+        \E^\#\!\left[
+        \frac{T_C(Z_1^\#,Z_2^\#)
+        -Q_{\widehat S^\#}(Z_1^\#,Z_2^\#)}
+        {\sigma_0\sigma_rsL}
+        \right]
+        =O_{\Prob}(\rho_s(C))=o_{\Prob}(1).
+\end{equation*}
+Together with Corollary~\ref{cor:multiplier}, this proves the conditional
+version of \eqref{eq:algorithmic-distribution}.
 \end{proof}
 
-\section{What restricted conditioning provides}
+\section{Aligned scores}
 
-The generic objective is signed, so restricted conditioning alone cannot
-make it monotone or submodular.  It does give a broader guarantee in the
-aligned case, where the two score vectors point in opposite directions.
+When $b=-a$, restricted conditioning yields a multiplicative guarantee.
 
-\begin{proposition}[Aligned scores]
+\begin{proposition}[Restricted conditioning]
 \label{prop:aligned}
-Suppose $b=-a$ and the manuscript's restricted condition number satisfies
+Suppose $b=-a$ and
 \begin{equation*}
         \kappa_s(C)
         =\sup_{|J|\le2s}
-        \frac{\lambda_{\max}(R_{JJ})}
-        {\lambda_{\min}(R_{JJ})}
+        \frac{\lambda_{\max}(C_{JJ})}
+        {\lambda_{\min}(C_{JJ})}
         \le K.
 \end{equation*}
 Conditional-product greedy then satisfies
 \begin{equation}\label{eq:aligned-greedy}
-        F_C(S_s^{\mathrm{gr}})
+        Q_{S_s}(a,-a)
         \ge\left(1-e^{-1/K}\right)
-        \sup_{|S|\le s}F_C(S).
+        \max_{|S|\le s}Q_S(a,-a).
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-After the standardization in \eqref{eq:standardized-objects},
-$F_C(S)=\bar a_S^\top R_{SS}^{-1}\bar a_S$ is nonnegative and monotone.
-For disjoint $L,S$, let $\bar a_{S\mid L}$ and $R_{S\mid L}$ denote the
-conditional score and Schur complement, and put $J=L\cup S$.
+$Q_S(a,-a)=a_S^\top C_{SS}^{-1}a_S$ is nonnegative and monotone.  For
+disjoint $A,S$, let $a_{S\mid A}$ and $C_{S\mid A}$ denote the conditional
+score and Schur complement, and put $J=A\cup S$.
 The eigenvalues of the Schur complement lie between the extreme
-eigenvalues of $R_{JJ}$, so
+eigenvalues of $C_{JJ}$, so
 \begin{equation*}
 \begin{split}
-        F_C(L\cup S)-F_C(L)
-        &=\bar a_{S\mid L}^\top
-        R_{S\mid L}^{-1}\bar a_{S\mid L}
-        \le\frac{\norm{\bar a_{S\mid L}}_2^2}
-        {\lambda_{\min}(R_{JJ})},\\
-        \sum_{j\in S}\{F_C(L\cup\{j\})-F_C(L)\}
-        &\ge\frac{\norm{\bar a_{S\mid L}}_2^2}
-        {\lambda_{\max}(R_{JJ})}.
+        Q_{A\cup S}(a,-a)-Q_A(a,-a)
+        &=a_{S\mid A}^\top C_{S\mid A}^{-1}a_{S\mid A}
+        \le\frac{\norm{a_{S\mid A}}_2^2}
+        {\lambda_{\min}(C_{JJ})},\\
+        \sum_{j\in S}\{Q_{A\cup\{j\}}(a,-a)-Q_A(a,-a)\}
+        &\ge\frac{\norm{a_{S\mid A}}_2^2}
+        {\lambda_{\max}(C_{JJ})}.
 \end{split}
 \end{equation*}
 The submodularity ratio is therefore at least $1/K$.  The usual greedy
@@ -825,110 +784,98 @@ $1-1/(Ks)$ at each of the $s$ iterations, which proves
 \eqref{eq:aligned-greedy}.
 \end{proof}
 
-This multiplicative argument does not extend to the matched bilinear
-chaos, since polarization writes
+For general $a,b$, polarization gives
 \begin{equation}\label{eq:polarization}
-        -a_S^\top C_{SS}^{-1}b_S
+        Q_S(a,b)
         =\frac14\left\{
         (a-b)_S^\top C_{SS}^{-1}(a-b)_S
         -(a+b)_S^\top C_{SS}^{-1}(a+b)_S
         \right\}.
 \end{equation}
-The objective is a difference of two monotone quadratic set functions.
-The limitation is genuine even under small correlations.  For $s=2$,
-take $\gamma>0$, $0<\epsilon<1/\sqrt2$, and
+Thus the support value is a difference of two monotone quadratic set
+functions.  Even arbitrarily small correlations allow greedy search to
+fail.  For $s=2$ and $0<\tau<1/\sqrt2$, take
 \begin{equation*}
         C=
         \begin{pmatrix}
-        1&\epsilon&\epsilon\\
-        \epsilon&1&0\\
-        \epsilon&0&1
+        1&\tau&\tau\\
+        \tau&1&0\\
+        \tau&0&1
         \end{pmatrix},
         \quad
-        a=(\theta,\theta^{-1},\theta^{-1})^\top,
+        a=(\tau^{-1},\tau,\tau)^\top,
         \quad
-        b=(-(1+\gamma)\theta^{-1},-\theta,-\theta)^\top.
+        b=(-2\tau,-\tau^{-1},-\tau^{-1})^\top.
 \end{equation*}
-The first singleton score is largest, so greedy selects coordinate one,
-whereas $F_C(\{2,3\})=2$.  Its final value is
+The singleton scores are $2,1,1$, so greedy selects coordinate $1$, while
+$Q_{\{2,3\}}(a,b)=2$.  The resulting greedy support has value
 \begin{equation*}
-        \frac{2+\gamma-\epsilon\{\theta^2+(1+\gamma)\theta^{-2}\}}
-        {1-\epsilon^2}.
+        Q_{S_2}(a,b)
+        =\frac{3-\tau^{-1}-2\tau^3}{1-\tau^2}
+        \longrightarrow-\infty.
 \end{equation*}
-Taking $\theta=\epsilon^{-1}$ sends this value to $-\infty$ while
-$\rho_s(C)=\sqrt2\epsilon\to0$.  A generic
-greedy theorem must therefore control the score geometry as in
-\eqref{eq:greedy-regret}; covariance assumptions alone cannot provide a
-relative guarantee.
+At the same time, $\rho_s(C)=\sqrt2\tau\to0$.  Thus covariance control
+alone gives no relative guarantee; the additive bound
+\eqref{eq:greedy-regret} also depends on sparse norms of $a$ and $b$.
 
-\section{Relation to the manuscript assumptions}
+\section{Manuscript assumptions}
 
-The matched-chaos theorem uses the manuscript's distributional assumption
-without adding local isotropy, restricted conditioning, or global overlap.
-Its population condition \eqref{eq:proxy-energy} is the invariant version
-of the manuscript's coordinatewise proxy caps.  To see the connection,
-suppose the controls have unit variance and $\rho_s(C)=o(1)$.  Then
+The scale $\delta_{s,n,p}$ controls the whitened block-Gram event
+\eqref{eq:block-gram} and hence the empirical reduction
+\eqref{eq:empirical-chaos}.  Replacing $Z_n$ by $Z$ requires
+$(sL)^4=o(n)$, while the direct coupling for Gaussian rows requires only
+$sL=o(n)$.  The local-isotropy coefficient $\rho_s(C)$ enters the greedy
+approximation, and the restricted condition number $\kappa_s(C)$ enters
+the aligned guarantee.
+
+Under $\rho_s(C)=o(1)$, coordinatewise and invariant proxy bounds are
+related by
 \begin{equation}\label{eq:coordinate-to-invariant}
-        \norm{d}_{C,2s}
-        \le\frac{\sqrt{2s}\max_j|d_j|}
-        {\sqrt{1-\rho_s(C)}},
+        \norm{v}_{C,2s}
+        \le\frac{\sqrt{2s}\norm{v}_\infty}
+        {\sqrt{1-\rho_s(C)}}
+        \qquad(v\in\R^p).
 \end{equation}
-with the same inequality for $C\beta_{-0}$.  The coordinate caps of the
-separable theorem therefore imply the first bound in
-\eqref{eq:proxy-energy} and the corresponding bound for
-$C\beta_{-0}$.  The small-alignment condition below converts the latter
-into the bound for $h$.  The converse need not hold, since the invariant
-condition permits a small number of larger proxy coordinates.
+Thus the manuscript's caps on $d/\sigma_0$ and
+$C\beta_{-0}/\varsigma$ at order $\sqrt{L/n}$ imply the corresponding
+covariance-normalized bounds at order $\delta_{s,n,p}$.  The invariant
+bounds permit individual coordinates to be larger.
 
-The outcome quantity also matches the one used in the bounds.  With
+The manuscript's outcome-energy quantities are
 \begin{equation*}
         \varsigma^2
-        =\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2,
+        =\Var(y^{(i)}-\beta_0x_0^{(i)})
+        =\beta_{-0}^\top C\beta_{-0}+\Var(\varepsilon^{(i)}),
         \qquad
         \Psi_s^2
-        =\sup_{|J|\le s}
+        =\max_{|J|\le s}
         (C\beta_{-0})_J^\top C_{JJ}^{-1}
-        (C\beta_{-0})_J,
+        (C\beta_{-0})_J.
 \end{equation*}
-the diffuse regime $\Psi_s\lesssim\varsigma\delta_{s,n,p}$ is the
-unresidualized version of the second condition in
-\eqref{eq:proxy-energy}.  Moreover,
-\begin{equation}\label{eq:alignment-translation}
-        h=C\beta_{-0}
-        -\frac{d^\top\beta_{-0}}{\sigma_0^2}d,
-        \qquad
-        \sigma_r^2
-        =\varsigma^2
-        -\frac{(d^\top\beta_{-0})^2}{\sigma_0^2}.
-\end{equation}
-The manuscript's small-alignment condition
-$|d^\top\beta_{-0}|=o(\sigma_0\varsigma\delta_{s,n,p})$, together with
-the bound for $d$ in \eqref{eq:proxy-energy}, gives
+A partition of each $2s$-set into two $s$-sets gives
+\begin{equation*}
+        \norm{C\beta_{-0}}_{C,2s}^2
+        \le\frac{2\{1+\rho_s(C)\}}{1-\rho_s(C)}\Psi_s^2.
+\end{equation*}
+Thus $\Psi_s\lesssim\varsigma\delta_{s,n,p}$ yields the required bound
+for $C\beta_{-0}$.  If, in addition,
+$|d^\top\beta_{-0}|=o(\sigma_0\varsigma\delta_{s,n,p})$, then
+\eqref{eq:residual-outcome}, $sL=o(n)$, and the first bound in
+\eqref{eq:proxy-energy} give
 \begin{equation*}
         \frac{\sigma_r}{\varsigma}\longrightarrow1,
         \qquad
         \norm{h-C\beta_{-0}}_{C,2s}
         =o(\varsigma\delta_{s,n,p}^2).
 \end{equation*}
-Thus the changes in \eqref{eq:alignment-translation} are negligible on
-the $sL/n$ search scale.
+Thus either the coordinatewise cap on $C\beta_{-0}/\varsigma$ or the
+$\Psi_s$ condition, together with small alignment and the first bound in
+\eqref{eq:proxy-energy}, implies the second bound.
 
-The sample step is governed by exactly the manuscript's whitened
-block-Gram event \eqref{eq:block-gram}.  Under the shared sub-Gaussian
-assumption its error is $O_{\Prob}(\delta_{s,n,p})$, which explains the
-$O_{\Prob}(\delta_{s,n,p}^3)$ remainder in
-\eqref{eq:empirical-chaos}.  The stronger condition $(sL)^4=o(n)$ enters
-only when the non-Gaussian empirical score sum is replaced by a stochastic
-Gaussian draw.  The Gaussian model avoids that strengthening through the
-direct coupling in Corollary~\ref{cor:gaussian}.
-
-Finally, matching $\Sigma_U$ removes the manuscript's negligible-cumulant
-condition from the covariance-aware approximation.  If one also wants all
-Gaussian score coordinates to be mutually independent, a clean sufficient
-condition is that the normalized fourth-cumulant matrices are $o(1)$ in
-restricted operator norm over the same $2s$ blocks.  Entrywise $o(1)$
-cumulants do not imply that condition when $s$ grows.  The matched and
-multiplier constructions avoid this loss: they retain the dependence and
-search it through the original covariance geometry.
+Because $\Sigma_U$ and $\widehat\Sigma_U$ retain fourth-moment dependence,
+vanishing normalized fourth-cumulant blocks in restricted operator norm
+give a sufficient condition for a uniform diagonal Gaussian replacement
+over size-$s$ supports.  Entrywise convergence is insufficient when $s$
+grows.
 
 \end{document}
