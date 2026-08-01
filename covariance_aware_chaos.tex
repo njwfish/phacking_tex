@@ -42,9 +42,9 @@ corresponding conditional approximation from the row scores.
 Conditional-product greedy maximizes the exact Schur-complement increments
 and becomes top-$s$ sorting when the controls are uncorrelated.  For every
 score pair and every control covariance with nonsingular sparse principal
-blocks, its regret is bounded by the aggregate equal-depth oscillation of
+blocks, its regret is bounded by the aggregate equal-depth variation of
 the coordinate marginals.  The regret bound yields a stochastic
-approximation whenever this oscillation is negligible.  Local isotropy
+approximation whenever this variation is negligible.  Local isotropy
 verifies that condition when $\rho_s(C)\sqrt{s}\to0$, giving a
 polynomial-time approximation to the searched coefficient.
 \end{abstract}
@@ -383,13 +383,14 @@ Let $\bar U=n^{-1}\sum_iU^{(i)}$ and define
 \end{equation*}
 Conditionally on the data, let $e_i\sim N(0,1)$ be independent and set
 \begin{equation}\label{eq:multiplier}
-        Z^\#=\begin{pmatrix}Z_1^\#\\Z_2^\#\end{pmatrix}
+        \widehat Z=\begin{pmatrix}\widehat Z_1\\\widehat Z_2\end{pmatrix}
         :=\begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
         +\frac1{\sqrt n}\sum_{i=1}^ne_i(U^{(i)}-\bar U).
 \end{equation}
-Conditionally on the observations, $Z^\#$ is Gaussian with the same mean
-as $Z$ and covariance $\widehat\Sigma_U$.  It is oracle because $d$, $h$,
-and $r$ contain population quantities.
+Conditionally on the observations, $\widehat Z$ is Gaussian with the same
+mean as $Z$ and covariance $\widehat\Sigma_U$.  Write $\Prob_e$ for
+probability over the multipliers given the observations.  The construction
+is oracle because $d$, $h$, and $r$ contain population quantities.
 
 \begin{lemma}[Sparse multiplier covariance]
 \label{lem:multiplier-covariance}
@@ -437,7 +438,7 @@ $\bar U\bar U^\top$ is smaller by the score-size bound.
 Under the assumptions of Theorem~\ref{thm:matched-chaos}, including
 $(sL)^4=o(n)$, the conditional law of
 \begin{equation}\label{eq:multiplier-statistic}
-        \frac{T_C(Z_1^\#,Z_2^\#)}{\sigma_0\sigma_rsL}
+        \frac{T_C(\widehat Z_1,\widehat Z_2)}{\sigma_0\sigma_rsL}
 \end{equation}
 has $d_3$ distance $o_{\Prob}(1)$ from the law of the normalized searched
 displacement in \eqref{eq:smooth-approximation}.
@@ -549,36 +550,39 @@ $t=1,\ldots,s$, sets
         S_t=S_{t-1}\cup\{j_t\}.
 \end{equation}
 Its terminal value is
-\begin{equation}\label{eq:greedy-functional}
-        T_C^{\mathrm{gr}}(a,b):=Q_{S_s}(a,b)
+\begin{equation}\label{eq:greedy-value}
+        \widetilde T_C(a,b):=Q_{S_s}(a,b)
         =\sum_{t=1}^s\Delta_{j_t}(S_{t-1};a,b).
 \end{equation}
 Given $C$, rank-one updates of \eqref{eq:conditional-scores} compute
-$T_C^{\mathrm{gr}}$ without enumerating the $\binom ps$ supports.  When
+$\widetilde T_C$ without enumerating the $\binom ps$ supports.  When
 $C=I$, the rule selects the largest $s$ products $-a_jb_j$, so
-$T_I^{\mathrm{gr}}=T_I$.
+$\widetilde T_I=T_I$.
 
-The aggregate equal-depth oscillation is
-\begin{equation}\label{eq:marginal-oscillation}
-\begin{split}
-        \operatorname{osc}_{C,s}(a,b)
+The aggregate marginal variation sums, over distinct coordinates, the
+range of each marginal across supports at the same depth:
+\begin{equation}\label{eq:marginal-variation}
+\begin{aligned}
+        V_C(a,b)
         :=\max_{\substack{j_1,\ldots,j_s\in[p]\\
         \text{distinct}}}
         \sum_{t=1}^s
-        \max_{\substack{R,R'\subseteq[p]\setminus\{j_t\}\\
-        |R|=|R'|=t-1}}
-        \left|\Delta_{j_t}(R;a,b)-\Delta_{j_t}(R';a,b)\right|.
-\end{split}
+        \left\{
+        \max_R\Delta_{j_t}(R;a,b)
+        -\min_R\Delta_{j_t}(R;a,b)
+        \right\}.
+\end{aligned}
 \end{equation}
-The oscillation compares a coordinate only across histories of the same
-size; it makes no comparison across search depths.
+In the $t$th summand, both extrema are over
+$R\subseteq[p]\setminus\{j_t\}$ with $|R|=t-1$.  Thus $V_C$ compares
+a coordinate only across histories of the same size.
 
-\begin{theorem}[Greedy regret from marginal oscillation]
+\begin{theorem}[Greedy regret]
 \label{thm:greedy-regret}
 For every $a,b\in\R^p$, conditional-product greedy satisfies
 \begin{equation}
-        0\le T_C(a,b)-T_C^{\mathrm{gr}}(a,b)
-        \le\operatorname{osc}_{C,s}(a,b).
+        0\le T_C(a,b)-\widetilde T_C(a,b)
+        \le V_C(a,b).
 \end{equation}
 \end{theorem}
 
@@ -596,12 +600,12 @@ give
 Telescoping both support values yields
 \begin{equation*}
 \begin{split}
-        T_C(a,b)-T_C^{\mathrm{gr}}(a,b)
+        T_C(a,b)-\widetilde T_C(a,b)
         &\le\sum_{t=1}^s\left\{
         \Delta_{k_t}(J_{t-1};a,b)
         -\Delta_{k_t}(S_{t-1};a,b)
         \right\}\\
-        &\le\operatorname{osc}_{C,s}(a,b).
+        &\le V_C(a,b).
 \end{split}
 \end{equation*}
 The lower bound follows from the definition of $T_C$.
@@ -611,14 +615,14 @@ The lower bound follows from the definition of $T_C$.
 \label{cor:empirical-greedy}
 Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold.  If
 \begin{equation}
-        \operatorname{osc}_{C,s}(Z_{1n},Z_{2n})
+        V_C(Z_{1n},Z_{2n})
         =o_{\Prob}(\sigma_0\sigma_rsL),
 \end{equation}
 then
 \begin{equation}\label{eq:empirical-greedy}
         \sup_{|S|=s}\widehat\beta_{0,S}
         =\widehat\beta_{0,\emptyset}
-        +\frac{T_C^{\mathrm{gr}}(Z_{1n},Z_{2n})}{n\sigma_0^2}
+        +\frac{\widetilde T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
         +o_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
         \right).
@@ -634,15 +638,15 @@ result because $\delta_{s,n,p}^3=o(sL/n)$.
 \label{cor:matched-greedy}
 Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
 $(sL)^4=o(n)$.  If
-\begin{equation}\label{eq:matched-marginal-stability}
-        \operatorname{osc}_{C,s}(Z_1,Z_2)
+\begin{equation}\label{eq:matched-variation}
+        V_C(Z_1,Z_2)
         =o_{\Prob}(\sigma_0\sigma_rsL),
 \end{equation}
 then the coupling in Theorem~\ref{thm:matched-chaos} satisfies
 \begin{equation}\label{eq:algorithmic-approximator}
         \sup_{|S|=s}\widehat\beta_{0,S}
         =\widehat\beta_{0,\emptyset}
-        +\frac{T_C^{\mathrm{gr}}(Z_1,Z_2)}{n\sigma_0^2}
+        +\frac{\widetilde T_C(Z_1,Z_2)}{n\sigma_0^2}
         +o_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
         \right).
@@ -656,20 +660,20 @@ An independent matched Gaussian draw also gives
         \sup_{|S|=s}\widehat\beta_{0,S}
         -\widehat\beta_{0,\emptyset}
         \right\},
-        \frac{T_C^{\mathrm{gr}}(Z_1,Z_2)}{\sigma_0\sigma_rsL}
+        \frac{\widetilde T_C(Z_1,Z_2)}{\sigma_0\sigma_rsL}
         \right)=o(1).
 \end{split}
 \end{equation}
 For jointly Gaussian rows, \eqref{eq:algorithmic-approximator} and
 \eqref{eq:algorithmic-distribution} hold under the assumptions of
 Corollary~\ref{cor:gaussian} and
-\eqref{eq:matched-marginal-stability}, with $sL=o(n)$.
+\eqref{eq:matched-variation}, with $sL=o(n)$.
 \end{corollary}
 
 \begin{proof}
 Theorem~\ref{thm:greedy-regret} and
-\eqref{eq:matched-marginal-stability} show that $T_C(Z_1,Z_2)$ and
-$T_C^{\mathrm{gr}}(Z_1,Z_2)$ differ by
+\eqref{eq:matched-variation} show that $T_C(Z_1,Z_2)$ and
+$\widetilde T_C(Z_1,Z_2)$ differ by
 $o_{\Prob}(\sigma_0\sigma_rsL)$.  Substitution
 in \eqref{eq:coupled-approximation} proves
 \eqref{eq:algorithmic-approximator}.  Since every test function defining
@@ -682,17 +686,15 @@ $\delta_{s,n,p}^3=o(sL/n)$.
 
 \begin{corollary}[Multiplier greedy approximation]
 \label{cor:multiplier-greedy}
-Under the assumptions of Corollary~\ref{cor:multiplier}, write $\Prob^\#$
-for conditional probability given the observations.  If, for every $u>0$,
-\begin{equation}\label{eq:multiplier-marginal-stability}
-        \Prob^\#\!\left\{
-        \operatorname{osc}_{C,s}(Z_1^\#,Z_2^\#)
-        >u\sigma_0\sigma_rsL\right\}
-        =o_{\Prob}(1),
+Under the assumptions of Corollary~\ref{cor:multiplier}, suppose that, in
+outer probability,
+\begin{equation}\label{eq:multiplier-variation}
+        V_C(\widehat Z_1,\widehat Z_2)
+        =o_{\Prob_e}(\sigma_0\sigma_rsL).
 \end{equation}
-then the conditional law of
+Then the conditional law of
 \begin{equation*}
-        \frac{T_C^{\mathrm{gr}}(Z_1^\#,Z_2^\#)}
+        \frac{\widetilde T_C(\widehat Z_1,\widehat Z_2)}
         {\sigma_0\sigma_rsL}
 \end{equation*}
 has $d_3$ distance $o_{\Prob}(1)$ from the law of the normalized searched
@@ -701,7 +703,7 @@ displacement in \eqref{eq:smooth-approximation}.
 
 \begin{proof}
 Theorem~\ref{thm:greedy-regret} together with
-\eqref{eq:multiplier-marginal-stability} implies that the normalized greedy
+\eqref{eq:multiplier-variation} implies that the normalized greedy
 regret is negligible in conditional probability.  Boundedness and
 Lipschitz continuity of the test functions defining $d_3$, followed by
 Corollary~\ref{cor:multiplier}, prove the result.
@@ -717,17 +719,17 @@ coefficient is
 \begin{corollary}[Local-isotropy bound]
 \label{cor:local-isotropy}
 If $\rho=\rho_s(C)\le1/2$, then
-\begin{equation}\label{eq:isotropy-oscillation}
-        \operatorname{osc}_{C,s}(a,b)
+\begin{equation}\label{eq:isotropy-variation}
+        V_C(a,b)
         \lesssim
         (\rho\sqrt{s}+s\rho^2)
         \norm{a}_{C,s}\norm{b}_{C,s}.
 \end{equation}
-Consequently, $\rho_s(C)\sqrt{s}\to0$ verifies the oscillation conditions
+Consequently, $\rho_s(C)\sqrt{s}\to0$ verifies the variation conditions
 in Corollaries~\ref{cor:empirical-greedy} and
 \ref{cor:matched-greedy}.  Under the assumptions of
 Corollary~\ref{cor:multiplier}, it also verifies
-\eqref{eq:multiplier-marginal-stability}.
+\eqref{eq:multiplier-variation}.
 \end{corollary}
 
 \begin{proof}
@@ -772,8 +774,8 @@ For distinct $j_1,\ldots,j_s$ and $J=\{j_1,\ldots,j_s\}$,
         &\le(1+\rho)\norm{a}_{C,s}\norm{b}_{C,s}.
 \end{aligned}
 \end{equation*}
-Summing the two bounds in each equal-depth difference proves
-\eqref{eq:isotropy-oscillation}.
+Applying the bound at the two extrema in each summand and then summing
+proves \eqref{eq:isotropy-variation}.
 
 Lemma~\ref{lem:sparse-score-moments} gives
 \begin{equation*}
@@ -784,23 +786,23 @@ Lemma~\ref{lem:sparse-score-moments} gives
         &=O_{\Prob}(\sigma_r\sqrt{sL}).
 \end{aligned}
 \end{equation*}
-Together with \eqref{eq:isotropy-oscillation}, these bounds verify the
-oscillation conditions in Corollaries~\ref{cor:empirical-greedy} and
+Together with \eqref{eq:isotropy-variation}, these bounds verify the
+variation conditions in Corollaries~\ref{cor:empirical-greedy} and
 \ref{cor:matched-greedy} when $\rho_s(C)\sqrt{s}\to0$.
 
 Under the assumptions of Corollary~\ref{cor:multiplier},
 Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net bound
 give, in outer probability,
 \begin{equation*}
-        \norm{Z_1^\#}_{C,s}
-        =O_{\Prob^\#}(\sigma_0\sqrt{sL}),
+        \norm{\widehat Z_1}_{C,s}
+        =O_{\Prob_e}(\sigma_0\sqrt{sL}),
         \qquad
-        \norm{Z_2^\#}_{C,s}
-        =O_{\Prob^\#}(\sigma_r\sqrt{sL}).
+        \norm{\widehat Z_2}_{C,s}
+        =O_{\Prob_e}(\sigma_r\sqrt{sL}).
 \end{equation*}
 Since $s\rho^2=(\rho\sqrt{s})^2$, substitution in
-\eqref{eq:isotropy-oscillation} proves
-\eqref{eq:multiplier-marginal-stability}.
+\eqref{eq:isotropy-variation} proves
+\eqref{eq:multiplier-variation}.
 \end{proof}
 
 \section{Manuscript assumptions}
@@ -809,14 +811,14 @@ The whitened block-Gram event \eqref{eq:block-gram} is a relative RIP over
 $2s$-coordinate blocks, with error scale $\delta_{s,n,p}$, and controls the
 reduction from the regression search to $T_C$.  Replacing $Z_n$ by $Z$
 requires $(sL)^4=o(n)$, while the direct coupling for Gaussian rows
-requires only $sL=o(n)$.  Marginal oscillation instead controls the
-computational reduction from $T_C$ to $T_C^{\mathrm{gr}}$.  These are
+requires only $sL=o(n)$.  Marginal variation instead controls the
+computational reduction from $T_C$ to $\widetilde T_C$.  These are
 distinct statistical and computational steps.
-Theorem~\ref{thm:greedy-regret} takes marginal oscillation as its
+Theorem~\ref{thm:greedy-regret} takes marginal variation as its
 computational condition, and Corollary~\ref{cor:local-isotropy} bounds that
-oscillation under local isotropy.  The resulting rate
+variation under local isotropy.  The resulting rate
 $\rho_s(C)\sqrt{s}\to0$ is stronger than the manuscript's
-$\rho_s(C)=o(1)$.  Neither the relative RIP nor the oscillation condition
+$\rho_s(C)=o(1)$.  Neither the relative RIP nor the variation condition
 implies the other.
 
 Under $\rho_s(C)=o(1)$, coordinatewise and invariant proxy bounds are
