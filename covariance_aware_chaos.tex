@@ -1,6 +1,6 @@
 \documentclass[a4paper,11pt,english]{article}
 
-\usepackage[margin=2.3cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[english]{babel}
@@ -11,7 +11,6 @@
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 
 \newcommand{\E}{\mathbb E}
@@ -41,13 +40,13 @@ Gaussian approximation with the same score covariance, including its
 fourth-moment dependence.  An oracle Gaussian multiplier gives the
 corresponding conditional approximation from the row scores.
 Conditional-product greedy maximizes the exact Schur-complement increments
-and becomes top-$s$ sorting when the controls are uncorrelated.  An exchange
-argument bounds its regret by the aggregate oscillation of each coordinate's
-marginal across histories of the same depth, yielding a score-adaptive
-stochastic condition verified when $\rho_s(C)\sqrt{s}\to0$.  For centered,
-separable score covariances, a second argument uses coordinates uncorrelated
-with the current support and permits sparse covariance graphs with fixed
-local correlations.
+and becomes top-$s$ sorting when the controls are uncorrelated.  For every
+score pair and every control covariance with nonsingular sparse principal
+blocks, its regret is bounded by the aggregate equal-depth oscillation of
+the coordinate marginals.  The regret bound yields a stochastic
+approximation whenever this oscillation is negligible.  Local isotropy
+verifies that condition when $\rho_s(C)\sqrt{s}\to0$, giving a
+polynomial-time approximation to the searched coefficient.
 \end{abstract}
 
 \section{Gaussian score approximation}
@@ -404,7 +403,7 @@ $\widehat\Sigma_U[J]$ contain both score channels indexed by $J$, and put
 Under the assumptions of Theorem~\ref{thm:matched-chaos},
 \begin{equation}\label{eq:multiplier-covariance-rate}
 \begin{split}
-        \eta_n
+        \nu_n
         &:=
         \sup_{|J|\le2s}
         \norm{\mathcal W_J
@@ -445,7 +444,7 @@ displacement in \eqref{eq:smooth-approximation}.
 \end{corollary}
 
 \begin{proof}
-Lemma~\ref{lem:multiplier-covariance} gives $\eta_n=o_{\Prob}(1)$.
+Lemma~\ref{lem:multiplier-covariance} gives $\nu_n=o_{\Prob}(1)$.
 Gaussian interpolation between $\Sigma_U$ and $\widehat\Sigma_U$ uses the
 smooth supremum from the proof of Theorem~\ref{thm:matched-chaos}.  With
 $\pi_S$ denoting the softmax weights, its Hessian is
@@ -468,11 +467,11 @@ $\varphi\{f_\lambda/(sL)\}$ gives
 \end{equation}
 The supportwise Hessian is confined to one $s$-set, and every difference
 of two softmax gradients is confined to the two score channels over the
-union of two such sets.  The definition of $\eta_n$, the score-size bound,
+union of two such sets.  The definition of $\nu_n$, the score-size bound,
 and \eqref{eq:multiplier-interpolation} therefore bound the normalized
-derivative by $O_{\Prob}(\eta_n+\eta_n\lambda)$.  The smoothing error is
-$1/\lambda$, so $\lambda=\eta_n^{-1/2}$ gives a normalized $d_3$ error
-$O_{\Prob}(\sqrt{\eta_n})$.  Combining this interpolation bound with
+derivative by $O_{\Prob}(\nu_n+\nu_n\lambda)$.  The smoothing error is
+$1/\lambda$, so $\lambda=\nu_n^{-1/2}$ gives a normalized $d_3$ error
+$O_{\Prob}(\sqrt{\nu_n})$.  Combining this interpolation bound with
 Theorem~\ref{thm:matched-chaos} proves the corollary.
 \end{proof}
 
@@ -520,8 +519,10 @@ error already present in \eqref{eq:empirical-chaos}.
 
 Evaluating $T_C(a,b)$ by enumeration is combinatorial for a general
 correlation matrix.  Its exact one-coordinate increment gives a greedy
-search that reduces to top-$s$ sorting when $C=I$.  For $j\notin S$,
-define the conditional variance and scores
+search that reduces to top-$s$ sorting when $C=I$.  The construction and
+its deterministic bound require positive definiteness only for principal
+blocks of size at most $s$.  For $j\notin S$, define the conditional
+variance and scores
 \begin{equation}\label{eq:conditional-scores}
 \begin{aligned}
         c_{j\mid S}
@@ -538,6 +539,7 @@ Block inversion gives the marginal increment
         :=Q_{S\cup\{j\}}(a,b)-Q_S(a,b)
         =-\frac{a_{j\mid S}b_{j\mid S}}{c_{j\mid S}}.
 \end{equation}
+Ties are broken according to a fixed deterministic order.
 Conditional-product greedy starts with $S_0=\emptyset$ and, for
 $t=1,\ldots,s$, sets
 \begin{equation}
@@ -546,15 +548,20 @@ $t=1,\ldots,s$, sets
         \qquad
         S_t=S_{t-1}\cup\{j_t\}.
 \end{equation}
-With $C$ fixed, write $S_s(a,b)$ for the support returned by the rule.
-For known $C$, rank-one updates of \eqref{eq:conditional-scores} avoid
-enumerating the $\binom ps$ supports.  When $C=I$, the rule selects the
-largest $s$ products $-a_jb_j$.
+Its terminal value is
+\begin{equation}\label{eq:greedy-functional}
+        T_C^{\mathrm{gr}}(a,b):=Q_{S_s}(a,b)
+        =\sum_{t=1}^s\Delta_{j_t}(S_{t-1};a,b).
+\end{equation}
+Given $C$, rank-one updates of \eqref{eq:conditional-scores} compute
+$T_C^{\mathrm{gr}}$ without enumerating the $\binom ps$ supports.  When
+$C=I$, the rule selects the largest $s$ products $-a_jb_j$, so
+$T_I^{\mathrm{gr}}=T_I$.
 
-The relevant departure from separability is
+The aggregate equal-depth oscillation is
 \begin{equation}\label{eq:marginal-oscillation}
 \begin{split}
-        \operatorname{Osc}_s(a,b;C)
+        \operatorname{osc}_{C,s}(a,b)
         :=\max_{\substack{j_1,\ldots,j_s\in[p]\\
         \text{distinct}}}
         \sum_{t=1}^s
@@ -563,75 +570,79 @@ The relevant departure from separability is
         \left|\Delta_{j_t}(R;a,b)-\Delta_{j_t}(R';a,b)\right|.
 \end{split}
 \end{equation}
-It compares the same coordinate across two histories of equal size.  The
-common level of the marginals may therefore change with the search depth.
+The oscillation compares a coordinate only across histories of the same
+size; it makes no comparison across search depths.
 
-\begin{theorem}[Equal-depth marginal stability]
-\label{thm:marginal-stability}
+\begin{theorem}[Greedy regret from marginal oscillation]
+\label{thm:greedy-regret}
 For every $a,b\in\R^p$, conditional-product greedy satisfies
 \begin{equation}
-        0\le T_C(a,b)-Q_{S_s(a,b)}(a,b)
-        \le\operatorname{Osc}_s(a,b;C).
+        0\le T_C(a,b)-T_C^{\mathrm{gr}}(a,b)
+        \le\operatorname{osc}_{C,s}(a,b).
 \end{equation}
 \end{theorem}
 
 \begin{proof}
-Fix an optimal support $S^\star$.  Order its elements
-$j_1^\star,\ldots,j_s^\star$ backward so that
-$j_t^\star\notin S_{t-1}$.  To see that this is possible, suppose the
-positions after $t$ have been filled.  At least $s-t+1$ elements of
-$S^\star$ lie outside the $(t-1)$-element set $S_{t-1}$, while only $s-t$
-elements have already been used.
-
-Put $S_t^\star=\{j_1^\star,\ldots,j_t^\star\}$.  The greedy rule and the
-availability of $j_t^\star$ give
+Fix an optimal support $J$.  Its elements can be ordered
+$k_1,\ldots,k_s$ so that $k_t\notin S_{t-1}$: choose the order backward,
+noting that $J\setminus S_{t-1}$ contains at least $s-t+1$ elements while
+only $s-t$ later positions have been filled.  Put
+$J_t=\{k_1,\ldots,k_t\}$.  The greedy rule and the availability of $k_t$
+give
 \begin{equation*}
         \Delta_{j_t}(S_{t-1};a,b)
-        \ge\Delta_{j_t^\star}(S_{t-1};a,b).
+        \ge\Delta_{k_t}(S_{t-1};a,b).
 \end{equation*}
-Telescoping both support values now yields
+Telescoping both support values yields
 \begin{equation*}
 \begin{split}
-        T_C(a,b)-Q_{S_s(a,b)}(a,b)
+        T_C(a,b)-T_C^{\mathrm{gr}}(a,b)
         &\le\sum_{t=1}^s\left\{
-        \Delta_{j_t^\star}(S_{t-1}^\star;a,b)
-        -\Delta_{j_t^\star}(S_{t-1};a,b)
+        \Delta_{k_t}(J_{t-1};a,b)
+        -\Delta_{k_t}(S_{t-1};a,b)
         \right\}\\
-        &\le\operatorname{Osc}_s(a,b;C).
+        &\le\operatorname{osc}_{C,s}(a,b).
 \end{split}
 \end{equation*}
-The lower bound follows because $S_s(a,b)$ is one of the supports in the
-definition of $T_C(a,b)$.
+The lower bound follows from the definition of $T_C$.
 \end{proof}
 
-\begin{corollary}[Stochastic greedy approximation]
-\label{cor:stochastic-search}
+\begin{corollary}[Empirical greedy reduction]
+\label{cor:empirical-greedy}
 Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold.  If
 \begin{equation}
-        \operatorname{Osc}_s(Z_{1n},Z_{2n};C)
+        \operatorname{osc}_{C,s}(Z_{1n},Z_{2n})
         =o_{\Prob}(\sigma_0\sigma_rsL),
 \end{equation}
 then
 \begin{equation}\label{eq:empirical-greedy}
         \sup_{|S|=s}\widehat\beta_{0,S}
         =\widehat\beta_{0,\emptyset}
-        +\frac{Q_{S_s(Z_{1n},Z_{2n})}(Z_{1n},Z_{2n})}
-        {n\sigma_0^2}
+        +\frac{T_C^{\mathrm{gr}}(Z_{1n},Z_{2n})}{n\sigma_0^2}
         +o_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
         \right).
 \end{equation}
+\end{corollary}
 
-If $(sL)^4=o(n)$ and
+\begin{proof}
+Theorem~\ref{thm:greedy-regret} and \eqref{eq:empirical-chaos} give the
+result because $\delta_{s,n,p}^3=o(sL/n)$.
+\end{proof}
+
+\begin{corollary}[Matched Gaussian greedy approximation]
+\label{cor:matched-greedy}
+Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
+$(sL)^4=o(n)$.  If
 \begin{equation}\label{eq:matched-marginal-stability}
-        \operatorname{Osc}_s(Z_1,Z_2;C)
+        \operatorname{osc}_{C,s}(Z_1,Z_2)
         =o_{\Prob}(\sigma_0\sigma_rsL),
 \end{equation}
 then the coupling in Theorem~\ref{thm:matched-chaos} satisfies
 \begin{equation}\label{eq:algorithmic-approximator}
         \sup_{|S|=s}\widehat\beta_{0,S}
         =\widehat\beta_{0,\emptyset}
-        +\frac{Q_{S_s(Z_1,Z_2)}(Z_1,Z_2)}{n\sigma_0^2}
+        +\frac{T_C^{\mathrm{gr}}(Z_1,Z_2)}{n\sigma_0^2}
         +o_{\Prob}\!\left(
         \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
         \right).
@@ -645,59 +656,78 @@ An independent matched Gaussian draw also gives
         \sup_{|S|=s}\widehat\beta_{0,S}
         -\widehat\beta_{0,\emptyset}
         \right\},
-        \frac{Q_{S_s(Z_1,Z_2)}(Z_1,Z_2)}
-        {\sigma_0\sigma_rsL}
+        \frac{T_C^{\mathrm{gr}}(Z_1,Z_2)}{\sigma_0\sigma_rsL}
         \right)=o(1).
 \end{split}
 \end{equation}
-The matched-score conclusions \eqref{eq:algorithmic-approximator} and
-\eqref{eq:algorithmic-distribution} also hold under
-Corollary~\ref{cor:gaussian}, provided
-\eqref{eq:matched-marginal-stability} holds, with $sL=o(n)$.
-
-If Corollary~\ref{cor:multiplier} applies, write $\Prob^\#$ for
-conditional probability given the data.  If
-\begin{equation}\label{eq:multiplier-marginal-stability}
-        \Prob^\#\!\left\{
-        \operatorname{Osc}_s(Z_1^\#,Z_2^\#;C)
-        >\epsilon\sigma_0\sigma_rsL\right\}
-        =o_{\Prob}(1)
-        \qquad(\epsilon>0),
-\end{equation}
-then the conditional version of \eqref{eq:algorithmic-distribution}
-holds with $Q_{S_s(Z_1^\#,Z_2^\#)}(Z_1^\#,Z_2^\#)$.
+For jointly Gaussian rows, \eqref{eq:algorithmic-approximator} and
+\eqref{eq:algorithmic-distribution} hold under the assumptions of
+Corollary~\ref{cor:gaussian} and
+\eqref{eq:matched-marginal-stability}, with $sL=o(n)$.
 \end{corollary}
 
 \begin{proof}
-Theorem~\ref{thm:marginal-stability} gives the required
-$o_{\Prob}(\sigma_0\sigma_rsL)$ regret for each score pair.  Combining it
-with
-\eqref{eq:empirical-chaos} proves \eqref{eq:empirical-greedy}, since
-$\delta_{s,n,p}^3=o(sL/n)$.  Combining it instead with
-\eqref{eq:coupled-approximation} proves
-\eqref{eq:algorithmic-approximator}.  For the distributional statement,
-every test function defining $d_3$ is bounded and Lipschitz, so replacing
-$T_C$ by the greedy value costs $o(1)$.  The same pointwise argument under
-conditional probability proves the multiplier statement.
+Theorem~\ref{thm:greedy-regret} and
+\eqref{eq:matched-marginal-stability} show that $T_C(Z_1,Z_2)$ and
+$T_C^{\mathrm{gr}}(Z_1,Z_2)$ differ by
+$o_{\Prob}(\sigma_0\sigma_rsL)$.  Substitution
+in \eqref{eq:coupled-approximation} proves
+\eqref{eq:algorithmic-approximator}.  Since every test function defining
+$d_3$ is bounded and Lipschitz, the same substitution in
+\eqref{eq:smooth-approximation} proves
+\eqref{eq:algorithmic-distribution}.  For Gaussian rows, use
+Corollary~\ref{cor:gaussian} and
+$\delta_{s,n,p}^3=o(sL/n)$.
 \end{proof}
 
-Local isotropy is one way to verify marginal stability.  Define
+\begin{corollary}[Multiplier greedy approximation]
+\label{cor:multiplier-greedy}
+Under the assumptions of Corollary~\ref{cor:multiplier}, write $\Prob^\#$
+for conditional probability given the observations.  If, for every $u>0$,
+\begin{equation}\label{eq:multiplier-marginal-stability}
+        \Prob^\#\!\left\{
+        \operatorname{osc}_{C,s}(Z_1^\#,Z_2^\#)
+        >u\sigma_0\sigma_rsL\right\}
+        =o_{\Prob}(1),
+\end{equation}
+then the conditional law of
+\begin{equation*}
+        \frac{T_C^{\mathrm{gr}}(Z_1^\#,Z_2^\#)}
+        {\sigma_0\sigma_rsL}
+\end{equation*}
+has $d_3$ distance $o_{\Prob}(1)$ from the law of the normalized searched
+displacement in \eqref{eq:smooth-approximation}.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:greedy-regret} together with
+\eqref{eq:multiplier-marginal-stability} implies that the normalized greedy
+regret is negligible in conditional probability.  Boundedness and
+Lipschitz continuity of the test functions defining $d_3$, followed by
+Corollary~\ref{cor:multiplier}, prove the result.
+\end{proof}
+
+Under the unit-variance normalization, the manuscript's local-isotropy
+coefficient is
 \begin{equation}
         \rho_s(C)
         =\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
 \end{equation}
 
-\begin{corollary}[Local isotropy]
+\begin{corollary}[Local-isotropy bound]
+\label{cor:local-isotropy}
 If $\rho=\rho_s(C)\le1/2$, then
 \begin{equation}\label{eq:isotropy-oscillation}
-        \operatorname{Osc}_s(a,b;C)
+        \operatorname{osc}_{C,s}(a,b)
         \lesssim
         (\rho\sqrt{s}+s\rho^2)
         \norm{a}_{C,s}\norm{b}_{C,s}.
 \end{equation}
-Consequently, $\rho_s(C)\sqrt{s}\to0$ verifies the marginal-stability
-conditions in Corollary~\ref{cor:stochastic-search} for the empirical,
-matched, and conditional multiplier scores.
+Consequently, $\rho_s(C)\sqrt{s}\to0$ verifies the oscillation conditions
+in Corollaries~\ref{cor:empirical-greedy} and
+\ref{cor:matched-greedy}.  Under the assumptions of
+Corollary~\ref{cor:multiplier}, it also verifies
+\eqref{eq:multiplier-marginal-stability}.
 \end{corollary}
 
 \begin{proof}
@@ -709,14 +739,13 @@ For $j\notin S$, put
         \qquad
         \ell=C_{jS}C_{SS}^{-1}C_{Sj}.
 \end{equation*}
-Writing $A=\norm{a}_{C,s}$ and $B=\norm{b}_{C,s}$, Cauchy--Schwarz and
-local isotropy give
+Cauchy--Schwarz and local isotropy give
 \begin{equation*}
         \ell\le\frac{\rho^2}{1-\rho},
         \qquad
-        |u|\le\sqrt\ell\,A,
+        |u|\le\sqrt\ell\,\norm{a}_{C,s},
         \qquad
-        |v|\le\sqrt\ell\,B.
+        |v|\le\sqrt\ell\,\norm{b}_{C,s}.
 \end{equation*}
 The exact identity
 \begin{equation}
@@ -727,22 +756,23 @@ therefore implies, uniformly over $|S|<s$,
 \begin{equation*}
         |\Delta_j(S;a,b)+a_jb_j|
         \lesssim
-        \rho(|a_j|B+|b_j|A)
-        +\rho^2(AB+|a_jb_j|).
+        \rho\{ |a_j|\norm{b}_{C,s}
+        +|b_j|\norm{a}_{C,s}\}
+        +\rho^2\{\norm{a}_{C,s}\norm{b}_{C,s}+|a_jb_j|\}.
 \end{equation*}
 
 For distinct $j_1,\ldots,j_s$ and $J=\{j_1,\ldots,j_s\}$,
 \begin{equation*}
 \begin{aligned}
         \sum_{t=1}^s|a_{j_t}|
-        &\le\sqrt{s(1+\rho)}A,
+        &\le\sqrt{s(1+\rho)}\norm{a}_{C,s},
         &\sum_{t=1}^s|b_{j_t}|
-        &\le\sqrt{s(1+\rho)}B,\\
+        &\le\sqrt{s(1+\rho)}\norm{b}_{C,s},\\
         \sum_{t=1}^s|a_{j_t}b_{j_t}|
-        &\le(1+\rho)AB.
+        &\le(1+\rho)\norm{a}_{C,s}\norm{b}_{C,s}.
 \end{aligned}
 \end{equation*}
-Summing the two leakage bounds in each equal-depth difference proves
+Summing the two bounds in each equal-depth difference proves
 \eqref{eq:isotropy-oscillation}.
 
 Lemma~\ref{lem:sparse-score-moments} gives
@@ -754,136 +784,40 @@ Lemma~\ref{lem:sparse-score-moments} gives
         &=O_{\Prob}(\sigma_r\sqrt{sL}).
 \end{aligned}
 \end{equation*}
-Lemma~\ref{lem:multiplier-covariance} and the same conditional Gaussian
-net argument give the corresponding conditional bounds for $Z^\#$ in
-outer probability.  Since $s\rho^2=(\rho\sqrt{s})^2$, substitution in
-\eqref{eq:isotropy-oscillation} proves the final claim.
-\end{proof}
+Together with \eqref{eq:isotropy-oscillation}, these bounds verify the
+oscillation conditions in Corollaries~\ref{cor:empirical-greedy} and
+\ref{cor:matched-greedy} when $\rho_s(C)\sqrt{s}\to0$.
 
-A complementary stochastic argument uses a uniform supply of fresh
-coordinates at every search state.
-
-\begin{theorem}[Fresh marginals on a sparse covariance graph]
-\label{thm:fresh-marginals}
-Suppose the matched score is centered, so $d=h=0$, and
-\begin{equation}\label{eq:sparse-score-covariance}
-        Z\sim N\!\left(0,
-        \begin{pmatrix}
-        \sigma_0^2C&\gamma\sigma_0\sigma_rC\\
-        \gamma\sigma_0\sigma_rC&\sigma_r^2C
-        \end{pmatrix}\right),
-        \qquad -1<\gamma\le1-c_\gamma
-\end{equation}
-for a constant $c_\gamma>0$.  Join $j$ and $k$ when $C_{jk}\ne0$, and let
-$D_C$ be the maximum degree of this graph.  If
+Under the assumptions of Corollary~\ref{cor:multiplier},
+Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net bound
+give, in outer probability,
 \begin{equation*}
-        L\longrightarrow\infty,
+        \norm{Z_1^\#}_{C,s}
+        =O_{\Prob^\#}(\sigma_0\sqrt{sL}),
         \qquad
-        \log(D_C+1)=o(L),
+        \norm{Z_2^\#}_{C,s}
+        =O_{\Prob^\#}(\sigma_r\sqrt{sL}).
 \end{equation*}
-then
-\begin{equation}\label{eq:fresh-greedy}
-        T_C(Z_1,Z_2)
-        -Q_{S_s(Z_1,Z_2)}(Z_1,Z_2)
-        =o_{\Prob}(\sigma_0\sigma_rsL).
-\end{equation}
-\end{theorem}
-
-\begin{proof}
-Put $\tau=(1-\gamma)\sigma_0\sigma_r$.  For independent standard
-Gaussians $\xi$ and $\eta$, a singleton marginal has the representation
-\begin{equation}\label{eq:product-tail}
-        -Z_{1j}Z_{2j}
-        \overset{d}=\frac{\sigma_0\sigma_r}{2}
-        \left\{(1-\gamma)\xi^2-(1+\gamma)\eta^2\right\}.
-\end{equation}
-It follows that, uniformly for large $x/\tau$ and with constants depending
-only on $c_\gamma$,
-\begin{equation*}
-        \Prob(-Z_{1j}Z_{2j}>x)
-        \gtrsim (x/\tau)^{-1/2}\exp(-x/\tau).
-\end{equation*}
-Indeed, on $|\eta|\le1$ it is enough that
-$\xi^2>2x/\tau+(1+\gamma)/(1-\gamma)$, and the second term is bounded by
-$(2-c_\gamma)/c_\gamma$.
-
-Fix $S$ with $|S|<s$.  Deleting $S$ and its neighbors removes at most
-$(D_C+1)s$ vertices.  The assumptions imply $(D_C+1)s/p\to0$, so the
-remaining graph has an independent set $I_S$ of size at least
-$p/\{2(D_C+1)\}$ for all sufficiently large $p$.  For every
-$j\in I_S$, $C_{jS}=0$, so
-\begin{equation*}
-        \Delta_j(S;Z_1,Z_2)=-Z_{1j}Z_{2j}.
-\end{equation*}
-The coordinate pairs indexed by $I_S$ are independent by
-\eqref{eq:sparse-score-covariance}.
-
-Set
-\begin{equation*}
-        \epsilon
-        =\left\{
-        \frac{1+\log(D_C+1)+\log L}{L}
-        \right\}^{1/2}.
-\end{equation*}
-Then $\epsilon\to0$,
-$e^{\epsilon L}/\{(D_C+1)L^{3/2}\}\to\infty$, and
-$\log(1/\epsilon)=o(\epsilon L)$.
-For $x=(1-\epsilon)\tau L$, the probability that every fresh marginal at
-a fixed state is below $x$ is at most
-\begin{equation*}
-        \exp\left\{-\frac{c_1s e^{\epsilon L}}
-        {(D_C+1)\sqrt L}\right\}.
-\end{equation*}
-There are at most $e^{2sL}$ sets of size less than $s$.  A union bound
-therefore shows that, with probability tending to one, every search state
-has a marginal at least $(1-\epsilon)\tau L$.  On this event,
-\begin{equation}\label{eq:fresh-lower}
-        Q_{S_s(Z_1,Z_2)}(Z_1,Z_2)
-        \ge(1-\epsilon)\tau sL.
-\end{equation}
-
-For a fixed support, whitening by $C_{SS}^{-1/2}$ writes $Q_S(Z_1,Z_2)$
-as a sum of $s$ independent copies of the variable in
-\eqref{eq:product-tail}.  Its moment-generating function satisfies
-\begin{equation*}
-        \E e^{t(-Z_{1j}Z_{2j})}
-        =\{(1-\tau t)
-        [1+(1+\gamma)\sigma_0\sigma_rt]\}^{-1/2}
-        \le(1-\tau t)^{-1/2}.
-\end{equation*}
-Taking $t=(1-\epsilon/4)/\tau$, applying Chernoff's inequality, and
-using $\binom ps\le e^{sL}$ give
-\begin{equation}\label{eq:fresh-upper}
-        T_C(Z_1,Z_2)\le(1+\epsilon)\tau sL
-\end{equation}
-with probability tending to one.  The term
-$\tfrac{s}{2}\log(4/\epsilon)$ from the moment-generating function is
-$o(\epsilon sL)$ by construction.  Combining
-\eqref{eq:fresh-lower} and \eqref{eq:fresh-upper}, and using
-$\tau\asymp\sigma_0\sigma_r$, proves \eqref{eq:fresh-greedy}.
+Since $s\rho^2=(\rho\sqrt{s})^2$, substitution in
+\eqref{eq:isotropy-oscillation} proves
+\eqref{eq:multiplier-marginal-stability}.
 \end{proof}
-
-Under the assumptions of Theorems~\ref{thm:matched-chaos} and
-\ref{thm:fresh-marginals}, including $(sL)^4=o(n)$, the greedy value may
-therefore replace $T_C(Z_1,Z_2)$ in
-\eqref{eq:algorithmic-approximator} and
-\eqref{eq:algorithmic-distribution}.  The covariance condition is imposed
-on $\Sigma_U$ and hence on fourth moments of the original rows.
 
 \section{Manuscript assumptions}
 
 The whitened block-Gram event \eqref{eq:block-gram} is a relative RIP over
-$2s$-coordinate blocks.  Its scale $\delta_{s,n,p}$ controls the empirical
-reduction \eqref{eq:empirical-chaos}.  Replacing $Z_n$ by $Z$ requires
-$(sL)^4=o(n)$, while the direct coupling for Gaussian rows requires only
-$sL=o(n)$.  Greedy search needs a separate property of the score
-marginals.  Equal-depth marginal stability is a score-adaptive sufficient
-condition.  The local-isotropy bound verifies it for raw greedy under
-$\rho_s(C)\sqrt{s}\to0$, a stronger rate than the manuscript's
-$\rho_s(C)=o(1)$.  The condition may instead be checked directly, while
-Theorem~\ref{thm:fresh-marginals} uses a uniform supply of fresh marginals.
-The relative RIP and these computational conditions do not imply one
-another.
+$2s$-coordinate blocks, with error scale $\delta_{s,n,p}$, and controls the
+reduction from the regression search to $T_C$.  Replacing $Z_n$ by $Z$
+requires $(sL)^4=o(n)$, while the direct coupling for Gaussian rows
+requires only $sL=o(n)$.  Marginal oscillation instead controls the
+computational reduction from $T_C$ to $T_C^{\mathrm{gr}}$.  These are
+distinct statistical and computational steps.
+Theorem~\ref{thm:greedy-regret} takes marginal oscillation as its
+computational condition, and Corollary~\ref{cor:local-isotropy} bounds that
+oscillation under local isotropy.  The resulting rate
+$\rho_s(C)\sqrt{s}\to0$ is stronger than the manuscript's
+$\rho_s(C)=o(1)$.  Neither the relative RIP nor the oscillation condition
+implies the other.
 
 Under $\rho_s(C)=o(1)$, coordinatewise and invariant proxy bounds are
 related by
@@ -929,13 +863,11 @@ Thus either the coordinatewise cap on $C\beta_{-0}/\varsigma$ or the
 $\Psi_s$ condition, together with small alignment and the first bound in
 \eqref{eq:proxy-energy}, implies the second bound.
 
-The covariance $\Sigma_U$ retains fourth-moment dependence, so sparsity of
-$C$ alone does not give the separable score covariance in
-\eqref{eq:sparse-score-covariance}.  For jointly Gaussian rows with
-$d=h=0$, \eqref{eq:gaussian-score-covariance} has that form with
-$\gamma=0$.  For general sub-Gaussian rows it is an additional structural
-condition on fourth moments.  The sample multiplier covariance is
-generally dense, so its greedy approximation is governed separately by
-\eqref{eq:multiplier-marginal-stability}.
+All fourth-moment dependence in the matched Gaussian law enters through
+$\Sigma_U$.  Because Theorem~\ref{thm:greedy-regret} is deterministic, it
+applies pointwise to every realized score pair.  For multiplier scores,
+the local-isotropy bound depends on $C$ and on conditional sparse score
+norms; under the assumptions of Corollary~\ref{cor:multiplier},
+Lemma~\ref{lem:multiplier-covariance} controls the latter.
 
 \end{document}
