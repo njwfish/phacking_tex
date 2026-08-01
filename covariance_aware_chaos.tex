@@ -1,0 +1,886 @@
+\documentclass[a4paper,11pt,english]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\R}{\mathbb R}
+
+\setlength{\emergencystretch}{3em}
+
+\title{Covariance-Aware Gaussian Approximation of Coordinate Search}
+\author{Th\'eo Voldoire and Nic Fishman}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+An analyst who may choose any $s$ of $p$ controls searches over a family
+whose covariance geometry need not be separable.  We show that, in a
+Gaussian linear model, the largest treatment coefficient over this family
+is approximated by the maximum of a covariance-normalized bilinear Gaussian
+chaos.  The result allows an arbitrary control covariance and holds whenever
+$s\log(ep/s)=o(n)$, the same regime in which the empirical control Gram
+matrix has a restricted isometry.  Local isotropy then makes the Gaussian
+objective asymptotically separable, reducing its computation to the largest $s$
+coordinatewise products.  When $s\log(ep/s)\to\infty$, those products may
+also be replaced at the first-order search scale by mutually independent
+Gaussian products.  Bounded
+blocks yield an exact dynamic program, while a low-rank factor confines the
+nonadditive correction to fixed-dimensional aggregates.  The proof also
+isolates the sparse Gaussian coupling needed to extend the approximation
+beyond Gaussian rows.
+\end{abstract}
+
+\section{The approximation}
+
+Let $x\in\R^n$ denote the treatment, $X\in\R^{n\times p}$ the candidate
+controls, and $y\in\R^n$ the outcome.  The rows are independent copies of
+the centered linear model
+\begin{equation}\label{eq:model}
+        y_i=\beta_0x_i+X_i^\top\beta+\varepsilon_i,
+        \qquad
+        \Var(x_i)=\sigma_x^2,
+        \qquad
+        \Cov(X_i)=C,
+\end{equation}
+where $(x_i,X_i)$ is jointly Gaussian and
+$\varepsilon_i\sim N(0,\sigma_\varepsilon^2)$ is independent of it.  For a
+set $S\subseteq[p]$, write
+\begin{equation*}
+        P_S=X_S(X_S^\top X_S)^{-1}X_S^\top,
+        \qquad
+        M_S=I-P_S,
+        \qquad
+        \widehat\beta_{0,S}
+        =\frac{x^\top M_Sy}{x^\top M_Sx}.
+\end{equation*}
+The object of interest is $\max_{|S|=s}\widehat\beta_{0,S}$.
+
+Residualizing the outcome against the treatment removes the component
+common to every specification.  Define
+\begin{equation}\label{eq:residualization}
+\begin{aligned}
+        w_i&=y_i-\beta_0x_i=X_i^\top\beta+\varepsilon_i,\\
+        \alpha&=\frac{\Cov(x_i,w_i)}{\sigma_x^2}
+        =\frac{d^\top\beta}{\sigma_x^2},
+        \qquad d=\Cov(X_i,x_i),\\
+        r_i&=w_i-\alpha x_i,
+        \qquad h=\Cov(X_i,r_i)=C\beta-\alpha d,
+        \qquad \sigma_r^2=\Var(r_i).
+\end{aligned}
+\end{equation}
+Then $\Cov(x_i,r_i)=0$, so $x_i$ and $r_i$ are independent under the
+Gaussian model.  We assume $\sigma_r>0$.  The common alignment $\alpha$ is
+absorbed by $\widehat\beta_{0,\varnothing}$; the proxy means entering the
+specification-dependent term are $d$ and $h$.
+
+For a vector $v\in\R^p$, define its covariance-normalized sparse norm by
+\begin{equation}\label{eq:sparse-norm}
+        \norm{v}_{C,k}
+        =\max_{J\subseteq[p],\,|J|\leq k}
+        \left(v_J^\top C_{JJ}^{-1}v_J\right)^{1/2}.
+\end{equation}
+All population blocks $C_{JJ}$ with $|J|\leq2s$ are assumed positive
+definite.  Set
+\begin{equation*}
+        L=\log(ep/s),
+        \qquad
+        \delta=\sqrt{\frac{sL}{n}},
+\end{equation*}
+and suppose that $sL=o(n)$ and, for a constant $K_0$,
+\begin{equation}\label{eq:proxy-energy}
+        \norm{d}_{C,2s}\leq K_0\sigma_x\delta,
+        \qquad
+        \norm{h}_{C,2s}\leq K_0\sigma_r\delta.
+\end{equation}
+These conditions allow diffuse treatment and outcome proxies while keeping
+their normalized sparse mean energy at the stochastic search scale.
+
+The Gaussian approximator has the exact covariance of the two row scores.
+Let $(G_1,G_2)\in\R^p\times\R^p$ be centered jointly Gaussian with
+\begin{equation}\label{eq:score-covariance}
+\begin{aligned}
+        \Var(G_1)&=\sigma_x^2C+dd^\top,
+        &\Var(G_2)&=\sigma_r^2C+hh^\top,\\
+        \Cov(G_1,G_2)&=hd^\top,
+        &\Cov(G_2,G_1)&=dh^\top,
+\end{aligned}
+\end{equation}
+and put
+\begin{equation*}
+        Z_1=\sqrt n\,d+G_1,
+        \qquad
+        Z_2=\sqrt n\,h+G_2.
+\end{equation*}
+For $a,b\in\R^p$, the covariance-aware search functional is
+\begin{equation}\label{eq:chaos-functional}
+        T_C(a,b)
+        =\max_{S\subseteq[p],\,|S|=s}
+        \left\{-a_S^\top C_{SS}^{-1}b_S\right\}.
+\end{equation}
+It keeps the original coordinate subsets and incorporates their covariance
+through the inverse of each selected principal submatrix.
+
+\begin{theorem}[Covariance-aware Gaussian approximation]
+\label{thm:gaussian-chaos}
+Suppose the rows follow the Gaussian model \eqref{eq:model} with the
+independent Gaussian noise stated above, $\sigma_r>0$, and
+$C_{JJ}\succ0$ for $|J|\leq2s$.  If $sL=o(n)$ and
+\eqref{eq:proxy-energy} holds, one can construct $(G_1,G_2)$ on an
+extension of the data probability space such that
+\begin{equation}\label{eq:main-theorem}
+        \max_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\varnothing}
+        +\frac{T_C(Z_1,Z_2)}{n\sigma_x^2}
+        +O_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_x}\frac{sL}{n}\delta
+        \right).
+\end{equation}
+In particular, the remainder is
+$o_{\Prob}((\sigma_r/\sigma_x)sL/n)$.
+\end{theorem}
+
+The random variable in \eqref{eq:main-theorem} is a noncentral bilinear
+Gaussian chaos.  Its marginal law approximates the searched displacement
+$\max_{|S|=s}\widehat\beta_{0,S}-\widehat\beta_{0,\varnothing}$ at the
+$sL/n$ scale; the coupling in the theorem is not required for simulation.
+Fine tail or quantile accuracy would require a coupling error negligible at
+the relevant fluctuation scale together with anti-concentration.
+
+\section{Proof}
+
+The proof separates the regression geometry from the Gaussian
+approximation.  The regression calculation is exact and the empirical
+geometry is controlled by a covariance-normalized restricted isometry.  A
+conditional Gaussian decomposition then couples the two score vectors to
+$(Z_1,Z_2)$ without a high-dimensional central limit theorem.
+
+Define
+\begin{equation}\label{eq:sample-scores}
+        A=\frac{X^\top x}{\sqrt n},
+        \qquad
+        B=\frac{X^\top r}{\sqrt n},
+        \qquad
+        \widehat C=\frac{X^\top X}{n},
+        \qquad
+        \widehat\gamma=\frac{x^\top r}{x^\top x}.
+\end{equation}
+
+\begin{lemma}[Exact regression reduction]\label{lem:exact-reduction}
+For every $S$ for which $X_S^\top X_S$ is invertible,
+\begin{equation}\label{eq:exact-reduction}
+        \widehat\beta_{0,S}-\widehat\beta_{0,\varnothing}
+        =
+        \frac{-A_S^\top\widehat C_{SS}^{-1}B_S
+        +\widehat\gamma A_S^\top\widehat C_{SS}^{-1}A_S}
+        {x^\top x-A_S^\top\widehat C_{SS}^{-1}A_S}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Since $y=(\beta_0+\alpha)x+r$, the coefficient with controls $S$ and the
+coefficient without controls are
+\begin{equation*}
+        \widehat\beta_{0,S}
+        =\beta_0+\alpha+\frac{x^\top M_Sr}{x^\top M_Sx},
+        \qquad
+        \widehat\beta_{0,\varnothing}
+        =\beta_0+\alpha+\frac{x^\top r}{x^\top x}.
+\end{equation*}
+Subtracting them, using $M_S=I-P_S$, and collecting the common denominator
+gives
+\begin{equation*}
+        \widehat\beta_{0,S}-\widehat\beta_{0,\varnothing}
+        =\frac{-x^\top P_Sr
+        +(x^\top r/x^\top x)x^\top P_Sx}{x^\top M_Sx}.
+\end{equation*}
+The identities
+$x^\top P_Sr=A_S^\top\widehat C_{SS}^{-1}B_S$ and
+$x^\top P_Sx=A_S^\top\widehat C_{SS}^{-1}A_S$ yield
+\eqref{eq:exact-reduction}.
+\end{proof}
+
+The next lemma supplies the Gaussian approximation of the scores in the
+same sparse norm that enters the search.
+
+\begin{lemma}[Gaussian score coupling]\label{lem:score-coupling}
+Under the assumptions of Theorem~\ref{thm:gaussian-chaos}, the Gaussian
+pair in \eqref{eq:score-covariance} can be coupled to $(A,B)$ so that
+\begin{equation}\label{eq:score-coupling}
+        \frac{\norm{A-Z_1}_{C,s}}{\sigma_x}
+        +\frac{\norm{B-Z_2}_{C,s}}{\sigma_r}
+        =O_{\Prob}(\delta).
+\end{equation}
+Moreover,
+\begin{equation}\label{eq:score-size}
+        \norm{A}_{C,s}+\norm{Z_1}_{C,s}
+        =O_{\Prob}(\sigma_x\sqrt{sL}),
+        \qquad
+        \norm{B}_{C,s}+\norm{Z_2}_{C,s}
+        =O_{\Prob}(\sigma_r\sqrt{sL}).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Standardize the treatment and residual outcome as
+$\widetilde x_i=x_i/\sigma_x$ and
+$\widetilde r_i=r_i/\sigma_r$, and write
+$\widetilde d=d/\sigma_x$ and $\widetilde h=h/\sigma_r$.  The variables
+$\widetilde x_i$ and $\widetilde r_i$ are independent standard Gaussians.
+Gaussian regression gives the row decomposition
+\begin{equation}\label{eq:gaussian-decomposition}
+        X_i=\widetilde d\,\widetilde x_i
+        +\widetilde h\,\widetilde r_i+U_i,
+        \qquad
+        U_i\ \perp\ (\widetilde x_i,\widetilde r_i),
+\end{equation}
+where the rows $U_i$ are independent Gaussian vectors with covariance
+\begin{equation*}
+        C_\perp=C-\widetilde d\widetilde d^\top
+        -\widetilde h\widetilde h^\top\succeq0.
+\end{equation*}
+
+The centered, standardized score vectors satisfy
+\begin{equation}\label{eq:score-decomposition}
+\begin{split}
+        \frac{A}{\sigma_x}-\sqrt n\,\widetilde d
+        &=\widetilde d Q_{11}+\widetilde h Q_{12}
+          +\frac{U^\top\widetilde x}{\sqrt n},\\
+        \frac{B}{\sigma_r}-\sqrt n\,\widetilde h
+        &=\widetilde d Q_{12}+\widetilde h Q_{22}
+          +\frac{U^\top\widetilde r}{\sqrt n},
+\end{split}
+\end{equation}
+where
+\begin{equation*}
+\begin{split}
+        Q_{11}&=\frac1{\sqrt n}\sum_{i=1}^n
+        (\widetilde x_i^2-1),
+        \qquad
+        Q_{12}=\frac1{\sqrt n}\sum_{i=1}^n
+        \widetilde x_i\widetilde r_i,\\
+        Q_{22}&=\frac1{\sqrt n}\sum_{i=1}^n
+        (\widetilde r_i^2-1).
+\end{split}
+\end{equation*}
+All three variables are $O_{\Prob}(1)$.
+
+Let
+\begin{equation*}
+        R_n=\frac1n
+        \begin{bmatrix}\widetilde x&\widetilde r\end{bmatrix}^\top
+        \begin{bmatrix}\widetilde x&\widetilde r\end{bmatrix}
+\end{equation*}
+be their $2\times2$ sample Gram matrix.  Conditional on these two vectors, the
+$p\times2$ matrix
+\begin{equation*}
+        W=\frac1{\sqrt n}U^\top
+        \begin{bmatrix}\widetilde x&\widetilde r\end{bmatrix}
+\end{equation*}
+is matrix Gaussian with row covariance $C_\perp$ and column covariance
+$R_n$.  Since $R_n$ is positive definite almost surely, set
+$\mathcal K=W R_n^{-1/2}$.  Its conditional law does not depend on
+$(\widetilde x,\widetilde r)$, so the columns
+$\mathcal K_1,\mathcal K_2$ are independent
+$N(0,C_\perp)$ vectors and are independent of
+$(\widetilde x,\widetilde r)$.  Also
+\begin{equation}\label{eq:matrix-gram-error}
+        \norm{R_n-I_2}_{\mathrm{op}}=O_{\Prob}(n^{-1/2}),
+        \qquad
+        W=\mathcal K R_n^{1/2}.
+\end{equation}
+
+On an extension of the probability space, let
+$g_{11},g_{12},g_{22}$ be independent of everything above and
+independent of each other, with distributions
+$N(0,2),N(0,1),N(0,2)$.  Define
+\begin{equation}\label{eq:constructed-gaussian}
+\begin{split}
+        \widetilde G_1
+        &=\mathcal K_1+\widetilde d\,g_{11}
+          +\widetilde h\,g_{12},\\
+        \widetilde G_2
+        &=\mathcal K_2+\widetilde d\,g_{12}
+          +\widetilde h\,g_{22},
+        \qquad
+        G_1=\sigma_x\widetilde G_1,
+        \quad G_2=\sigma_r\widetilde G_2.
+\end{split}
+\end{equation}
+The covariance $C_\perp$ and the three low-rank terms in
+\eqref{eq:constructed-gaussian} give
+\begin{equation*}
+\begin{split}
+        \Var(G_1)&=\sigma_x^2C+dd^\top,
+        \qquad
+        \Var(G_2)=\sigma_r^2C+hh^\top,\\
+        \Cov(G_1,G_2)&=hd^\top,
+\end{split}
+\end{equation*}
+which is \eqref{eq:score-covariance}.
+
+It remains to bound the coupling error.  A union over the at most
+$(ep/s)^s$ supports, followed by a fixed sphere-net argument on each
+support, gives
+\begin{equation}\label{eq:sparse-gaussian-size}
+        \norm{\mathcal K_j}_{C,s}=O_{\Prob}(\sqrt{sL}),
+        \qquad j=1,2,
+\end{equation}
+because $C_\perp\preceq C$.  Equations
+\eqref{eq:matrix-gram-error} and \eqref{eq:sparse-gaussian-size} show
+that replacing $W$ by $\mathcal K$ costs
+$O_{\Prob}(\sqrt{sL/n})$ in each
+standardized sparse norm.  The differences
+$Q_{11}-g_{11}$, $Q_{12}-g_{12}$, and
+$Q_{22}-g_{22}$ are $O_{\Prob}(1)$, while
+\eqref{eq:proxy-energy} gives
+$\norm{\widetilde d}_{C,s}+\norm{\widetilde h}_{C,s}=O(\delta)$.
+Substitution in \eqref{eq:score-decomposition} proves
+\eqref{eq:score-coupling}.  The same sphere-net bound, the proxy-energy
+conditions, and the deterministic means
+$\sqrt n\,\widetilde d$ and $\sqrt n\,\widetilde h$ then give
+\eqref{eq:score-size}.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:gaussian-chaos}]
+The covariance-normalized block-Gram event satisfies
+\begin{equation}\label{eq:rip}
+        \epsilon_n=
+        \max_{|J|\leq2s}
+        \norm{C_{JJ}^{-1/2}\widehat C_{JJ}C_{JJ}^{-1/2}-I}
+        _{\mathrm{op}}
+        =O_{\Prob}(\delta).
+\end{equation}
+Indeed, for each $J$ the rows $C_{JJ}^{-1/2}X_{iJ}$ are standard
+Gaussian.  A fixed sphere net and a union bound over principal submatrices
+of size at most $\min(2s,p)$ have entropy $O(sL)$ and give
+\eqref{eq:rip}.  In particular,
+$\epsilon_n=o_{\Prob}(1)$.
+
+For every $S$, write
+$E_S=C_{SS}^{-1/2}\widehat C_{SS}C_{SS}^{-1/2}-I$.  On
+$\epsilon_n<1$,
+\begin{equation}\label{eq:inverse-error}
+\begin{split}
+        &\left|A_S^\top
+        (\widehat C_{SS}^{-1}-C_{SS}^{-1})B_S\right|\\
+        &\qquad\leq
+        \frac{\epsilon_n}{1-\epsilon_n}
+        \norm{A}_{C,s}\norm{B}_{C,s}
+        =O_{\Prob}(\sigma_x\sigma_r sL\delta),
+\end{split}
+\end{equation}
+where the last equality uses Lemma~\ref{lem:score-coupling}.  The same
+argument gives
+\begin{equation}\label{eq:treatment-energy}
+        \max_{|S|\leq s}
+        A_S^\top\widehat C_{SS}^{-1}A_S
+        =O_{\Prob}(\sigma_x^2sL).
+\end{equation}
+
+Since $x_i/\sigma_x$ and $r_i/\sigma_r$ are independent standard
+Gaussians,
+\begin{equation}\label{eq:scalar-concentration}
+        x^\top x=n\sigma_x^2\{1+O_{\Prob}(n^{-1/2})\},
+        \qquad
+        \widehat\gamma
+        =O_{\Prob}\!\left(\frac{\sigma_r}{\sigma_x\sqrt n}\right).
+\end{equation}
+Equations \eqref{eq:treatment-energy} and
+\eqref{eq:scalar-concentration} flatten every denominator in
+\eqref{eq:exact-reduction} to
+\begin{equation*}
+        n\sigma_x^2\{1+O_{\Prob}(n^{-1/2}+\delta^2)\}
+\end{equation*}
+uniformly over $S$.  The numerator has size
+$O_{\Prob}(\sigma_x\sigma_r sL)$, and its term multiplied by
+$\widehat\gamma$ contributes at most
+$O_{\Prob}((\sigma_r/\sigma_x)sL/(n\sqrt n))$ after division by the
+denominator.  Since $n^{-1/2}\leq\delta$ and $\delta^2\leq\delta$ for
+large $n$, Lemma~\ref{lem:exact-reduction} and
+\eqref{eq:inverse-error} imply
+\begin{equation}\label{eq:population-geometry}
+        \max_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\varnothing}
+        +\frac{T_C(A,B)}{n\sigma_x^2}
+        +O_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_x}\frac{sL}{n}\delta
+        \right).
+\end{equation}
+
+For arbitrary vectors $a,b,z_1,z_2$, Cauchy--Schwarz in the
+$C_{SS}^{-1}$ inner product gives
+\begin{equation}\label{eq:chaos-lipschitz}
+\begin{split}
+        |T_C(a,b)-T_C(z_1,z_2)|
+        &\leq\norm{a-z_1}_{C,s}\norm{b}_{C,s}\\
+        &\quad+\norm{z_1}_{C,s}\norm{b-z_2}_{C,s}.
+\end{split}
+\end{equation}
+Lemma~\ref{lem:score-coupling} therefore yields
+\begin{equation*}
+        |T_C(A,B)-T_C(Z_1,Z_2)|
+        =O_{\Prob}\!\left(\frac{\sigma_x\sigma_r sL}{\sqrt n}\right)
+        =O_{\Prob}(\sigma_x\sigma_r sL\delta).
+\end{equation*}
+Combining this bound with \eqref{eq:population-geometry} proves
+\eqref{eq:main-theorem}.
+\end{proof}
+
+\section{Separable and structured covariance}
+
+The covariance-aware chaos leaves the original subset search intact, but
+it also identifies the covariance structures under which that search
+simplifies.  Local isotropy makes the objective asymptotically additive.
+Bounded block structure gives an exact dynamic program, while a small
+number of common factors confines the nonadditive interaction to
+low-dimensional aggregates.
+
+Assume in this section that the controls have unit variance and define
+\begin{equation}\label{eq:local-isotropy}
+        \rho_s(C)=\max_{|J|\leq2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
+\end{equation}
+
+\begin{corollary}[Separable Gaussian approximation]
+\label{cor:separable}
+Under the assumptions of Theorem~\ref{thm:gaussian-chaos}, if
+$\rho_s(C)=o(1)$, then
+\begin{equation}\label{eq:separable}
+        \max_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\varnothing}
+        +\frac1{n\sigma_x^2}
+        \sum_{j=1}^s\{-Z_{1k}Z_{2k}\}_{(j)}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_x}\frac{sL}{n}\right),
+\end{equation}
+where $\{-Z_{1k}Z_{2k}\}_{(j)}$ is the $j$th largest of the $p$
+coordinatewise products.  The Gaussian coordinates retain the covariance
+in \eqref{eq:score-covariance}; separability concerns the optimization and
+does not require them to be mutually independent.
+
+If also $sL\to\infty$, let $Z_1^\circ,Z_2^\circ\in\R^p$ have all $2p$
+coordinates mutually independent, with
+\begin{equation}\label{eq:independent-coordinates}
+        Z_{1k}^\circ\sim N(\sqrt n\,d_k,\sigma_x^2),
+        \qquad
+        Z_{2k}^\circ\sim N(\sqrt n\,h_k,\sigma_r^2).
+\end{equation}
+They may be drawn independently of the data on an extension of the
+probability space, and
+\begin{equation}\label{eq:independent-separable}
+        \max_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\varnothing}
+        +\frac1{n\sigma_x^2}
+        \sum_{j=1}^s\{-Z_{1k}^\circ Z_{2k}^\circ\}_{(j)}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_x}\frac{sL}{n}\right).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+For every $S$, local isotropy gives
+\begin{equation*}
+        \norm{C_{SS}^{-1}-I}_{\mathrm{op}}
+        \leq\frac{\rho_s(C)}{1-\rho_s(C)}.
+\end{equation*}
+The marginal Gaussian tails and the proxy-energy bounds imply
+\begin{equation*}
+        \max_{|S|\leq s}\norm{Z_{1,S}}_2
+        =O_{\Prob}(\sigma_x\sqrt{sL}),
+        \qquad
+        \max_{|S|\leq s}\norm{Z_{2,S}}_2
+        =O_{\Prob}(\sigma_r\sqrt{sL});
+\end{equation*}
+independence across coordinates is not used in this union bound.  Hence
+\begin{equation*}
+\begin{split}
+        &\max_{|S|=s}\left|
+        Z_{1,S}^\top(C_{SS}^{-1}-I)Z_{2,S}\right|\\
+        &\qquad=O_{\Prob}(\sigma_x\sigma_r\rho_s(C)sL)
+        =o_{\Prob}(\sigma_x\sigma_r sL).
+\end{split}
+\end{equation*}
+The maximum of $-\sum_{k\in S}Z_{1k}Z_{2k}$ over $|S|=s$ is exactly
+the sum of the largest $s$ coordinatewise products.  Theorem
+\ref{thm:gaussian-chaos} now gives \eqref{eq:separable}.
+
+It remains to compare the correlated products with the independent ones.
+Normalize the target as
+$\overline Z=(Z_1/\sigma_x,Z_2/\sigma_r)$, and write
+$\norm{v}_{2,s}=\max_{|S|\leq s}\norm{v_S}_2$.  For $J\subseteq[p]$,
+let $\Gamma[J]$ be the covariance matrix of the centered coordinates in
+both score channels indexed by $J$.  Equation~\eqref{eq:score-covariance}
+gives
+\begin{equation*}
+        \chi_n=\max_{|J|\leq2s}
+        \norm{\Gamma[J]-I_{2|J|}}_{\mathrm{op}}
+        =O\!\left(\rho_s(C)+\delta^2\right)=o(1),
+\end{equation*}
+where local isotropy converts the proxy-energy bounds into Euclidean
+norm bounds on $d_J/\sigma_x$ and $h_J/\sigma_r$.
+
+For $v=(v_1,v_2)$, write
+$q_S(v)=-v_{1,S}^\top v_{2,S}$ and smooth its maximum by
+\begin{equation*}
+        f_\tau(v)=\frac1\tau
+        \log\sum_{|S|=s}\exp\{\tau q_S(v)\}.
+\end{equation*}
+The smoothing error is at most $sL/\tau$.  If $w_S$ denotes the
+corresponding softmax weight, then
+\begin{equation*}
+        \nabla^2f_\tau
+        =\sum_Sw_S\nabla^2q_S
+        +\tau\operatorname{Cov}_w(\nabla q_S).
+\end{equation*}
+Gaussian interpolation between $\Gamma$ and $I_{2p}$ uses only the union
+of two selected supports.  To see this, let
+$\Delta_\Gamma=\Gamma-I_{2p}$ and let $Y_t$ have the common mean of the two
+targets and covariance $I_{2p}+t\Delta_\Gamma$.  Gaussian interpolation
+gives
+\begin{equation*}
+        \frac{d}{dt}\E f_\tau(Y_t)
+        =\frac12\E\operatorname{tr}
+        \{\Delta_\Gamma\nabla^2f_\tau(Y_t)\}.
+\end{equation*}
+For a fixed support,
+$|\operatorname{tr}\{\Delta_\Gamma\nabla^2q_S\}|
+\leq2s\chi_n$.  If $g_S=\nabla q_S$, then
+\begin{equation*}
+        \operatorname{Cov}_w(g_S)
+        =\frac12\sum_{S,T}w_Sw_T
+        (g_S-g_T)(g_S-g_T)^\top.
+\end{equation*}
+Each difference is supported on the two score channels over $S\cup T$.
+Consequently,
+\begin{equation*}
+\begin{split}
+        |\operatorname{tr}\{\Delta_\Gamma
+        \operatorname{Cov}_w(g_S)\}|
+        &\leq\chi_n\operatorname{tr}\operatorname{Cov}_w(g_S)\\
+        &\leq\chi_n\left\{
+        \norm{Y_{t,1}}_{2,s}^2+\norm{Y_{t,2}}_{2,s}^2\right\}.
+\end{split}
+\end{equation*}
+The expectation of the last display is $O(\chi_n sL)$ by the same
+Gaussian sparse-norm bound used above.  Integrating over $t$ and including
+the smoothing error bounds the difference of the two expected maxima by
+$O(s\chi_n+\tau\chi_n sL+sL/\tau)$.  The comparison is exact if
+$\chi_n=0$; otherwise, taking $\tau=\chi_n^{-1/2}$ gives
+\begin{equation}\label{eq:independent-comparison}
+\left|
+        \E\max_{|S|=s}q_S(\overline Z)
+        -\E\max_{|S|=s}q_S(Z_1^\circ/\sigma_x,
+        Z_2^\circ/\sigma_r)
+\right|=o(sL).
+\end{equation}
+Gaussian Poincar\'e gives, for either normalized target
+$Y=(Y_1,Y_2)$,
+\begin{equation*}
+        \Var\!\left(\max_{|S|=s}q_S\right)
+        \leq(1+\chi_n)\E\left\{
+        \norm{Y_1}_{2,s}^2+\norm{Y_2}_{2,s}^2\right\}=O(sL).
+\end{equation*}
+Thus each maximum differs from its expectation by
+$O_{\Prob}(\sqrt{sL})$.  This is
+$o_{\Prob}(sL)$ when $sL\to\infty$.  Thus the two top-$s$ values differ
+by $o_{\Prob}(\sigma_x\sigma_r sL)$ on the enlarged probability space,
+and \eqref{eq:independent-separable} follows from \eqref{eq:separable}.
+\end{proof}
+
+The independent replacement in \eqref{eq:independent-separable} is a
+first-order approximation at the $sL$ search scale.  Local isotropy alone
+does not generally preserve the centered extreme-value law at its finer
+fluctuation scale.
+
+Local isotropy is the singleton-block special case of a broader
+approximation.  Let $C^\circ$ be any positive definite covariance whose
+principal submatrices indexed by sets of size at most $s$ approximate
+those of $C$, and define
+\begin{equation}\label{eq:restricted-covariance-error}
+        \eta_s(C,C^\circ)=
+        \max_{|J|\leq s}
+        \norm{(C^\circ_{JJ})^{-1/2}
+        (C_{JJ}-C^\circ_{JJ})
+        (C^\circ_{JJ})^{-1/2}}_{\mathrm{op}}.
+\end{equation}
+
+\begin{proposition}[Structured covariance replacement]
+\label{prop:structured-replacement}
+If $\eta_s(C,C^\circ)<1$, then for all $a,b\in\R^p$,
+\begin{equation}\label{eq:structured-replacement}
+        |T_C(a,b)-T_{C^\circ}(a,b)|
+        \leq
+        \frac{\eta_s(C,C^\circ)}{1-\eta_s(C,C^\circ)}
+        \norm{a}_{C^\circ,s}\norm{b}_{C^\circ,s}.
+\end{equation}
+Consequently, a sequence satisfying
+$\eta_s(C,C^\circ)=o(1)$ can replace $C$ in the optimization whenever
+the two sparse score norms are $O_{\Prob}(\sqrt{sL})$ after variance
+normalization.
+\end{proposition}
+
+\begin{proof}
+For a fixed $S$, write
+\begin{equation*}
+        C_{SS}=(C^\circ_{SS})^{1/2}(I+E_S)
+        (C^\circ_{SS})^{1/2},
+        \qquad \norm{E_S}_{\mathrm{op}}\leq\eta_s(C,C^\circ).
+\end{equation*}
+Then
+\begin{equation*}
+        \norm{(I+E_S)^{-1}-I}_{\mathrm{op}}
+        \leq\frac{\eta_s(C,C^\circ)}{1-\eta_s(C,C^\circ)}.
+\end{equation*}
+Cauchy--Schwarz bounds the difference between the two support objectives
+by the right-hand side of \eqref{eq:structured-replacement}.  Taking the
+maximum over $S$ and using
+$|\max_Su_S-\max_Sv_S|\leq\max_S|u_S-v_S|$ proves the result.
+\end{proof}
+
+The useful structured choice is
+\begin{equation}\label{eq:block-factor}
+        C^\circ=D+\Lambda\Lambda^\top,
+\end{equation}
+where $D\succ0$ is block diagonal and
+$\Lambda\in\R^{p\times r}$ has small rank.
+Woodbury's identity retains the coordinate support and gives, for every
+$S$,
+\begin{equation}\label{eq:woodbury-objective}
+\begin{split}
+        -a_S^\top(C^\circ_{SS})^{-1}b_S
+        &=-a_S^\top D_{SS}^{-1}b_S\\
+        &\quad+\ell_{a,S}^\top(I+H_S)^{-1}\ell_{b,S},
+\end{split}
+\end{equation}
+where
+\begin{equation*}
+        \ell_{a,S}=\Lambda_S^\top D_{SS}^{-1}a_S,
+        \qquad
+        \ell_{b,S}=\Lambda_S^\top D_{SS}^{-1}b_S,
+        \qquad
+        H_S=\Lambda_S^\top D_{SS}^{-1}\Lambda_S.
+\end{equation*}
+The first term in \eqref{eq:woodbury-objective} separates across the
+blocks of $D$, while every factor interaction is summarized by two
+$r$-vectors and one symmetric $r\times r$ matrix.  Thus principal
+components or other factors can be used without rotating the searched
+coordinates when their block-plus-factor reconstruction satisfies the
+restricted approximation bound \eqref{eq:restricted-covariance-error}.
+
+To make the additive structure explicit, let
+$\mathcal G_1,\ldots,\mathcal G_m$ be the blocks of $D$ and put
+$S_j=S\cap\mathcal G_j$.  The quantities in
+\eqref{eq:woodbury-objective} obey
+\begin{equation*}
+\begin{aligned}
+        -a_S^\top D_{SS}^{-1}b_S
+        &=\sum_{j=1}^m-a_{S_j}^\top D_{S_jS_j}^{-1}b_{S_j},\\
+        \ell_{a,S}&=\sum_{j=1}^m\ell_{a,S_j},
+        &\ell_{b,S}&=\sum_{j=1}^m\ell_{b,S_j},
+        &H_S&=\sum_{j=1}^mH_{S_j}.
+\end{aligned}
+\end{equation*}
+
+When $\Lambda=0$ and the blocks of $D$ have size at most $\nu$, the search
+is exactly computable.  For each block $\mathcal G_j$ and each
+$k\leq\min(s,|\mathcal G_j|)$, enumerate its subsets and calculate
+\begin{equation*}
+        v_{jk}=
+        \max_{S\subseteq\mathcal G_j,\,|S|=k}
+        \{-a_S^\top D_{SS}^{-1}b_S\}.
+\end{equation*}
+A budget dynamic program then maximizes
+$\sum_j v_{jk_j}$ subject to $\sum_j k_j=s$.  A naive implementation
+takes $O(m2^\nu\nu^3+ms\nu)$ arithmetic operations.  Bounded $\nu$
+therefore gives an exact polynomial-time algorithm; the diagonal case
+$\nu=1$ is ordinary top-$s$ sorting.
+
+For fixed positive $r$, \eqref{eq:woodbury-objective} is an algebraic
+dimension reduction, not by itself a polynomial-time algorithm.  It
+suggests a range-dependent additive approximation by a gridded dynamic
+program when the
+block size and the ranges of $\ell_{a,S}$, $\ell_{b,S}$, and $H_S$ are
+controlled.  Indeed, if the first two ranges are bounded by $R_a,R_b$,
+then the factor correction $\phi(\ell_a,\ell_b,H)
+=\ell_a^\top(I+H)^{-1}\ell_b$ satisfies
+\begin{equation*}
+\begin{split}
+        |\phi(\ell_a,\ell_b,H)-\phi(\widetilde\ell_a,
+        \widetilde\ell_b,\widetilde H)|
+        &\leq R_b\norm{\ell_a-\widetilde\ell_a}_2
+        +R_a\norm{\ell_b-\widetilde\ell_b}_2\\
+        &\quad+R_aR_b\norm{H-\widetilde H}_{\mathrm{op}}.
+\end{split}
+\end{equation*}
+For fixed rank, this is the stability bound needed to discretize the
+$2r+r(r+1)/2$ aggregate coordinates.  A complete algorithmic guarantee
+would also have to specify the grid, recursion, accumulated rounding error,
+and numerical ranges; no unconditional fixed-rank complexity guarantee is
+asserted here.
+
+The chaos also has a closed-form marginal gain.  It reduces to the
+coordinatewise product in the diagonal case and suggests a conditional
+product heuristic more generally.
+
+\begin{proposition}[Conditional product increment]
+\label{prop:marginal-gain}
+Let $F(S)=-a_S^\top C_{SS}^{-1}b_S$.  For $j\notin S$, define
+\begin{equation*}
+\begin{split}
+        c_{j\mid S}&=C_{jj}-C_{jS}C_{SS}^{-1}C_{Sj},\\
+        a_{j\mid S}&=a_j-C_{jS}C_{SS}^{-1}a_S,\\
+        b_{j\mid S}&=b_j-C_{jS}C_{SS}^{-1}b_S.
+\end{split}
+\end{equation*}
+Then
+\begin{equation}\label{eq:marginal-gain}
+        F(S\cup\{j\})-F(S)
+        =-\frac{a_{j\mid S}b_{j\mid S}}{c_{j\mid S}}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Apply the block-inverse formula to $C_{S\cup\{j\},S\cup\{j\}}$ with
+Schur complement $c_{j\mid S}$ and collect the terms involving the new
+coordinate.  The resulting rank-one correction is exactly
+\eqref{eq:marginal-gain}.
+\end{proof}
+
+Proposition~\ref{prop:marginal-gain} suggests starting from the empty set,
+adding the coordinate with the largest right-hand side of
+\eqref{eq:marginal-gain}, and updating the inverse by a rank-one formula.
+This heuristic is exact when $C$ is diagonal and otherwise residualizes
+each candidate against the selected coordinates.  The standard
+monotone-submodular greedy guarantee does not apply: with
+$C=\left(\begin{smallmatrix}1&\rho\\\rho&1\end{smallmatrix}\right)$,
+$a=b=(1,1)^\top$, and $0<\rho<1$, the marginal gain of coordinate two is
+$-1$ at the empty set but $-(1-\rho)/(1+\rho)>-1$ after selecting
+coordinate one.  Thus $F$ is neither monotone increasing nor submodular in
+general.
+
+\section{What a sub-Gaussian extension requires}
+
+The regression reduction does not use Gaussianity.  A natural candidate
+extension assumes that the rows
+$V_i=(x_i,r_i,X_i^\top)^\top$ are i.i.d., centered, and uniformly
+sub-Gaussian relative to their covariance:
+\begin{equation}\label{eq:subgaussian-row}
+        \norm{u^\top V_i}_{\psi_2}
+        \leq K_{\mathrm{sg}}
+        \{\E(u^\top V_i)^2\}^{1/2}
+        \quad\text{for every }u,
+\end{equation}
+where
+$\norm{\zeta}_{\psi_2}=\inf\{t>0:\E\exp(\zeta^2/t^2)\leq2\}$ and
+$\Cov(x_i,r_i)=0$.  Define the centered row score
+\begin{equation*}
+        \Psi_i=
+        \begin{pmatrix}
+        x_iX_i-d\\ r_iX_i-h
+        \end{pmatrix}
+        \in\R^{2p},
+        \qquad
+        \Omega=\Var(\Psi_i),
+\end{equation*}
+and let $(G_1,G_2)\sim N(0,\Omega)$.  The covariance $\Omega$ now retains
+the fourth moments of the row distribution; it need not equal
+\eqref{eq:score-covariance}.  Write
+$Z_1=\sqrt n\,d+G_1$ and $Z_2=\sqrt n\,h+G_2$.  The proof of Theorem
+\ref{thm:gaussian-chaos} shows that one further statement would extend the
+result.
+
+\begin{proposition}[Sparse score coupling is sufficient]
+\label{prop:coupling-suffices}
+Retain $sL=o(n)$, $\sigma_x,\sigma_r>0$, and a common control covariance
+$C$ whose searched principal submatrices are positive definite.  Suppose
+the covariance-normalized block-Gram event \eqref{eq:rip}, the
+proxy-energy bounds \eqref{eq:proxy-energy}, and the score-size bounds
+\eqref{eq:score-size} hold under \eqref{eq:subgaussian-row}.  If one can
+construct the matched Gaussian pair so that
+\begin{equation}\label{eq:needed-coupling}
+        \frac1{\sigma_x}
+        \norm{\frac1{\sqrt n}\sum_{i=1}^n(x_iX_i-d)-G_1}_{C,s}
+        +\frac1{\sigma_r}
+        \norm{\frac1{\sqrt n}\sum_{i=1}^n(r_iX_i-h)-G_2}_{C,s}
+        =o_{\Prob}(\sqrt{sL}),
+\end{equation}
+then
+\begin{equation*}
+        \max_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\varnothing}
+        +\frac{T_C(\sqrt n\,d+G_1,\sqrt n\,h+G_2)}
+        {n\sigma_x^2}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_x}\frac{sL}{n}\right).
+\end{equation*}
+\end{proposition}
+
+\begin{proof}
+The Gram and score-size assumptions repeat the argument from
+\eqref{eq:inverse-error} through \eqref{eq:population-geometry}; the row
+condition \eqref{eq:subgaussian-row} also gives the scalar concentration in
+\eqref{eq:scalar-concentration}.  Applying
+\eqref{eq:chaos-lipschitz} to the coupling in
+\eqref{eq:needed-coupling} changes the chaos by
+$o_{\Prob}(\sigma_x\sigma_r sL)$, which gives the stated coefficient
+error after division by $n\sigma_x^2$.
+\end{proof}
+
+The concentration assumptions in Proposition~\ref{prop:coupling-suffices}
+are automatic under \eqref{eq:subgaussian-row}.  For example, fix $J$ and
+$u$ with $u^\top C_{JJ}u=1$.  The centered product
+$x_i u^\top X_{iJ}-u^\top d_J$ is sub-exponential, so Bernstein's
+inequality gives
+\begin{equation*}
+        \Prob\!\left(
+        \left|u^\top(A_J-\sqrt n\,d_J)\right|>t\sigma_x
+        \right)
+        \leq2\exp\{-c\min(t^2,t\sqrt n)\}.
+\end{equation*}
+The same bound holds for $B_J-\sqrt n\,h_J$ at scale $\sigma_r$.
+A sphere net and a union over the supports have entropy $O(sL)$; because
+$sL=o(n)$, taking $t$ of order $\sqrt{sL}$ remains in the quadratic part
+of the Bernstein bound.  This proves the score bounds for $A$ and $B$.
+Moreover,
+\begin{equation*}
+        \Var(x_i u^\top X_{iJ})
+        \leq\{E x_i^4\,\E(u^\top X_{iJ})^4\}^{1/2}
+        \leq c\sigma_x^2,
+\end{equation*}
+and analogously for the residual channel.  The same net argument therefore
+controls the matched Gaussian scores.  Adding the proxy means proves
+\eqref{eq:score-size}.  Applying Bernstein to
+$(u^\top X_{iJ})^2-1$ proves \eqref{eq:rip} in the same regime.
+
+The remaining problem is a functional Gaussian approximation in the
+sparse norm, or a direct comparison of the two chaos maxima that avoids
+coupling the entire score process.  Proving that comparison under the same
+$sL=o(n)$ regime would
+extend the covariance-aware theorem, the correlated-product separable
+reduction, and the structured replacements without changing their
+regression arguments.  The mutually independent product replacement would
+additionally require the variance-normalized matched score covariance to be
+close to the identity on the same sparse principal submatrices.
+
+\end{document}
