@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt,english]{article}
+\documentclass[a4paper,10pt,english]{article}
 
 \usepackage[margin=2.5cm]{geometry}
 \usepackage[utf8]{inputenc}
@@ -12,18 +12,14 @@
 \usepackage{array}
 \usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
 
-\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{definition}
+\newtheorem{proposition}{Proposition}
 
-\newcommand{\E}{\mathbb E}
 \newcommand{\Prob}{\mathbb P}
-\newcommand{\Var}{\operatorname{Var}}
-\newcommand{\Cov}{\operatorname{Cov}}
-\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
-\newcommand{\R}{\mathbb R}
 
 \setlength{\emergencystretch}{3em}
 
-\title{A Crosswalk for the Coordinate-Search Results}
+\title{Correction Roadmap for Coordinate Search}
 \author{Th\'eo Voldoire and Nic Fishman}
 \date{}
 
@@ -32,633 +28,313 @@
 \maketitle
 
 \begin{abstract}
-This companion note records how the coordinate-search claims in
-\emph{The Geometry of p-hacking} change under the unified moment theory.
-The experimental coefficient upper rate is retained.  The observational
-and studentized upper bounds require a treatment-projection term omitted
-from the original statements.  The coefficient and studentized lower
-bounds require stochastic separation that a signal norm or a count of
-supports does not provide.  The original independent-product conclusion
-is not justified by entrywise fourth-cumulant bounds; the new comparison
-uses joint sparse control of the score covariance.  The new theory removes restricted
-conditioning from coefficient upper bounds, supplies a general
-covariance-matched approximation, and gives an observable top-$s$
-construction.  Scalar lower rates and independent products are recovered
-under the explicit packing and score-comparison conditions that their
-conclusions use.
+This note is a numbered crosswalk from the coordinate-search results in
+\emph{The Geometry of p-hacking} to their replacements in
+\emph{Unified Moment Approximation for Specification Search}.  It records
+what remains valid, what fails, what the unified results recover, and
+which additional conditions are necessary.
 \end{abstract}
 
-The comparison covers size-$s$ coordinate search.  Auxiliary uniform
-bounds range over $|S|\le s$.  Continuous basis search is outside its scope.
+Write \emph{Main} for the first document and \emph{Unified} for the
+second.  Result and equation numbers refer to their current numbered
+versions.  The scope ends with Main Proposition~1; Main Theorems~6--7
+and Appendix~C concern basis search and are unchanged.  All notation is
+that of Unified, in particular $m=s\log(ep/s)$ and
+$\delta=(m/n)^{1/2}$.
 
-\section{Common notation and moment object}
+The common replacement spine is Unified Lemma~1.1, which gives the exact
+Schur-complement representation; Theorem~2.1, which gives the critical
+empirical expansion; Theorem~2.2, which gives the covariance-matched
+Gaussian field when $m=o(n)$; and Theorem~2.6, which extends the same
+argument to residual-based statistics.  The table below identifies the
+endpoint result used for each Main claim.
 
-Let $(x_0^{(i)},X^{(i)},y^{(i)})$, $i=1,\ldots,n$, be independent and
-identically distributed centered observations, where
-$X^{(i)}\in\R^p$.  The linear specialization is
-\begin{equation}\label{eq:model}
- y^{(i)}=\beta_0x_0^{(i)}+(X^{(i)})^\top\beta_{-0}
- +\varepsilon^{(i)},
-\end{equation}
-with centered noise independent of $(x_0^{(i)},X^{(i)})$.  Write
-$\mathbf x_0,\mathbf y\in\R^n$ for the sample vectors and
-$\mathbf X\in\R^{n\times p}$ for the control matrix, put
-$\sigma_\varepsilon^2=\Var(\varepsilon)$, and let
-$\boldsymbol\varepsilon$ be the noise sample.  If $M_S$ projects
-orthogonally off the columns of $\mathbf X_S$, define
-\begin{equation*}
- \hat\beta_{0,S}
- =\frac{\mathbf x_0^\top M_S\mathbf y}
- {\mathbf x_0^\top M_S\mathbf x_0},
- \qquad
- \hat\rho_S
- =\frac{\mathbf x_0^\top M_S\mathbf y}
- {\{\mathbf x_0^\top M_S\mathbf x_0\,
- \mathbf y^\top M_S\mathbf y\}^{1/2}},
-\end{equation*}
-on the event that the denominators are positive.  The scaled
-partial-correlation statistic and conventional least-squares statistic
-are
-\begin{equation}\label{eq:t-definitions}
- \hat t_{0,S}=\sqrt{n-|S|-1}\,\hat\rho_S,
- \qquad
- \hat t^{\mathrm{LS}}_{0,S}
- =\sqrt{n-\operatorname{rank}(\mathbf X_S)-1}\,
- \frac{\hat\rho_S}{(1-\hat\rho_S^2)^{1/2}}.
-\end{equation}
-
-Put $C=\E(XX^\top)$ and $\sigma_0^2=\Var(x_0)>0$.  Zero-variance
-controls may be discarded, and rescaling the rest changes none of their
-selected spans, so take $C_{jj}=1$.  Every inverse below acts on the
-range of the relevant positive semidefinite block.  Define
-\begin{equation}\label{eq:control-isotropy}
- \rho_k(C)=\sup_{|J|\le2k}
- \norm{C_{JJ}-I_{|J|}}_{\mathrm{op}}.
-\end{equation}
-Let
-\begin{equation*}
- L=\log(ep/s),\qquad m=sL,\qquad \delta=\sqrt{m/n}.
-\end{equation*}
-Define the marginal population residual and its two control scores by
-\begin{equation}\label{eq:residual-objects}
- \beta_{0,\emptyset}^\star
- =\frac{\E(x_0y)}{\sigma_0^2},
- \qquad r=y-\beta_{0,\emptyset}^\star x_0,
- \qquad d=\E(Xx_0),\qquad h=\E(Xr),
-\end{equation}
-and write $\sigma_r^2=\Var(r)>0$.  For $z\in\R^p$ and $k\le p$, set
-\begin{equation}\label{eq:geometric-scales}
- \norm{z}_{C,k}
- =\sup_{|J|\le k}(z_J^\top C_{JJ}^{-1}z_J)^{1/2},
- \qquad
- \phi_k=\frac{\norm d_{C,k}^2}{\sigma_0^2},
- \qquad
- \Psi_k^r=\norm h_{C,k},
- \qquad
- \theta_k^r=\frac{(\Psi_k^r)^2}{\sigma_r^2}.
-\end{equation}
-Under \eqref{eq:model}, if
-$\varsigma^2=\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2$, then
-\begin{equation}\label{eq:translation}
- h=C\beta_{-0}
- -\frac{d^\top\beta_{-0}}{\sigma_0^2}d,
- \qquad
- \sigma_r^2=\varsigma^2
- -\frac{(d^\top\beta_{-0})^2}{\sigma_0^2}.
-\end{equation}
-The original signal quantities are
-$\Psi_k=\norm{C\beta_{-0}}_{C,k}$ and, under the testing null,
-$\theta_k=\Psi_k^2/\Var(y)$.
-The coefficient and score fluctuation scales are
-\begin{equation}\label{eq:coefficient-scale}
-\begin{split}
- a_n&=\frac1{\sigma_0}
- \{\sigma_r\sqrt{\phi_s}\,\delta
- +\Psi_s^r\delta+\sigma_r\delta^2\},\\
- a_n^{\mathrm{score}}
- &=\frac{\Psi_s^r}{\sigma_0}\delta
- +\frac{\sigma_r}{\sigma_0}\delta^2.
-\end{split}
-\end{equation}
-
-For $v=(x_0,r,X^\top)^\top$, let
-$\Gamma=\E(vv^\top)$ and
-$\hat\Gamma=n^{-1}\sum_i v^{(i)}(v^{(i)})^\top$.  For a symmetric
-matrix $A$, write
-\begin{equation*}
- A_{ab\mathbin{\cdot}S}
- =A_{ab}-A_{aS}A_{SS}^{-1}A_{Sb},
- \qquad
- B_S(A)
- =\frac{A_{x_0r\mathbin{\cdot}S}}
- {A_{x_0x_0\mathbin{\cdot}S}}
- -\frac{A_{x_0r}}{A_{x_0x_0}}.
-\end{equation*}
-Then
-\begin{equation}\label{eq:exact-representation}
- \hat\beta_{0,S}-\hat\beta_{0,\emptyset}=B_S(\hat\Gamma),
- \qquad
- B_S(\Gamma)
- =-\frac{d_S^\top C_{SS}^{-1}h_S}
- {\sigma_0^2-d_S^\top C_{SS}^{-1}d_S}.
-\end{equation}
-This exact identity carries the population landscape and sampling
-variation in one object.  Studentization uses the same moment-matrix
-method with the distinct Schur correlation
-\begin{equation*}
- \tau_S(A)
- =\frac{A_{x_0y\mathbin{\cdot}S}}
- {\{A_{x_0x_0\mathbin{\cdot}S}
- A_{yy\mathbin{\cdot}S}\}^{1/2}}.
-\end{equation*}
-
-The unified results assume relative sub-Gaussianity of the augmented row
-and sparse overlap: for a fixed $K$,
-\begin{equation}\label{eq:sparse-overlap}
- \norm{a^\top v}_{\psi_2}
- \le K(a^\top\Gamma a)^{1/2}
- \quad\text{for every }a\in\R^{p+2},
- \qquad
- \inf_{|S|\le s}
- \{\sigma_0^2-d_S^\top C_{SS}^{-1}d_S\}
- \ge c_{\mathrm{ov}}\sigma_0^2.
-\end{equation}
-When $\delta\le\delta_0$, with probability at least $1-Ce^{-cm}$,
-the second-order Taylor field
-\begin{equation*}
- \mathcal T_{n,S}
- =B_S(\Gamma)+DB_S(\Gamma)[\hat\Gamma-\Gamma]
- +\tfrac12D^2B_S(\Gamma)
- [\hat\Gamma-\Gamma,\hat\Gamma-\Gamma]
-\end{equation*}
-satisfies
-\begin{equation}\label{eq:critical-expansion}
- \sup_{|S|\le s}
- |B_S(\hat\Gamma)-\mathcal T_{n,S}|
- \le C\frac{\sigma_r}{\sigma_0}\delta^3.
-\end{equation}
-If $m=o(n)$, let $G$ be centered Gaussian with
-\begin{equation*}
- \Cov(G_{ab},G_{cd})=\Cov(v_av_b,v_cv_d)
-\end{equation*}
-and form the same Taylor polynomial with $G/\sqrt n$ in place of
-$\hat\Gamma-\Gamma$.  If $B_*=\max_{|S|=s}B_S(\Gamma)$, the two maxima,
-centered by $B_*$ and normalized by $a_n$, are within
-$O\{(m/n)^{1/6}+\delta\}$ in the smooth $d_3$ metric.  This
-covariance-matched maximum, rather than an independent coordinate field,
-is the general stochastic approximator.  Applying the same construction
-to $v_y=(x_0,y,X^\top)^\top$ and $\tau_S$ gives the studentized matched
-field.  Here $d_3$ is the supremum of expectation differences over
-$C^3$ test functions whose first three derivatives and level are bounded
-by one.
-
-\section{Claim-by-claim crosswalk}
-
-The following table separates changes in truth from changes in proof or
-assumptions.  ``Retained'' means that the original rate survives without
-an additional structural premise.  ``Conditional'' means that the old
-rate is recovered once the missing geometry is imposed.
+\section{Numbered crosswalk}
 
 \begingroup
 \small
-\setlength{\tabcolsep}{3.5pt}
-\renewcommand{\arraystretch}{1.16}
-\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}
->{\raggedright\arraybackslash}p{0.20\textwidth}
->{\raggedright\arraybackslash}p{0.32\textwidth}
->{\raggedright\arraybackslash}p{0.23\textwidth}@{}}
+\setlength{\tabcolsep}{3.2pt}
+\renewcommand{\arraystretch}{1.06}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}
+>{\raggedright\arraybackslash}p{0.28\textwidth}
+>{\raggedright\arraybackslash}p{0.29\textwidth}
+>{\raggedright\arraybackslash}p{0.21\textwidth}@{}}
 \toprule
-Original claim & Status and exact problem & Unified replacement &
-Change in assumptions or strength \\
+Main result & Disposition and exact defect & Unified replacement &
+Net change and refactor action \\
 \midrule
 \endfirsthead
 \toprule
-Original claim & Status and exact problem & Unified replacement &
-Change in assumptions or strength \\
+Main result & Disposition and exact defect & Unified replacement &
+Net change and refactor action \\
 \midrule
 \endhead
-Experimental coefficient upper &
-Retained.  There is no defect in the upper endpoint. &
-The specialization $d=0$ of the uniform coefficient bound gives the
-same rate
-$\sigma_0^{-1}\delta(\Psi_s^2+\varsigma^2\delta^2)^{1/2}$ and the same
-$1-Ce^{-cm}$ probability. &
-No added structure.  The replacement is uniform over $|S|\le s$ and
-does not use the original lower-bound assumptions. \\
+
+Theorem~1, upper half of (12) &
+\emph{Correct.}  The experimental coefficient upper rate and its
+probability are valid. &
+Theorem~3.1, equations (54)--(55), specialized through (61). &
+Keep the conclusion and replace its proof.  The rate is unchanged,
+Main Assumption~2 is unnecessary, and the bound is uniform over
+$|S|\le s$. \\
 \addlinespace
-Experimental coefficient lower &
-Not valid as stated.  $\Psi_s$ measures signal carried by one support,
-not the number of separated supports carrying it.  A correlation floor
-does not validate the greedy inverse-Gram transfer. &
-When $m=o(n)$, the full matched-field quantile transfer is general.  At
-the critical boundary the same scalar rate follows from an exponentially
-large score packing and multiplier minoration. &
-Packing is additional.  Gaussian treatment supplies the multiplier
-minoration; general sub-Gaussian treatment need not.  Some multiplicity
-condition is necessary. \\
+
+Theorem~1, lower half of (12); Appendix Lemma~7, (35) &
+\emph{False without multiplicity.}  The norm $\Psi_s$ can be carried by
+one support and does not supply a $\sqrt m$ search gain.  Lemma~7's
+inverse-Gram greedy transfer is also false; see
+Proposition~\ref{prop:obstructions}(i),(iv). &
+Theorem~3.2, (57)--(58), gives the general lower transfer.
+Theorem~3.4, (65)--(68), gives the exact scalar replacement;
+Lemma~3.5 and Corollary~3.6 give the top-$s$ score-pool construction. &
+Replace the lower half.  The old scalar rate is recovered under an
+exponentially large separated packing and multiplier minoration.  This
+is genuine additional structure; Gaussian treatment supplies the
+minoration. \\
 \addlinespace
-Observational coefficient upper &
-Corrected.  The printed bound omits the treatment-projection fluctuation
-$(\sigma_r/\sigma_0)\sqrt{\phi_s}\,\delta$ and its proof bounds an
-unanchored fluctuation where cancellation is required. &
-The corrected scale is
-$a_n=\sigma_0^{-1}\{\sigma_r\sqrt{\phi_s}\delta+
-\Psi_s^r\delta+\sigma_r\delta^2\}$. &
-The right side can be larger because the added term is genuine.  In
-return, only sparse overlap is needed: no restricted condition number,
-and singular control blocks are allowed.  The term is absorbed whenever
-$\sqrt{\phi_s}\lesssim\Psi_s^r/\sigma_r+\delta$. \\
+
+Theorem~2, (14); Appendix Lemma~10, (37) &
+\emph{False as written.}  The bound omits the treatment-projection
+fluctuation already visible in Lemma~10; see
+Proposition~\ref{prop:obstructions}(ii). &
+Theorem~3.1, (54)--(55), gives the corrected scale
+$\frac{\sigma_r}{\sigma_0}\delta
+(\sqrt{\phi_s}+\sqrt{\theta_s^r}+\delta)$. &
+Replace the theorem.  The bound can be larger by the genuine
+$\frac{\sigma_r}{\sigma_0}\sqrt{\phi_s}\,\delta$ term, but it drops
+restricted conditioning, permits singular control blocks, and needs
+only sparse overlap.  The old rate returns when this term is absorbed;
+Unified (74) is a sufficient condition. \\
 \addlinespace
-Observational coefficient lower &
-Not valid as stated.  The log-cardinality $\ell_\epsilon$ of
-population-near-optimal supports is not the canonical entropy of their
-fluctuations. &
-When $m=o(n)$, full-field lower quantiles transfer without further
-reduction.  When the linear field dominates, canonical-metric packing
-gives a leading term $\lambda\sqrt{\log M}$ minus the population and
-approximation errors. &
-The scalar statement becomes conditional on metric separation.  It is
-more covariance-adaptive, but no unconditional rate follows from
-$\ell_\epsilon$ alone. \\
+
+Theorem~3, (17) &
+\emph{False.}  The log-cardinality of population-near-optimal supports
+is not the canonical entropy of their fluctuations; many such supports
+may index the same random variable; see
+Proposition~\ref{prop:obstructions}(iii). &
+Theorem~3.2, (57)--(58), transfers matched-field quantiles, and
+Theorem~3.3, (59)--(60), gives the canonical-metric packing lower bound. &
+Replace the theorem.  No unconditional scalar rate follows from
+near-optimal cardinality.  Metric separation is additional; conditional
+on it, the replacement is covariance-adaptive.  The Gaussian transfer
+uses $m=o(n)$. \\
 \addlinespace
-Separable product approximation &
-Not established under the printed growing-$s$ assumptions.  Entrywise
-$o(1)$ fourth cumulants need not make a sparse score-covariance block
-$o(1)$ in operator norm, and the location argument lacks the required
-joint extreme-value control.  The theorem declares all surrogate factors
-independent for every $d^\top\beta_{-0}$, while the prose ties independence
-to $d^\top\beta_{-0}=0$. &
-The replacement separates three steps: covariance-aware score search,
-an observable top-$s$ sort, and an independent-Gaussian corollary. &
-The observable sort is stronger computationally.  Independent products
-use a sparse mean cap, $m\to\infty$, $m=o(n)$, local isotropy of $C$, and
-a sufficient sparse score-covariance comparison condition.  There is no
-$m^4/n$ or $\log p=o(n^{1/3})$ loss. \\
+
+Theorem~4, upper half of (19); Appendix Lemma~14, (72) &
+\emph{False in general.}  The rate omits the treatment channel, the
+statement lacks the treatment floor needed by a valid denominator
+argument, and the proof invokes hypotheses absent from the theorem.
+Its centered studentizer transfer is not proved; see
+Proposition~\ref{prop:obstructions}(ii). &
+Theorem~5.1: corrected upper bound (100), aligned upper bound (101), and
+least-squares transfer (103)--(104).  Corollary~5.2, (109), gives the
+matched stochastic approximation. &
+Replace the theorem's upper half and its studentization argument.  The
+general rate gains $\sqrt m\sqrt{\phi_s}$ and an explicit treatment
+floor.  Sparse treatment alignment recovers the old rate.  Main
+Assumption~2 is unnecessary for this upper bound. \\
 \addlinespace
-Searched-$t$ upper and studentization &
-Corrected.  The theorem omits the treatment-projection channel and does
-not assume the treatment floor invoked by its proof.  The proof also
-invokes experimental and observational lemmas without assuming their
-randomization or overlap hypotheses.  The centered studentizer transfer
-is left open in the appendix. &
-The corrected upper rate is
-$\sqrt m(\sqrt{\theta_s}+\sqrt{\phi_s}+\delta)+1$.
-The Schur-correlation expansion also transfers uniformly to the
-conventional least-squares statistic with error
-$O_{\Prob}(\sqrt m\,\delta^2)$. &
-The null, $O(n^{-1/2})$ local partial correlations, and treatment and
-outcome residual-variance floors are explicit.  Under random assignment
-or sparse treatment alignment, the original upper rate is recovered. \\
+
+Theorem~4, lower half of (19) &
+\emph{False without direction multiplicity.}  Explained energy
+$\theta_s$ does not separate the normalized residual directions that
+index the multiplier process; see
+Proposition~\ref{prop:obstructions}(i). &
+Corollary~5.3, (110), gives matched-field transfer.  Corollary~5.4,
+(112)--(115), gives direction-packing bounds; Lemmas~5.5--5.6,
+(117)--(123), and Corollary~5.7 give the score-to-direction bridge. &
+Replace the lower half.  The old rate becomes conditional on direction
+packing, a radius bound, and multiplier minoration.  The direct
+critical-regime result is randomized; the general transfer uses
+$m=o(n)$. \\
 \addlinespace
-Searched-$t$ lower &
-Not valid as stated.  $\theta_s$ records explained energy, not
-separation of the normalized residual directions that index the
-multiplier field. &
-When $m=o(n)$, the matched-field lower transfer is general.  A direct
-critical-regime randomized lower bound uses a packing of degree-adjusted,
-anchored residual directions. &
-Direction packing, a radius bound, and multiplier minoration are
-additional.  Angular and energy-balance conditions are sufficient ways
-to verify the direction packing from score geometry. \\
+
+Theorem~5, (21); Appendix Lemmas~19--20 &
+\emph{Not established under Main Assumption~6.}  Entrywise fourth-
+cumulant decay does not control sparse score-covariance blocks in
+operator norm when $s$ grows, and marginal tail matching does not give
+the required joint top-$s$ process. &
+Theorem~2.2, (20)--(21), is the general stochastic approximation.
+Theorems~4.1--4.3, (75)--(77), (83), and (85), give covariance-aware and
+observable top-$s$ reductions.  Theorem~4.4, (91), and Corollary~4.5,
+(92), give independent products. &
+Replace the theorem by this hierarchy.  The observable empirical sort
+is stronger computationally.  Independent products additionally need
+score isotropy (89), the mean cap (90), $m\to\infty$, and $m=o(n)$.
+The route needs neither $m^4=o(n)$ nor $\log p=o(n^{1/3})$. \\
 \addlinespace
-Fixed-budget Poisson/Gumbel calibration &
-Not recovered here; this note makes no claim that the endpoint is false.
-The existing argument does not supply the required joint point-process
-approximation. &
-Treat it as a separate calibration theorem. &
-It needs a fine $O(1/n)$ endpoint approximation and joint moderate-
-deviation control, rather than the relative $m/n$ theory used above. \\
+
+Appendix Proposition~1, (78) &
+\emph{Not recovered, but not shown false.}  The proof has neither an
+approximation with $o_{\Prob}(n^{-1})$ error nor the joint point-process
+control needed for its Poisson/Gumbel limit. &
+None.  Corollary~4.5, (92), is only a relative-scale approximation and
+cannot imply this endpoint. &
+Quarantine Proposition~1 as a separate result to be reproved, or remove
+it from the refactor. \\
+
 \bottomrule
 \end{longtable}
 \endgroup
 
-\section{Why the corrections are substantive}
+\section{Refactor map}
 
-Three Gaussian examples satisfy the relevant assumptions of the original
-theorems and isolate the missing structure.  They show why the added
-terms and separation conditions are unavoidable.
+\begin{center}
+\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.35\textwidth}
+>{\raggedright\arraybackslash}p{0.57\textwidth}@{}}
+\toprule
+Main material & Replacement \\
+\midrule
+Appendix~A.1--A.3 common machinery &
+Unified Lemma~1.1 and Theorems~2.1, 2.2, and 2.6. \\
+\addlinespace
+Theorems~1--3 and their proofs &
+Unified Section~3, especially Theorems~3.1--3.4 and Corollary~3.6. \\
+\addlinespace
+Theorem~4 and Appendix~A.3 &
+Unified Section~5, especially Theorem~5.1 and
+Corollaries~5.2--5.4 and 5.7, and Lemmas~5.5--5.6. \\
+\addlinespace
+Theorem~5 and Appendix~B &
+Unified Section~4, Theorems~4.1--4.4 and Corollary~4.5. \\
+\addlinespace
+Theorems~6--7 and Appendix~C &
+No change; these basis-search results lie outside this refactor. \\
+\bottomrule
+\end{tabular}
+\end{center}
 
-\begin{proposition}[Three obstructions]\label{prop:obstructions}
-Assume throughout that all displayed nonzero variances and coefficients
-are fixed and bounded away from zero.
+The old proof chain should not be ported piecemeal.  Main Lemma~6 leaves
+the exceedance concentration open; Lemma~7 is false; Lemma~10 exposes
+the term omitted from Theorem~2; Lemma~14 uses assumptions missing from
+Theorem~4; and Lemmas~19--20 do not prove a joint extreme-value
+comparison.  Appendix~B's fixed-factor extension also leaves Lemma~22
+explicitly unproved.  The unified spine replaces their roles directly.
+
+Three numbered introduction displays should be regenerated only after
+the theorem refactor.  Main (4) should use Unified Theorem~3.1 and state
+matching only through Theorem~3.4 or Corollary~3.6; Main (5) should use
+the corrected scale in Unified (54)--(55); and Main (6) should present
+the hierarchy in Unified Theorems~4.1--4.4 and Corollary~4.5.  Its
+remainder should agree with Unified (92), not claim the stronger
+$o_{\Prob}\{s\sqrt{\log(ep/s)}/n\}$ scale.  The condition-number
+sentence in Main Section~2.3 should also be deleted or compare matrices
+after the same diagonal normalization; interlacing does not compare a
+correlation-normalized sparse block with unnormalized $C$.
+
+\appendix
+\section{Obstruction certificates}
+
+The following elementary Gaussian examples are retained here because
+neither Main nor Unified contains them.  They justify deleting the false
+claims rather than merely replacing their proofs.
+
+\begin{proposition}[Four obstructions]\label{prop:obstructions}
+Assume that all displayed nonzero variances and coefficients are fixed
+and bounded away from zero.
 \begin{enumerate}
 \item[(i)] \emph{Signal without multiplicity.}
 Let $s=1$, $C=I_p$, and let
 $x_0,X_1,\ldots,X_p,\varepsilon$ be mutually independent centered
 Gaussian variables.  Set
-\begin{equation*}
+\[
  y=bX_1+\varepsilon,
  \qquad L=\log(ep)\longrightarrow\infty,
  \qquad L=o(\sqrt n).
-\end{equation*}
+\]
 Then $\Psi_1=|b|$, but
-\begin{align}
- \max_{j\le p}(\hat\beta_{0,\{j\}}-
- \hat\beta_{0,\emptyset})
- &=O_{\Prob}\!\left(\frac{|b|}{\sqrt n}
+\[
+ \max_{j\le p}(\hat\beta_{0,\{j\}}-\hat\beta_{0,\emptyset})
+ =O_{\Prob}\left(\frac{|b|}{\sqrt n}
  +\frac{\varsigma L}{n}\right)
- =o_{\Prob}\!\left(|b|\sqrt{\frac Ln}\right),
- \label{eq:single-signal-coefficient}\\
- \max_{j\le p}\hat t_{0,\{j\}}-\hat t_{0,\emptyset}
- &=O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1).
- \label{eq:single-signal-t}
-\end{align}
-The original coefficient and studentized lower endpoints are respectively
-of orders $|b|\sqrt{L/n}$ and $\sqrt L$.
+ =o_{\Prob}\left(|b|\sqrt{\frac Ln}\right),
+ \qquad
+ \max_{j\le p}\hat t_{0,\{j\}}-\hat t_{0,\emptyset}=O_{\Prob}(1).
+\]
+Main Theorems~1 and 4 instead assert lower orders
+$|b|\sqrt{L/n}$ and $\sqrt L$.
 
 \item[(ii)] \emph{Diffuse treatment projection.}
 Let $p=2s$, $s\to\infty$, $s=o(\sqrt n)$, and let
-$X_1,\ldots,X_p,U$ be independent standard Gaussian variables.  For
-fixed $0<\rho<1$, set
-\begin{equation}\label{eq:diffuse-example}
+$X_1,\ldots,X_p,U$ be independent standard Gaussians.  For fixed
+$0<\rho<1$, set
+\[
  x_0=\frac{\rho\sigma_0}{\sqrt p}\sum_{j=1}^pX_j
  +\sigma_0\sqrt{1-\rho^2}\,U,
  \qquad y=\varepsilon,
-\end{equation}
-with independent Gaussian noise.  Then $\Psi_s=0$ and
+\]
+with independent Gaussian noise.  Here $\Psi_s=0$ and
 $\phi_s=\rho^2/2$, while for any fixed population maximizer $S^\star$,
-\begin{equation}\label{eq:diffuse-orders}
+\[
  \max_{|S|=s}\hat\beta_{0,S}-\hat\beta_{0,S^\star}
- =\Theta_{\Prob}\!\left(
+ =\Theta_{\Prob}\left(
  \frac{\sigma_\varepsilon}{\sigma_0}\sqrt{\frac sn}\right),
  \qquad
  \max_{|S|=s}\hat t_{0,S}-\hat t_{0,\emptyset}
  =\Theta_{\Prob}(\sqrt s).
-\end{equation}
-The original upper rates are only of orders
+\]
+Main Theorems~2 and 4 give only
 $(\sigma_\varepsilon/\sigma_0)s/n$ and $1+s/\sqrt n$.
 
 \item[(iii)] \emph{Cardinality without fluctuation entropy.}
 Let $p=2s$, $s\to\infty$, $s=o(n)$, $C=I_p$, and
-\begin{equation}\label{eq:entropy-example}
+\[
  x_0=\rho\sigma_0X_1+\sigma_0\sqrt{1-\rho^2}\,U,
  \qquad y=\beta_0x_0+bX_1,
  \qquad 0<\rho<1,\quad \rho b<0.
-\end{equation}
-Every support containing coordinate $1$ is population-optimal and gives
-$\hat\beta_{0,S}=\beta_0$ exactly.  With probability tending to one, no
-support omitting coordinate $1$ reaches $\beta_0$.  Hence the searched
-excess is zero, although
-\begin{equation*}
- \ell_0=\log\binom{p-1}{s-1}\asymp s.
-\end{equation*}
-The original observational lower bound is strictly positive.
+\]
+Every support containing coordinate $1$ is population-optimal and
+returns $\hat\beta_{0,S}=\beta_0$ exactly.  With probability tending to
+one, no support omitting coordinate $1$ reaches $\beta_0$.  Thus the
+searched excess is zero although
+$\ell_0=\log\binom{p-1}{s-1}\asymp s$, contradicting Main Theorem~3.
+
+\item[(iv)] \emph{Inverse-Gram greedy transfer.}
+For fixed $0<\rho<1$, let
+\[
+ R=\begin{pmatrix}1&\rho\\ \rho&1\end{pmatrix},
+ \qquad a=(M,1)^\top,
+ \qquad b=(1,M)^\top.
+\]
+Both coordinate products are positive and
+$\lambda_{\min}(R)=1-\rho$, but
+\[
+ a^\top R^{-1}b
+ =\frac{2M-\rho(M^2+1)}{1-\rho^2}<0
+\]
+for large $M$.  A block eigenvalue floor cannot justify Main
+Appendix Lemma~7.
 \end{enumerate}
 \end{proposition}
 
 \begin{proof}
-For (i), use the uniform score reduction proved in the unified note.  If
-\begin{equation*}
- Z_{1n,j}=\frac{\mathbf X_j^\top\mathbf x_0}{\sqrt n},
- \qquad
- Z_{2n,j}=\frac{\mathbf X_j^\top\mathbf r}{\sqrt n},
-\end{equation*}
-then the leading coefficient field is
-$-Z_{1n,j}Z_{2n,j}/(n\sigma_0^2)$ and its uniform remainder is
-$O_{\Prob}(\delta a_n^{\mathrm{score}})$.  At $j=1$ the two scores have
-orders $O_{\Prob}(1)$ and $\sqrt n b+O_{\Prob}(1)$.  Over $j>1$, both
-coordinatewise maxima are $O_{\Prob}(\sqrt L)$ under the stated
-moderate-deviation regime.  This gives
-\eqref{eq:single-signal-coefficient}; the remainder is smaller because
-$L=o(\sqrt n)$.  Conditional on $(\mathbf X,\mathbf y)$, Gaussian
-treatment and the exact normalized-residual representation give an
-$O_{\Prob}(1)$ contribution from coordinate $1$ and
-$O_{\Prob}(L/\sqrt n)$ from the irrelevant coordinates, proving
-\eqref{eq:single-signal-t}.
+For (i), Unified Theorem~4.1 reduces the coefficient field to score
+products: the unique signal coordinate contributes
+$O_{\Prob}(|b|/\sqrt n)$, while the largest null products contribute
+$O_{\Prob}(L/n)$.  The exact normalized-residual identity in Unified
+(116) similarly gives $O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1)$
+for the studentized search.
 
-For (ii), put
-$\eta=\sigma_0^2(1-\rho^2/2)$.  Because every size-$s$ support has the
-same population residual treatment variance, the support-varying part of
-the anchored linear coefficient field is exactly
-\begin{equation*}
- -\frac1\eta\,d_S^\top
- \frac{\mathbf X_S^\top\boldsymbol\varepsilon}{n},
- \qquad d_j=\frac{\rho\sigma_0}{\sqrt p}.
-\end{equation*}
-Conditional on $\boldsymbol\varepsilon$, the coordinates
-$\mathbf X_j^\top\boldsymbol\varepsilon/\sqrt n$ are independent
-Gaussians with variance converging to $\sigma_\varepsilon^2$.  The sum
-of their largest signed half is $\Theta_{\Prob}(s)$, which gives the
-coefficient order in \eqref{eq:diffuse-orders}.  The quadratic remainder
-is $O_{\Prob}(s/n)$ and is smaller.  The Schur-correlation linear field
-has the same selected sum divided by
-$\sqrt\eta\,\sigma_\varepsilon$ rather than $\eta$ and multiplied by
-$\sqrt n$; its quadratic scale is $s/\sqrt n=o(1)$.  This proves the
-studentized order $\Theta_{\Prob}(\sqrt s)$.
+For (ii), every size-$s$ support has residual treatment variance
+$\eta=\sigma_0^2(1-\rho^2/2)$.  The support-varying anchored linear
+coefficient field is
+\[
+ -\eta^{-1}d_S^\top\mathbf X_S^\top
+ \boldsymbol\varepsilon/n,
+ \qquad d_j=\rho\sigma_0/\sqrt p.
+\]
+Conditional on $\boldsymbol\varepsilon$, the $p$ scores are independent
+Gaussians, and the sum of their largest signed half is
+$\Theta_{\Prob}(s)$.  This gives the coefficient order above; the same
+sum in the Schur-correlation field, multiplied by $\sqrt n$, gives the
+studentized order.
 
 For (iii), a regression containing $X_1$ represents
-$y=\beta_0x_0+bX_1$ exactly and therefore returns $\beta_0$.  A support
-omitting $X_1$ has a fixed negative population gap because $\rho b<0$.
-The corrected uniform coefficient bound is $o(1)$ when $s=o(n)$, so this
-gap holds uniformly with probability tending to one.  Counting the
-optimal supports gives the displayed value of $\ell_0$.
+$y=\beta_0x_0+bX_1$ exactly.  A support omitting $X_1$ has a fixed
+negative population gap, which Unified Theorem~3.1 preserves uniformly
+with probability tending to one.  Counting the optimal supports gives
+the stated $\ell_0$.  Item (iv) is direct matrix inversion.
 \end{proof}
-
-The greedy transfer used in the original experimental proof has a
-separate deterministic obstruction.  For fixed $0<\rho<1$, let
-\begin{equation*}
- R=\begin{pmatrix}1&\rho\\ \rho&1\end{pmatrix},
- \qquad a=(M,1)^\top,
- \qquad b=(1,M)^\top.
-\end{equation*}
-Every coordinate product $a_jb_j$ is positive and
-$\lambda_{\min}(R)=1-\rho$, but
-\begin{equation*}
- a^\top R^{-1}b
- =\frac{2M-\rho(M^2+1)}{1-\rho^2}<0
-\end{equation*}
-for large $M$.  A block eigenvalue floor therefore cannot turn the
-coordinatewise greedy sum into a lower bound for the inverse-Gram
-objective.
-
-\section{Replacement hierarchy and exact tradeoffs}
-
-\subsection{Conditions recovering the lower rates}
-
-When $m=o(n)$, any lower quantile of the complete matched Taylor maximum
-transfers to the empirical search.  Canonical-metric packing of the
-linear field yields the usual $\lambda\sqrt{\log M}$ leading term; the
-full matched field also covers the quadratic regime.  The following
-direct constructions retain the critical regime $\delta\le\delta_0$.
-
-At the critical boundary, let $\mathcal P$ be a family of size-$s$
-supports, measurable with respect to $(\mathbf X,\mathbf r)$, and have deterministic cardinality $M$ with
-$\log M\gtrsim m$.  The randomized coefficient rate shown in the
-experimental-upper row of the crosswalk follows if, with probability at
-least $1-Ce^{-cm}$,
-\begin{equation}\label{eq:score-packing}
- \min_{S\ne T\in\mathcal P}
- \norm{q_{n,S}-q_{n,T}}_C
- \gtrsim\sqrt n(\Psi_s^2+\varsigma^2\delta^2)^{1/2},
- \qquad
- \max_{S\in\mathcal P}\norm{q_{n,S}}_C
- \lesssim\min_{S\ne T}\norm{q_{n,S}-q_{n,T}}_C,
-\end{equation}
-where $Z_{2n}=\mathbf X^\top\mathbf r/\sqrt n$,
-$q_{n,S}=\iota_SC_{SS}^{-1}Z_{2n,S}$, $\iota_S$ is coordinate
-embedding, and
-$\norm z_C=(z^\top Cz)^{1/2}$.  A constant-weight code drawn from a
-two-sided comparable score pool verifies \eqref{eq:score-packing} under
-local isotropy small enough relative to the score-comparability
-constants.  Uniform exponential multiplier minoration is also
-required; Gaussian treatment has it.  These conditions recover the old
-tight rate in both signal and quadratic-noise branches.
-
-For studentized search, on the event that the residual outcome vectors
-below are nonzero, define
-\begin{equation*}
- u_{n,S}=\frac{M_S\mathbf y}{\norm{M_S\mathbf y}_2},
- \qquad
- \nu_{n,S}
- =\sqrt{\frac{n-|S|-1}
- {n-\operatorname{rank}(\mathbf X_S)}},
- \qquad
- u_{n,S}^{\Delta}
- =\nu_{n,S}u_{n,S}-\nu_{n,\emptyset}u_{n,\emptyset}.
-\end{equation*}
-Under the studentized assumptions in the crosswalk, random assignment,
-and multiplier minoration, let $\mathcal P$ be a family of size-$s$
-supports, measurable with respect to $(\mathbf X,\mathbf y)$, and have deterministic
-cardinality $M$ with $\log M\gtrsim m$.  If, with probability at least
-$1-Ce^{-cm}$, there is a $\lambda_n$ such that
-\begin{equation*}
- \min_{S\ne T\in\mathcal P}
- \norm{u_{n,S}^{\Delta}-u_{n,T}^{\Delta}}_2\ge\lambda_n,
- \qquad
- \max_{S\in\mathcal P}\norm{u_{n,S}^{\Delta}}_2\le K\lambda_n,
- \qquad
- \lambda_n\gtrsim(\theta_s+\delta^2)^{1/2},
-\end{equation*}
-then the original studentized lower rate follows.  The score-to-direction lemma in the
-unified note gives sufficient residual-floor, score-radius, rank-scale,
-and angular or energy-balance conditions for this packing.  Proposition
-\ref{prop:obstructions}(i) proves that some multiplicity condition is
-necessary; it does not make that particular sufficient bridge necessary.
-
-\subsection{From the matched field to \texorpdfstring{top-$s$}{top-s} products}
-
-Let
-\begin{equation}\label{eq:score-isotropy}
- \Omega=\Cov\!\begin{pmatrix}
- (Xx_0-d)/\sigma_0\\ (Xr-h)/\sigma_r
- \end{pmatrix},
- \qquad
- \rho_s^{\mathrm{score}}
- =\sup_{|J|\le2s}
- \norm{\Omega_{(1,2)J,(1,2)J}-I_{2|J|}}_{\mathrm{op}},
-\end{equation}
-where $(1,2)J$ contains both score coordinates associated with $J$.
-The reductions below retain relative sub-Gaussianity, sparse overlap,
-and the small-$\delta$ regime; each arrow adds the displayed premise:
-\begin{equation}\label{eq:hierarchy}
-\begin{aligned}
- \text{matched Schur field}
- &\xrightarrow{\sqrt{\phi_{2s}}\lesssim\delta}
- \text{covariance-aware scores},\\
- \text{covariance-aware scores}
- &\xrightarrow{\rho_s(C)=o(1)}
- \text{observable top-$s$ sort},\\
- \text{observable top-$s$ sort}
- &\xrightarrow{\substack{\rho_s^{\mathrm{score}}=o(1)\\
- \text{mean cap},\ m\to\infty,\ m=o(n)}}
- \text{independent products}.
-\end{aligned}
-\end{equation}
-For the first reduction, set
-\begin{equation*}
- Z_{1n}=\frac{\mathbf X^\top\mathbf x_0}{\sqrt n},
- \qquad
- Z_{2n}=\frac{\mathbf X^\top\mathbf r}{\sqrt n},
- \qquad
- T_C(a,b)=\max_{|S|=s}[-a_S^\top C_{SS}^{-1}b_S],
-\end{equation*}
-Sparse treatment alignment then gives
-\begin{equation}\label{eq:covariance-aware}
- \max_{|S|=s}(\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
- =\frac{T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
- +R_n^C.
-\end{equation}
-With probability at least $1-Ce^{-cm}$,
-$|R_n^C|\le C\delta a_n^{\mathrm{score}}$.  This retains arbitrary
-sparse covariance geometry, possibly with a hard combinatorial search.
-
-Let
-\begin{equation*}
- \hat{\mathbf r}=\mathbf y-\hat\beta_{0,\emptyset}\mathbf x_0,
- \quad
- \hat Z_{2n}=\frac{\mathbf X^\top\hat{\mathbf r}}{\sqrt n},
- \quad
- \hat\sigma_0^2=\frac{\mathbf x_0^\top\mathbf x_0}{n}.
-\end{equation*}
-Local isotropy converts \eqref{eq:covariance-aware} into the observable
-static sort
-\begin{equation}\label{eq:observable-sort}
- \max_{|S|=s}(\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
- =\frac1{n\hat\sigma_0^2}
- \sum_{t=1}^s
- \{-Z_{1n,j}\hat Z_{2n,j}:j\le p\}_{(t)}
- +R_n^{\mathrm{sort}}.
-\end{equation}
-Here $(t)$ denotes decreasing order, and with probability at least
-$1-Ce^{-cm}$,
-$|R_n^{\mathrm{sort}}|\le
-C\{\delta+\rho_s(C)\}a_n^{\mathrm{score}}$.
-This observable top-$s$ construction applies directly to the realized
-sub-Gaussian scores.  At critical $\delta$, its error is
-$o_{\Prob}(a_n^{\mathrm{score}})$ when $m=o(n)$ and $\rho_s(C)=o(1)$.
-
-For the final arrow, suppose $m\to\infty$, $m=o(n)$, $\rho_s(C)=o(1)$,
-$\rho_s^{\mathrm{score}}=o(1)$, and
-\begin{equation}\label{eq:mean-cap}
- \sup_{|J|\le s}\left\{
- \frac{n\norm{d_J}^2}{\sigma_0^2}
- +\frac{n\norm{h_J}^2}{\sigma_r^2}
- \right\}\lesssim m.
-\end{equation}
-Let all $2p$ variables below be mutually independent, with
-\begin{equation*}
- \xi_{1j}\sim N(\sqrt n\,d_j,\sigma_0^2),
- \qquad
- \xi_{2j}\sim N(\sqrt n\,h_j,\sigma_r^2).
-\end{equation*}
-After composing matched-moment invariance with the score and static
-reductions above, there is an enlarged-space coupling such that
-\begin{equation}\label{eq:independent-products}
- \max_{|S|=s}(\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
- =\frac1{n\sigma_0^2}
- \sum_{t=1}^s\{-\xi_{1j}\xi_{2j}:j\le p\}_{(t)}
- +o_{\Prob}(a_n^{\mathrm{score}}).
-\end{equation}
-Sparse score isotropy is sufficient, not asserted necessary.  It follows,
-for example, from local isotropy, the mean cap, and sparse operator-norm
-control of the fourth-cumulant blocks; entrywise $o(1)$ cumulants do not
-imply that control when $s$ grows.
-
-Under the confounding bridge
-$\sqrt{\phi_{2s}}\lesssim\delta$ and
-$|d^\top\beta_{-0}|=o(\sigma_0\varsigma\delta)$,
-\eqref{eq:translation} permits the independent second factors to be
-written with mean $\sqrt n(C\beta_{-0})_j$ and variance $\varsigma^2$.
-For jointly Gaussian rows, local isotropy and the mean cap also give
-sparse score isotropy, recovering the intended independent-product formula.
-
-\section{Other manuscript corrections}
-
-Three ancillary statements require corresponding changes.
-\begin{enumerate}
-\item The experimental headline should concern
-$\max_S\hat\beta_{0,S}-\hat\beta_{0,\emptyset}$ at the full
-$\sigma_0^{-1}(\Psi_s\delta+\varsigma\delta^2)$ scale.  Centering at
-$\beta_0$ adds the fixed-specification fluctuation
-$O_{\Prob}\{\varsigma/(\sigma_0\sqrt n)\}$; a matching lower headline
-also needs packing and minoration.
-\item The plug-in introduction gives a
-$s\sqrt{\log(ep/s)}/n$ remainder, while its theorem is stated at the
-$s\log(ep/s)/n$ scale.  The latter is the scale of the separable result.
-\item The discussion compares correlation-normalized sparse condition
-numbers with the condition number of an unnormalized full covariance and
-invokes interlacing.  Interlacing supports that comparison only after the
-same diagonal normalization is applied to both matrices.
-\end{enumerate}
 
 \end{document}
