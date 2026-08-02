@@ -44,9 +44,9 @@ transfers the population projection bound to this empirical certificate.  Under
 centered Kronecker Gaussian scores, the passive energy has an exact
 chi-square law, and the forward path is first-order accurate for
 block-diagonal covariance with many independent blocks even when the
-covariance within each block is anisotropic or singular.  Coordinatewise
-top-$s$ sorting is the diagonal special case of this sequential product
-construction.
+covariance within each block is anisotropic or singular.  For diagonal
+covariance, the exact objective itself is recovered by one coordinatewise
+top-$s$ product sort.
 \end{abstract}
 
 \section{Conditional products}
@@ -299,7 +299,15 @@ Both terms on the left are nonnegative.  Dropping the second and applying
 
 Incremental factorization computes the path and all certificates in
 $O(ps^2)$ arithmetic operations and $O(ps)$ working memory beyond access
-to $C$.  The path itself requires no value of $\mu$; the supplied lower
+to $C$.  To see this, maintain a rank-revealing Cholesky or QR
+factorization of $C_{J_tJ_t}$ and the residual score numerators for every
+remaining coordinate.  Updating one candidate at stage $t$ costs $O(t)$
+operations, and linear-time selection finds the largest gain and the
+largest certificate terms.  Zero pivots have zero compatible residual
+scores, so their numerical factor updates are skipped; the fixed tie
+rule may still append those coordinates to the path.  Summing $O(pt)$ over $t\le s$ gives the stated
+operation count, while storing the candidate-by-selected-coordinate
+updates uses $O(ps)$ memory.  The path itself requires no value of $\mu$; the supplied lower
 bound makes its regret certificate valid.  Obtaining the best possible
 sparse lower bound can be combinatorial, so the computational statement
 applies when design structure or a conservative spectral bound supplies
@@ -309,9 +317,10 @@ $\mu$.
 
 The projection certificate applies directly to the sample rather than
 only to a Gaussian approximation.  Let $x,y\in\R^n$ satisfy
-$x^\top x>0$, let $X\in\R^{n\times p}$, and, for each $S$, let
-$\hat\beta_{0,S}$ be the coefficient on $x$ in the regression of
-$y$ on $(x,X_S)$.  Define
+$x^\top x>0$ and let $X\in\R^{n\times p}$.  Let $M_S$ project off the
+columns of $X_S$.  For each $S$ with $x^\top M_Sx>0$, let
+$\hat\beta_{0,S}$ be the coefficient on $x$ in the regression of $y$ on
+$(x,X_S)$; set $\hat\beta_{0,S}=0$ when this denominator vanishes.  Define
 \begin{equation}\label{eq:empirical-objects}
 \begin{gathered}
         \hat\beta_{0,\emptyset}=\frac{x^\top y}{x^\top x},
@@ -468,7 +477,7 @@ exact dependencies.
 
 \section{Stochastic accuracy beyond diagonal covariance}
 
-For random scores and a deterministic scale $\omega_n>0$,
+For compatible random scores and a deterministic scale $\omega_n>0$,
 \begin{equation}\label{eq:stochastic-certificate}
         \mathcal D_{C,\mu}(z_{\mathrm a},z_{\mathrm p};J_\bullet)=o_{\Prob}(\omega_n)
 \end{equation}
@@ -482,7 +491,8 @@ implies
 Gaussian structure provides useful conditions under which the passive
 part of \eqref{eq:stochastic-certificate} is automatically small.
 
-Suppose, for $-1<\gamma<1$, that
+Suppose, for $-1<\gamma<1$, that $a$ and $b$ are compatible almost surely
+and
 \begin{equation}\label{eq:kronecker-scores}
         \begin{pmatrix}a/\sigma_a\\b/\sigma_b\end{pmatrix}
         -\E\begin{pmatrix}a/\sigma_a\\b/\sigma_b\end{pmatrix}
@@ -545,7 +555,7 @@ and
         +o_{\Prob}(\sigma_a\sigma_b sL).
 \end{split}
 \end{equation}
-No conditioning or full-rank assumption is imposed within the blocks.
+No condition-number or full-rank assumption is imposed within the blocks.
 \end{theorem}
 
 \begin{proof}
@@ -586,8 +596,10 @@ $2(1-\gamma)sL+o_{\Prob}(sL)$, so
 \eqref{eq:polarized-product} proves the second.
 \end{proof}
 
-The diagonal case makes every conditional product static and recovers one
-top-$s$ sort.  The block result shows why local isotropy is not the
+In the diagonal case every conditional product is static, so the exact
+objective is recovered by one top-$s$ product sort.  The active-energy path
+remains a certified approximation unless its ranking agrees with the product
+ranking.  The block result shows why local isotropy is not the
 boundary of product search: general covariance replaces a static list by
 a residual product path, and the active projection supplies both the path
 and its error control.

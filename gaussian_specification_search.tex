@@ -42,7 +42,8 @@ observational drift and signal.  Under sparse treatment alignment the
 same field reduces to bilinear score products.  Their conditional
 increments yield a covariance-aware forward search with an exact regret
 certificate; a block-Kronecker Gaussian score law gives vanishing regret
-without local isotropy, while local isotropy recovers a static top-$s$ sort.  The same
+without local isotropy, while local isotropy permits approximation by a
+static top-$s$ sort.  The same
 moment field gives a matched studentized approximation and unified upper
 and lower bounds, with lower tightness governed by metric separation.
 \end{abstract}
@@ -66,8 +67,9 @@ Then $\E[x^{(i)}r^{(i)}]=0$.  Set
         \qquad
         \E[X^{(i)}(X^{(i)})^\top]=C,
 \end{equation*}
-and assume $\sigma_0\sigma_r>0$.  Rescaling the controls changes none of
-their selected spans, so $C_{jj}=1$ throughout.
+and assume $\sigma_0\sigma_r>0$.  Discard zero-variance controls.
+Rescaling the remaining controls changes none of their selected spans, so
+$C_{jj}=1$ throughout.
 
 The augmented row and its second-moment matrix are
 \begin{equation}\label{eq:moment-matrix}
@@ -123,11 +125,23 @@ field can therefore be computed from $(\mathbf x,\mathbf y,\mathbf X)$ even thou
 residual $r$ makes its population geometry clearer.
 
 For $S\subseteq[p]$, let $M_S$ project orthogonally off the columns of
-$\mathbf X_S$, and write
+$\mathbf X_S$.  When the denominator is positive, write
 \begin{equation*}
         \hat\beta_{0,S}
         =\frac{\mathbf x^\top M_S\mathbf y}
         {\mathbf x^\top M_S\mathbf x}.
+\end{equation*}
+Set $\hat\beta_{0,\emptyset}=0$ when $\mathbf x^\top\mathbf x=0$, and
+set $\hat\beta_{0,S}=\hat\beta_{0,\emptyset}$ whenever
+$\mathbf x^\top M_S\mathbf x=0$.
+When $\Gamma_{xx\mathbin{\cdot}S}>0$, let $\beta_{0,S}^*$ denote the
+coefficient on $x$ in the population linear projection of $y$ on
+$(x,X_S)$; equivalently,
+\begin{equation*}
+        \beta_{0,S}^*
+        =\beta_\emptyset^*
+        +\frac{\Gamma_{xr\mathbin{\cdot}S}}
+        {\Gamma_{xx\mathbin{\cdot}S}}.
 \end{equation*}
 
 \begin{lemma}[Exact moment representation]\label{lem:exact-moment}
@@ -136,7 +150,8 @@ For every support with $\mathbf x^\top M_S\mathbf x>0$,
         \hat\beta_{0,S}-\hat\beta_{0,\emptyset}
         =B_S(\hat\Gamma).
 \end{equation}
-At the population matrix,
+For every support with $\Gamma_{xx\mathbin{\cdot}S}>0$, the population
+matrix satisfies
 \begin{equation}\label{eq:population-landscape}
         B_S(\Gamma)
         =\beta_{0,S}^*-\beta_{0,\emptyset}^*
@@ -162,14 +177,16 @@ coefficient with $S=\emptyset$ proves
 The exact field depends only on selected column spans, so singular
 population blocks require no additional assumption.  Indeed, write
 $C_{JJ}=E_J\Lambda_JE_J^\top$ on its positive-eigenvalue range.  If
-$a\in\ker(C_{JJ})$, then $\E(X_J^{(i)}a)^2=0$, hence
-$X_J^{(i)}a=0$ almost surely.  Thus
+$a\in\ker(C_{JJ})$, then $\E(a^\top X_J^{(i)})^2=0$, hence
+$a^\top X_J^{(i)}=0$ almost surely.  Thus
 \begin{equation*}
         \operatorname{span}(\mathbf X_J)
         =\operatorname{span}(\mathbf X_JE_J\Lambda_J^{-1/2}),
         \qquad
-        \E[(X_J^{(i)}E_J\Lambda_J^{-1/2})^\top
-        X_J^{(i)}E_J\Lambda_J^{-1/2}]=I.
+        \E[\widetilde X_J^{(i)}(\widetilde X_J^{(i)})^\top]=I,
+        \quad
+        \widetilde X_J^{(i)}
+        =\Lambda_J^{-1/2}E_J^\top X_J^{(i)}.
 \end{equation*}
 The vectors $d_J,h_J$ and both the empirical and matched Gaussian
 perturbations lie in this same fixed range.  We therefore carry out every
@@ -184,7 +201,10 @@ $C_{JJ}$.  A symmetric perturbation $H$ is range-compatible if
         \qquad |J|\le2s.
 \end{equation}
 Every empirical row-moment perturbation and every matched Gaussian
-perturbation is range-compatible.  All derivatives below are taken on
+perturbation is range-compatible.  Indeed, every forbidden kernel
+functional of an empirical row moment vanishes almost surely, so its
+variance is zero; covariance matching forces the corresponding Gaussian
+functional to vanish as well.  All derivatives below are taken on
 this fixed-rank affine face.  When a function is evaluated on an ambient
 matrix, its support-specific blocks are projected onto the face first.
 
@@ -195,8 +215,13 @@ The population residual treatment variance is
         =\sigma_0^2-d_S^\top C_{SS}^{-1}d_S.
 \end{equation}
 \begin{assumption}[Sparse moment regime]\label{ass:sparse-moments}
-The augmented row $v^{(i)}$ is sub-Gaussian relative to $\Gamma$, with a
-uniformly bounded constant, and
+For a fixed constant $K$, the augmented row satisfies
+\begin{equation*}
+        \norm{a^\top v^{(i)}}_{\psi_2}
+        \le K(a^\top\Gamma a)^{1/2}
+        \qquad\text{for every }a\in\R^{p+2},
+\end{equation*}
+and
 \begin{equation*}
         \inf_{|S|\le s}\eta(S)\ge c_{\mathrm{ov}}\sigma_0^2
 \end{equation*}
@@ -207,7 +232,8 @@ Overlap is the domain condition of
 \eqref{eq:coefficient-functional}; relative sub-Gaussianity supplies
 uniform moment concentration on the compressed sparse blocks.
 Under the linear specialization below, it follows from relative
-sub-Gaussianity of the design and independent noise.
+sub-Gaussianity of the design together with independent noise that is
+sub-Gaussian relative to its variance.
 
 Write
 \begin{equation}\label{eq:search-scale}
@@ -361,7 +387,7 @@ expansion, and rowwise invariance of the off-diagonal quadratic field.
 
 \begin{lemma}[Sparse hybrid moments]\label{lem:sparse-hybrid-moments}
 Let $Y_i=v^{(i)}(v^{(i)})^\top-\Gamma$, and let $Y_i^G$ be independent
-centered Gaussian matrices with the covariance in
+centered Gaussian matrices, independent of the original rows, with the covariance in
 \eqref{eq:matched-moment-matrix}.  Uniformly over every deterministic
 hybrid pattern $\widetilde Y_i\in\{Y_i,Y_i^G,0\}$ and each fixed
 $1\le q\le6$,
@@ -372,7 +398,7 @@ $1\le q\le6$,
         \lesssim\delta,
         \qquad sL=o(n).
 \end{equation}
-For $m+t\lesssim n$, the corresponding tail bound is
+For every $t\ge0$, the corresponding tail bound is
 \begin{equation}\label{eq:sparse-moment-tail}
 \Prob\left(
 \left|\frac1n\sum_{i=1}^n\widetilde Y_i\right|_s
@@ -395,20 +421,27 @@ In particular,
 \end{lemma}
 
 \begin{proof}
-For a fixed support and unit directions, every entry and quadratic form in
-\eqref{eq:sparse-moment-size} is a centered product of two standardized
-sub-Gaussian linear forms and therefore has uniformly bounded
-$\psi_1$ norm.  A $1/4$-net for each sparse sphere, followed by a union over
-the supports, has logarithmic size $O(sL)$.  Bernstein's inequality on
-this net gives \eqref{eq:sparse-moment-tail}; tail integration gives
-\eqref{eq:sparse-moment-concentration}.  Gaussian net directions have
-sub-Gaussian tails with the same variance bound, so the same conclusions
-hold for every deterministic hybrid pattern.  For one original row, the
-control-block term is bounded by the squared norm of the largest $2s$
-standardized coordinates, whose fixed $L_q$ norm is $O(sL)$.  The vector
-terms are smaller by Cauchy--Schwarz.  For $Y_i^G$, a union over the same
-Gaussian net gives an $O(\sqrt{sL})$ bound and hence the weaker stated
-$O(sL)$ bound.  This proves \eqref{eq:one-row-moment}.
+Fix a support $J$ and work on the range of $C_{JJ}$.  Every scalar
+functional needed to net the three support-specific terms in
+\eqref{eq:sparse-moment-size} is a centered product of two linear forms
+standardized by their population variances.  It therefore has uniformly
+bounded $\psi_1$ norm.  A $1/4$-net in each support-specific whitened
+sphere, followed by a union over $|J|\le2s$, has logarithmic size
+$O(sL)$.  Bernstein's inequality and the usual net approximation of
+Euclidean and operator norms give \eqref{eq:sparse-moment-tail}, including
+its linear term, for every $t\ge0$.  A matched Gaussian scalar functional
+has the same variance as the corresponding original functional and is
+sub-Gaussian, so the argument applies to every deterministic hybrid
+pattern.
+
+Integrating this full Bernstein tail gives
+\eqref{eq:sparse-moment-concentration} for each fixed $q\le6$ when
+$sL=o(n)$.  Applying the same union of whitened nets to a single original
+row gives an $L_q$ bound $O(sL+q)$ for each net maximum: this follows
+directly from the $\psi_1$ maximal inequality and does not require the
+coordinates of $X$ to be uncorrelated.  The matched Gaussian net maximum
+is $O\{\sqrt{sL+q}\}$ in $L_q$.  Since $q$ is fixed and $sL\ge1$, both
+bounds imply \eqref{eq:one-row-moment}.
 \end{proof}
 
 The control-block component of \eqref{eq:sparse-moment-tail} is the
@@ -422,7 +455,8 @@ relative restricted-isometry event
 \end{equation}
 It is centered at the population covariance $C$.  The local-isotropy
 condition used later instead compares $C$ with $I$; the former stabilizes
-the empirical field, while the latter makes its search separable.
+the empirical field, while the latter controls its approximation by a
+separable search.
 
 The next lemma records the deterministic part of the approximation.  Let
 $DB_S(\Gamma)[H]$ and $D^2B_S(\Gamma)[H,H]$ denote the first two
@@ -455,7 +489,28 @@ $\eta=\sigma_0^2-d_S^\top\alpha$.  The inverse identity
         -K_SH_{SS}K_SH_{SS}K_SH_{SS}(C_{SS}+H_{SS})^{-1}
 \end{equation*}
 expands both Schur complements in
-\eqref{eq:coefficient-functional}.  The relative norm in
+\eqref{eq:coefficient-functional}.  To justify these expansions uniformly
+on the entire segment, put
+\begin{equation*}
+ E_S=C_{SS}^{-1/2}H_{SS}C_{SS}^{-1/2}.
+\end{equation*}
+For $0\le t\le1$, $\norm{E_S}_{\mathrm{op}}\le |H|_s<c$ and hence
+\begin{equation*}
+ \norm{(I+tE_S)^{-1}}_{\mathrm{op}}
+ \le(1-c)^{-1}.
+\end{equation*}
+Moreover, $\norm{C_{SS}^{-1/2}d_S}\le\sigma_0$ and
+$\norm{C_{SS}^{-1/2}H_{Sx}}\le\sigma_0|H|_s$.  Substituting these bounds
+in the Schur complement gives
+\begin{equation*}
+ \left|(\Gamma+tH)_{xx\mathbin{\cdot}S}-\eta(S)\right|
+ \le C\sigma_0^2|H|_s.
+\end{equation*}
+Choosing $c$ in terms of $c_{\mathrm{ov}}$ therefore keeps this denominator
+above $c_{\mathrm{ov}}\sigma_0^2/2$ for every $S$ and $t$.  The unadjusted
+denominator is at least $\sigma_0^2/2$ by the same choice of $c$.
+
+The relative norm in
 \eqref{eq:sparse-moment-size} bounds every linear term by its population
 standard deviation, while Cauchy--Schwarz gives
 $\norm{C_{SS}^{-1/2}d_S}\le\sigma_0$ and
@@ -465,6 +520,219 @@ reciprocal through second order and collecting terms of degree at least
 two proves \eqref{eq:first-order-remainder}.  Retaining the quadratic
 terms leaves products of degree at least three and proves
 \eqref{eq:second-order-remainder}, uniformly in $S$.
+\end{proof}
+
+\begin{lemma}[Residual-field row bounds]
+\label{lem:residual-field-row-bounds}
+Let $V=(U^\top,X^\top)^\top$ be centered, with
+$U\in\R^{d_U}$ of fixed dimension, and write
+$\Gamma=\E(VV^\top)$ and $C=\E(XX^\top)$.  Let $\Pi_J$ project onto
+the range of $C_{JJ}$.  Suppose
+\begin{equation*}
+ \norm{a^\top V}_{\psi_2}\le K\{\E(a^\top V)^2\}^{1/2}
+ \qquad\text{for every }a.
+\end{equation*}
+Let $D_U$ be a positive diagonal matrix for which
+$\norm{D_U^{-1}\E(UU^\top)D_U^{-1}}_{\mathrm{op}}\le K_U$ for a fixed
+constant $K_U$, and put
+\begin{equation*}
+ \Xi_S=\E(X_SU^\top),\qquad
+ L_S=C_{SS}^{-1}\Xi_S,\qquad
+ w_S=U-L_S^\top X_S,\qquad
+ R_S=\E(w_Sw_S^\top).
+\end{equation*}
+Call $H$ range-compatible here when
+$H_{JU}=\Pi_JH_{JU}$ and $H_{JJ}=\Pi_JH_{JJ}\Pi_J$ for $|J|\le2s$.
+For such a perturbation, define
+\begin{equation*}
+\begin{split}
+ |H|_{D_U,s}={}&\norm{D_U^{-1}H_{UU}D_U^{-1}}_{\mathrm{op}}\\
+ &+\sup_{|J|\le2s}\left\{
+ \norm{C_{JJ}^{-1/2}H_{JU}D_U^{-1}}_{\mathrm F}
+ +\norm{C_{JJ}^{-1/2}H_{JJ}C_{JJ}^{-1/2}}_{\mathrm{op}}
+ \right\},\\
+ \lambda_s={}&\sup_{|S|\le s}
+ \norm{C_{SS}^{-1/2}\Xi_SD_U^{-1}}_{\mathrm F}.
+\end{split}
+\end{equation*}
+Let $\varphi$ be three times continuously differentiable on a
+neighborhood of the convex hull of the $R_S$.  Suppose that, for
+$1\le k\le3$, every matrix $R$ in this neighborhood satisfies
+\begin{equation}\label{eq:standardized-target-derivatives}
+ \left|D^k\varphi(R)[D_UA_1D_U,\ldots,D_UA_kD_U]\right|
+ \le\kappa_\varphi\prod_{j=1}^k\norm{A_j}_{\mathrm{op}}.
+\end{equation}
+For bounded scalars $c_S,c_0$, define
+\begin{equation*}
+ \Phi_S(A)=c_S\varphi\{\mathcal R_S^U(A)\}
+ -c_0\varphi\{\mathcal R_\emptyset^U(A)\},
+ \qquad
+ \mathcal R_S^U(A)=A_{UU}-A_{US}A_{SS}^{-1}A_{SU}.
+\end{equation*}
+Then
+\begin{equation}\label{eq:residual-field-derivative-bound}
+ \sup_{|S|\le s}\sup_{|H|_{D_U,s}\le1}
+ |D\Phi_S(\Gamma)[H]|
+ \lesssim\kappa_\varphi
+ \left\{\lambda_s+\sup_{|S|\le s}|c_S-c_0|\right\}.
+\end{equation}
+If $Y=VV^\top-\Gamma$, $Y^G$ is a centered Gaussian matrix with the
+covariance of $Y$, and $H$ is independent of both $Y$ and $Y^G$, then
+\begin{align}
+ \sup_{|S|\le s}
+ \norm{D\Phi_S(\Gamma)[Y]+D^2\Phi_S(\Gamma)[H,Y]}_{\psi_1\mid H}
+ &\lesssim\kappa_\varphi\left\{
+ \lambda_s+\sup_{|S|\le s}|c_S-c_0|+|H|_{D_U,s}\right\},
+ \label{eq:residual-field-mixed-row-bound}\\
+ \sup_{|S|\le s}\left\{
+ \norm{D^2\Phi_S(\Gamma)[Y,Y]}_{L_q}
+ +\norm{D^2\Phi_S(\Gamma)[Y^G,Y^G]}_{L_q}\right\}
+ &\lesssim\kappa_\varphi q(s+q),\qquad q\ge2.
+ \label{eq:residual-field-diagonal-bound}
+\end{align}
+The mixed-row bound also holds with $Y^G$ in place of $Y$, and
+\begin{equation}\label{eq:residual-field-diagonal-mean}
+ \E D^2\Phi_S(\Gamma)[Y,Y]
+ =\E D^2\Phi_S(\Gamma)[Y^G,Y^G].
+\end{equation}
+If $\varphi$ ignores an entry of its matrix argument, the corresponding
+terms may be omitted from $|H|_{D_U,s}$.
+\end{lemma}
+
+\begin{proof}
+Fix $S$ and write
+\begin{equation*}
+ H_{Sw}=H_{SU}-H_{SS}L_S,
+ \qquad
+ H_{ww}=H_{UU}-H_{US}L_S-L_S^\top H_{SU}
+ +L_S^\top H_{SS}L_S.
+\end{equation*}
+Differentiation on the compressed range gives
+\begin{equation}\label{eq:residual-schur-derivatives}
+\begin{split}
+ D\mathcal R_S^U(\Gamma)[H]&=H_{ww},\\
+ D^2\mathcal R_S^U(\Gamma)[H,Q]
+ &=-H_{Sw}^\top C_{SS}^{-1}Q_{Sw}
+ -Q_{Sw}^\top C_{SS}^{-1}H_{Sw}.
+\end{split}
+\end{equation}
+For a centered row moment,
+\begin{equation}\label{eq:row-residual-blocks}
+ Y_{ww}=w_Sw_S^\top-R_S,
+ \qquad Y_{Sw}=X_Sw_S^\top.
+\end{equation}
+
+Let $F_S=\nabla\varphi(R_S)$ and represent the Hessian by
+$D^2\varphi(R_S)[P,Q]=\langle\mathcal H_S[P],Q\rangle$.  The incoming-row
+term for one unanchored support is exactly
+\begin{equation}\label{eq:residual-mixed-row-formula}
+\begin{split}
+ \mathcal L_{S,H}(Y)
+ ={}&\langle F_S+\mathcal H_S[H_{ww}],Y_{ww}\rangle\\
+ &-2\langle C_{SS}^{-1/2}H_{Sw}F_S,
+ C_{SS}^{-1/2}Y_{Sw}\rangle_{\mathrm F}\\
+ ={}&w_S^\top\{F_S+\mathcal H_S[H_{ww}]\}w_S
+ -\operatorname{tr}[\{F_S+\mathcal H_S[H_{ww}]\}R_S]\\
+ &-2X_S^\top C_{SS}^{-1}H_{Sw}F_Sw_S.
+\end{split}
+\end{equation}
+It is a centered quadratic form in $(U,X_S)$ whose coefficient has rank
+at most $3d_U$.
+
+For the base derivative, put $K_S=(I_{d_U},-L_S^\top)^\top$.  Its coefficient
+in $(U,X_S)$ is
+\begin{equation*}
+ c_SK_SF_SK_S^\top-c_0K_\emptyset F_\emptyset K_\emptyset^\top.
+\end{equation*}
+After block standardization by $\operatorname{diag}(D_U,C_{SS}^{1/2})$,
+the $UU$, $UX$, and $XX$ blocks have operator norms bounded respectively
+by
+\begin{equation*}
+ C\kappa_\varphi\{\lambda_s^2+|c_S-c_0|\},
+ \qquad C\kappa_\varphi\lambda_s,
+ \qquad C\kappa_\varphi\lambda_s^2.
+\end{equation*}
+Indeed,
+$R_S-R_\emptyset=-\Xi_S^\top C_{SS}^{-1}\Xi_S$ and
+$C_{SS}^{1/2}L_SD_U^{-1}=C_{SS}^{-1/2}\Xi_SD_U^{-1}$.
+Positive semidefiniteness of the joint covariance and fixed $d_U$ give
+$\lambda_s\le C$.  The standardized nuclear norm of the coefficient is
+therefore bounded by
+$C\kappa_\varphi\{\lambda_s+|c_S-c_0|\}$.  The same calculation and
+\begin{equation*}
+ \norm{C_{SS}^{-1/2}H_{Sw}D_U^{-1}}_{\mathrm F}
+ +\norm{D_U^{-1}H_{ww}D_U^{-1}}_{\mathrm{op}}
+ \le C|H|_{D_U,s}
+\end{equation*}
+bound the standardized nuclear norm of the mixed coefficient by
+$C\kappa_\varphi|H|_{D_U,s}$.  This proves
+\eqref{eq:residual-field-derivative-bound}.  Relative sub-Gaussianity and
+the spectral decomposition of a fixed-rank coefficient give the required
+quadratic-form bound.  To make the standardization explicit, set
+$\mathsf D_S=\operatorname{diag}(D_U,C_{SS}^{1/2})$ and
+$\bar\Sigma_S=\mathsf D_S^{-1}\E[(U,X_S)(U,X_S)^\top]\mathsf D_S^{-1}$.
+Positive semidefiniteness and the assumed target-block bound imply
+$\norm{\bar\Sigma_S}_{\mathrm{op}}\le C$.  Hence, for every symmetric
+coefficient $A$,
+\begin{equation*}
+ \norm{\bar\Sigma_S^{1/2}(\mathsf D_SA\mathsf D_S)
+       \bar\Sigma_S^{1/2}}_*
+ \le C\norm{\mathsf D_SA\mathsf D_S}_*.
+\end{equation*}
+Applying the relative sub-Gaussian bound after this standardization, with
+$z=(U^\top,X_S^\top)^\top$ and $\Sigma_z=\E(zz^\top)$, yields
+\begin{equation*}
+ \norm{z^\top Az-\E(z^\top Az)}_{\psi_1}
+ \le CK^2\norm{\Sigma_z^{1/2}A\Sigma_z^{1/2}}_*,
+\end{equation*}
+which proves \eqref{eq:residual-field-mixed-row-bound}.  The corresponding
+functional of $Y^G$ is Gaussian with the same variance and obeys the same
+bound.
+
+For the diagonal term, the chain rule gives the exact identity
+\begin{equation}\label{eq:residual-diagonal-formula}
+\begin{split}
+ D^2(\varphi\circ\mathcal R_S^U)(\Gamma)[Y,Y]
+ ={}&D^2\varphi(R_S)[Y_{ww},Y_{ww}]\\
+ &-2D\varphi(R_S)
+ [Y_{Sw}^\top C_{SS}^{-1}Y_{Sw}].
+\end{split}
+\end{equation}
+For an original row,
+\begin{equation*}
+ Y_{Sw}^\top C_{SS}^{-1}Y_{Sw}
+ =(X_S^\top C_{SS}^{-1}X_S)w_Sw_S^\top.
+\end{equation*}
+Relative sub-Gaussianity gives
+\begin{equation*}
+ \norm{X_S^\top C_{SS}^{-1}X_S}_{L_{2q}}\lesssim s+q,
+ \qquad
+ \norm{D_U^{-1}w_Sw_S^\top D_U^{-1}}_{L_{2q}}\lesssim q.
+\end{equation*}
+Together with \eqref{eq:standardized-target-derivatives}, this proves the
+first term in \eqref{eq:residual-field-diagonal-bound}.
+
+For the matched Gaussian row, put
+\begin{equation*}
+ \mathcal Z_S=C_{SS}^{-1/2}(Y^G)_{Sw}D_U^{-1}.
+\end{equation*}
+If $\norm A_{\mathrm F}=1$, covariance matching and a singular-value
+decomposition of the $|S|\times d_U$ matrix $A$ give
+\begin{equation*}
+ \Var\langle A,\mathcal Z_S\rangle
+ =\Var\langle A,C_{SS}^{-1/2}X_Sw_S^\top D_U^{-1}\rangle
+ \le C.
+\end{equation*}
+Thus the covariance operator of $\operatorname{vec}(\mathcal Z_S)$ is
+bounded and its trace is $O(sd_U)$.  Gaussian quadratic-form moments yield
+$\norm{\mathcal Z_S^\top\mathcal Z_S}_{L_q}\lesssim s+q$.
+The fixed-dimensional block
+$D_U^{-1}(Y^G)_{ww}D_U^{-1}$ has $L_{2q}$ norm $O(\sqrt q)$, so
+\eqref{eq:residual-diagonal-formula} proves the Gaussian part of
+\eqref{eq:residual-field-diagonal-bound}.  Finally,
+\eqref{eq:residual-field-diagonal-mean} follows because the bilinear form
+$D^2\Phi_S(\Gamma)$ is deterministic and $Y,Y^G$ have the same
+covariance.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:critical-empirical-expansion}]
@@ -481,40 +749,21 @@ $|\max_S a_S-\max_S b_S|\le\max_S|a_S-b_S|$.
 \end{proof}
 
 \begin{proof}[Proof of Theorem~\ref{thm:matched-moments}]
-Let $U=(x,r)^\top$, $\Gamma_{SU}=(d_S,h_S)$, and
+Apply Lemma~\ref{lem:residual-field-row-bounds} with
 \begin{equation*}
-        \ell_S^U=C_{SS}^{-1}\Gamma_{SU},
-        \qquad w_S=U-(\ell_S^U)^\top X_S,
-        \qquad R_S=\E(w_Sw_S^\top).
+ U=(x,r)^\top,\qquad
+ D_U=\operatorname{diag}(\sigma_0,\sigma_r),\qquad
+ \varphi(R)=R_{12}/R_{11},\qquad c_S=c_0=1.
 \end{equation*}
-For a range-compatible direction $H$, define
+Overlap gives \eqref{eq:standardized-target-derivatives} with
+$\kappa_\varphi=C\sigma_r/\sigma_0$.  Moreover,
 \begin{equation*}
-\begin{split}
-        H_{Sw}&=H_{SU}-H_{SS}\ell_S^U,\\
-        H_{ww}&=H_{UU}-H_{US}\ell_S^U-(\ell_S^U)^\top H_{SU}
-        +(\ell_S^U)^\top H_{SS}\ell_S^U.
-\end{split}
+ \lambda_s
+ \le\sqrt{\phi_s}+\frac{\widetilde\Psi_s}{\sigma_r}.
 \end{equation*}
-Define the residual-moment map
-$\mathcal R_S(A)=A_{UU}-A_{US}A_{SS}^{-1}A_{SU}$.
-Differentiating it on the compressed range gives
-\begin{equation}\label{eq:residual-schur-derivatives}
-\begin{split}
-        D\mathcal R_S(\Gamma)[H]&=H_{ww},\\
-        D^2\mathcal R_S(\Gamma)[H,Q]
-        &=-H_{Sw}^\top C_{SS}^{-1}Q_{Sw}
-        -Q_{Sw}^\top C_{SS}^{-1}H_{Sw}.
-\end{split}
-\end{equation}
-For a centered row moment $Y=vv^\top-\Gamma$, the population normal
-equations imply
-\begin{equation}\label{eq:row-residual-blocks}
-        Y_{ww}=w_Sw_S^\top-R_S,
-        \qquad Y_{Sw}=X_Sw_S^\top.
-\end{equation}
-Since $B_S(A)=f\{\mathcal R_S(A)\}-f\{\mathcal R_\emptyset(A)\}$ for
-$f(R)=R_{12}/R_{11}$, the chain rule, overlap, and relative
-sub-Gaussianity yield, for $H$ independent of $Y$ and $q\ge2$,
+The function $\varphi$ ignores the $rr$ entry, so the reduced target norm
+in the final sentence of the lemma is bounded by $C|H|_s$.  Consequently,
+for $H$ independent of a centered row moment $Y$ and $q\ge2$,
 \begin{align}
  \sup_{|S|=s}
  \norm{DB_S(\Gamma)[Y]+D^2B_S(\Gamma)[H,Y]}_{\psi_1\mid H}
@@ -527,35 +776,12 @@ sub-Gaussianity yield, for $H$ independent of $Y$ and $q\ge2$,
  &\lesssim\frac{\sigma_r}{\sigma_0}q(s+q).
  \label{eq:intrinsic-diagonal-row-bound}
 \end{align}
-Indeed, the first expression is a quadratic form of rank bounded by the
-target dimension.  Duality with the relative block norm bounds its
-standardized nuclear norm by the right side of
-\eqref{eq:intrinsic-linear-row-bound}: after whitening $(U,X_S)$, insert
-the matrix sign of its coefficient as a direction on $(U,X_S)$ and
-extend its control blocks by covariance projection.  For example,
-$H_{XU}=C_{\cdot S}C_{SS}^{-1}H_{SU}$, with the analogous two-sided
-extension for $H_{XX}$.  The contraction
-$\norm{C_{JJ}^{-1/2}C_{JS}C_{SS}^{-1/2}}_{\mathrm{op}}\le1$ makes the
-global sparse norm $O(1)$, while the derivative evaluated at $H$ is the
-nuclear norm.  Fixed target dimension keeps the coefficient rank bounded.
-The mixed Hessian adds only a fixed number of products of sub-Gaussian
-linear forms.  In the diagonal
-term for an original row, the only dimension-dependent factor is the
-leverage $X_S^\top C_{SS}^{-1}X_S$, whose $L_q$ norm is $O(s+q)$.
-
-For a covariance-matched Gaussian row $Y^G$, every mixed linear
-functional has the same variance and hence a smaller Orlicz bound.  Put
-$\mathsf S_U=\operatorname{diag}(\sigma_0,\sigma_r)$.  The Gaussian block
-$C_{SS}^{-1/2}Y^G_{Sw}\mathsf S_U^{-1}$ has covariance operator bounded by a
-constant and covariance trace $O(s)$: both facts follow by matching it to
-$C_{SS}^{-1/2}X_Sw_S^\top\mathsf S_U^{-1}$.  Gaussian quadratic-form moments
-therefore give \eqref{eq:intrinsic-diagonal-row-bound} for $Y^G$ as well.
-Moreover,
+Both bounds hold for $Y^G$, and
 \begin{equation}\label{eq:diagonal-mean-matching}
         \E D^2B_S(\Gamma)[Y,Y]
         =\E D^2B_S(\Gamma)[Y^G,Y^G],
 \end{equation}
-because this expectation depends only on the covariance of $Y$.
+by \eqref{eq:residual-field-diagonal-mean}.
 
 We now compare the two Taylor fields.  For either row law, put
 \begin{equation*}
@@ -593,10 +819,26 @@ union over at most $e^m$ supports then gives, for $\nu=m+u\lesssim n$,
  +\frac{\nu(s+\nu)}{n^2}\right\}
  \right]\le e^{-c\nu}.
 \end{equation}
-Since $a_n\ge(\sigma_r/\sigma_0)m/n$ and $s\le m$, the centered
-diagonal field is $O(\delta)$ after normalization in truncated $L_1$.
-Its retained mean agrees for the two row laws by
-\eqref{eq:diagonal-mean-matching}.
+Since there are at most $e^m$ supports, the moment bound preceding
+\eqref{eq:diagonal-field-concentration}, applied with
+$\nu_0=m\vee2$, also gives directly
+\begin{equation*}
+ \left\|\max_{|S|=s}|\mathsf{Diag}_{n,S}|\right\|_{L_{\nu_0}}
+ \lesssim \frac{\sigma_r}{\sigma_0}
+ \left\{\frac{s\sqrt{\nu_0}}{n^{3/2}}
+ +\frac{\nu_0(s+\nu_0)}{n^2}\right\}.
+\end{equation*}
+Here the factor from the maximum is at most
+$e^{m/\nu_0}\le e$.  Because
+$a_n\ge(\sigma_r/\sigma_0)m/n$, $s\le m$, and
+$\nu_0\asymp m$, division by $a_n$ bounds the right side by
+\begin{equation*}
+ C\left\{\frac{s}{\sqrt{nm}}+\frac{s+m}{n}\right\}
+ \le C\delta.
+\end{equation*}
+Thus the centered diagonal field is $O(\delta)$ after normalization in
+$L_1$, and hence also for the truncated loss.  Its retained mean agrees
+for the two row laws by \eqref{eq:diagonal-mean-matching}.
 
 It remains to replace the off-diagonal field.  At the $i$th step of a
 row-by-row replacement, let
@@ -670,9 +912,15 @@ small enough that both endpoints lie in the Taylor neighborhood outside
 an event of probability $Ce^{-cn}$.  On this event,
 Lemma~\ref{lem:uniform-expansion} and the fixed-moment form of sparse
 concentration bound the cubic remainder at both endpoints by
-$C(\sigma_r/\sigma_0)\delta^3$ in truncated first moment; bounded test
-functions absorb the exceptional event.  Division by $a_n$ costs
-$O(\delta)$.
+$C(\sigma_r/\sigma_0)\delta^3$ in truncated first moment.  Explicitly,
+the full tail gives
+\begin{equation*}
+ \E\left[1\wedge
+ \frac{(\sigma_r/\sigma_0)|H|_s^3}{a_n}\right]
+ \le C\delta,
+\end{equation*}
+because $a_n\ge(\sigma_r/\sigma_0)\delta^2$; bounded test functions
+absorb the exceptional event.
 Together with \eqref{eq:diagonal-field-concentration}, this proves
 \eqref{eq:matched-moment-approximation}.  Subtracting one fixed support
 changes each bound by at most a constant factor.
@@ -822,16 +1070,34 @@ bounds from Lemma~\ref{lem:sparse-hybrid-moments}, together with
 \eqref{eq:score-reduction-deterministic} into
 \(\delta a_n^{\mathrm{score}}\).  Lemma~\ref{lem:uniform-expansion}
 replaces $B_S(\Gamma+G/\sqrt n)$ by $\mathcal T^G_{n,S}$ at the smaller
-cubic order.  This proves the first two claims.
+cubic order.  More precisely, put
+\begin{equation*}
+\begin{split}
+ R_n^G&=\sup_{|S|\le s}\left|
+ \mathcal T^G_{n,S}-\frac{Q_S(Z_1,Z_2)}{n\sigma_0^2}\right|,\\
+ R_n^E&=\sup_{|S|\le s}\left|
+ B_S(\hat\Gamma)-\frac{Q_S(Z_{1n},Z_{2n})}{n\sigma_0^2}\right|.
+\end{split}
+\end{equation*}
+The fixed-moment and full-tail parts of
+Lemma~\ref{lem:sparse-hybrid-moments}, applied to the polynomial in
+\eqref{eq:score-reduction-deterministic}, give
+\begin{equation}\label{eq:score-reduction-truncated-error}
+ \E\left(1\wedge\frac{R_n^G}{a_n^{\mathrm{score}}}\right)
+ +\E\left(1\wedge\frac{R_n^E}{a_n^{\mathrm{score}}}\right)
+ \lesssim\delta.
+\end{equation}
+On $|H|_s\le C\delta$, the same calculation gives the asserted
+high-probability bounds.  This proves the first two claims.
 
 Under \eqref{eq:local-treatment}, the scales in
 \eqref{eq:mean-sizes} and \eqref{eq:local-treatment-scale} satisfy
 $a_n^{\mathrm{score}}\le a_n\le C a_n^{\mathrm{score}}$.  Theorem
 \ref{thm:matched-moments} therefore compares the empirical and matched
 Taylor maxima at the score scale.  The first claim replaces the latter by
-$T_C(Z_1,Z_2)/(n\sigma_0^2)$; its normalized error is
-$O_{\Prob}(\delta)$ with uniformly bounded truncated first moment.  The
-triangle inequality for $d_3$ proves
+$T_C(Z_1,Z_2)/(n\sigma_0^2)$; equation
+\eqref{eq:score-reduction-truncated-error} bounds the resulting change in
+$d_3$ by $C\delta$.  The triangle inequality proves
 \eqref{eq:local-treatment-stochastic-approximation}.
 \end{proof}
 
@@ -844,7 +1110,16 @@ probability at least \(1-Ce^{-cm}\),
         \le Ca_n^{\mathrm{score}},
         \qquad \delta\le\delta_0,
 \end{equation}
-because \(T_C(a,b)\le\norm{a}_{C,s}\norm{b}_{C,s}\).  Under random
+Indeed, on the sparse score event,
+\begin{equation*}
+ \norm{Z_{1n}}_{C,s}\le C\sigma_0\sqrt m,
+ \qquad
+ \norm{Z_{2n}}_{C,s}
+ \le C\{\sqrt n\,\widetilde\Psi_s+\sigma_r\sqrt m\}.
+\end{equation*}
+Together with \(T_C(a,b)\le\norm{a}_{C,s}\norm{b}_{C,s}\) and
+\eqref{eq:empirical-chaos-degeneration}, these bounds prove
+\eqref{eq:local-treatment-upper-scale}.  Under random
 assignment this is equivalent to
 \[
         \frac{\delta}{\sigma_0}
@@ -1056,6 +1331,16 @@ Consequently,
 Both terms on the left are nonnegative.  Dropping the second and applying
 \eqref{eq:projection-upper-bound} proves
 \eqref{eq:forward-product-certificate}.
+
+For the computational claim, maintain a rank-revealing Cholesky or QR
+factorization of $C_{J_tJ_t}$ and the residual score numerators for all
+remaining coordinates.  Updating one candidate at stage $t$ costs
+$O(t)$ operations, and linear-time selection finds the largest gain and
+the $s\wedge(p-t)$ largest certificate terms.  A zero pivot has zero
+compatible residual score, so its numerical factor update is skipped;
+the fixed tie rule may still append that coordinate to the path.  Summing $O(pt)$ over
+$t\le s$ gives $O(ps^2)$ operations; the candidate-by-selected-coordinate
+updates require $O(ps)$ working memory.
 \end{proof}
 
 The path does not require $\mu$; the supplied lower bound makes its
@@ -1404,7 +1689,8 @@ bounds give, without requiring $m\to\infty$,
 for the total approximation error.  This proves the final assertion.
 \end{proof}
 
-Coordinatewise score bounds give a separable special case.  If $m=o(n)$,
+Coordinatewise score bounds give a separable special case.  Suppose
+Assumption~\ref{ass:sparse-moments} holds, $m=o(n)$,
 $\rho_s(C)=o(1)$, and
 \begin{equation}\label{eq:coordinate-score-cap}
         \max_{j\le p}\frac{\sqrt n\,|d_j|}{\sigma_0\sqrt L}
@@ -1426,8 +1712,8 @@ together with Theorem~\ref{thm:chaos-degeneration}, replace
 the empirical maximum by
 $(n\sigma_0^2)^{-1}\sum_{t\le s}\{-Z_{1j}Z_{2j}\}_{(t)}$ with
 $o_{\Prob}(a_n^{\mathrm{score}})$ error whenever
-$\rho_s(C)=o(1)$.  Thus local isotropy is exactly the step that turns
-the covariance-aware search into one static top-$s$ sort.
+$\rho_s(C)=o(1)$.  Thus local isotropy is the step that permits
+approximation of the covariance-aware search by one static top-$s$ sort.
 
 \subsection{Independent-coordinate comparison}
 
@@ -1455,8 +1741,9 @@ controls in $J$.
 
 For centered variables, write
 \begin{equation*}
-        \kappa_4(a,b,c,d)
-        =\E[abcd]-\E[ab]\E[cd]-\E[ac]\E[bd]-\E[ad]\E[bc].
+        \kappa_4(q_1,q_2,q_3,q_4)
+        =\E[q_1q_2q_3q_4]-\E[q_1q_2]\E[q_3q_4]
+        -\E[q_1q_3]\E[q_2q_4]-\E[q_1q_4]\E[q_2q_3].
 \end{equation*}
 The sparse mean cap used below is
 \begin{equation}\label{eq:score-mean-cap}
@@ -1639,21 +1926,40 @@ moments\footnote{A.~Yu. Zaitsev, ``Multidimensional version of the
 results of Koml\'os, Major and Tusn\'ady for vectors with finite
 exponential moments,'' \emph{ESAIM: Probability and Statistics} 2
 (1998), 41--108.} therefore places its normalized sum and the matched
-Gaussian vector on one space with coordinate error
+Gaussian vector on one space with coordinate error at most
 \begin{equation*}
-        O_{\Prob}\!\left(\frac{\log n+\log p}{\sqrt n}\right)
+        r_n=C_D\frac{\log n+\log p}{\sqrt n}
 \end{equation*}
-and failure probability $O(p^{-D})$ for arbitrary fixed $D$.
-On the Gaussian cube of radius $O(\sqrt{\log p})$, the induced product
-error is $o(1)$ precisely under
-$\log p=o(n^{1/3})$.  Moreover, for fixed $k$,
+with failure probability $O(p^{-D})$, for every fixed $D$.  Choose
+$D>k+2$ and a fixed $K$ large enough that the matched Gaussian vector
+leaves the cube $[-K\sqrt{\log p},K\sqrt{\log p}]^{2k}$ with probability
+$o(p^{-k})$.  On the coupling event, a Gaussian vector in this cube puts
+the normalized sum in the cube with radius $2K\sqrt{\log p}$ for all
+large $n$; hence the latter also leaves its enlarged cube with probability
+$o(p^{-k})$.  On the Gaussian cube, changing every coordinate by at most $r_n$ changes every
+product by at most
+\begin{equation*}
+ \epsilon_n=2K r_n\sqrt{\log p}+r_n^2=o(1)
+\end{equation*}
+under $\log p=o(n^{1/3})$.  For fixed $k$,
 \[
         \norm{C_{JJ}-I}_{\mathrm{op}}
         \le (k-1)\max_{j\ne\ell}|C_{j\ell}|,
 \]
-and $\rho_s(C)\log p=o(1)$ makes the matched Gaussian density equal to
-the independent density up to a $1+o(1)$ factor throughout the same
-excursion region.  Hence, uniformly over distinct $j_1,\ldots,j_k$,
+and each off-diagonal entry is bounded by $\rho_s(C)$.  On the same cube,
+the log density ratio between covariance
+$\operatorname{diag}(C_{JJ},C_{JJ})$ and the identity is
+$O\{\rho_s(C)\log p\}=o(1)$.  Under the identity covariance, independence
+and \eqref{eq:gaussian-product-tail} show that the union of the $k$
+product boundary strips has probability
+\begin{equation*}
+ O(\epsilon_n p^{-k})=o(p^{-k}):
+\end{equation*}
+one coordinate lies in a strip of probability $O(\epsilon_n p^{-1})$
+and the other $k-1$ coordinates exceed their thresholds.  The density
+ratio transfers this joint strip estimate to the matched Gaussian law.
+Combining it with the cube restriction and the coupling proves, uniformly over distinct
+$j_1,\ldots,j_k$ and bounded $u_1,\ldots,u_k$,
 \begin{equation}\label{eq:fixed-budget-factorial-tail}
 \begin{split}
  &\Prob\{-A_{n,j_\ell}E_{n,j_\ell}>b_p+u_\ell,\ 1\le\ell\le k\}\\
@@ -1722,10 +2028,20 @@ tending to one.
 \end{lemma}
 
 \begin{proof}
-The Gaussian product tail \eqref{eq:gaussian-product-tail} and the
-fixed-dimensional comparison used in
-\eqref{eq:fixed-budget-factorial-tail} put the $s$ largest products in the
-stated window.  The same marginal tail gives
+The union bound and \eqref{eq:gaussian-product-tail} give
+\begin{equation*}
+ \Prob\{\max_j\varpi_j>b_p+c_n\}\le Ce^{-c_n}\longrightarrow0.
+\end{equation*}
+Let $N_n=\sum_j1\{\varpi_j>b_p-c_n\}$.  The same tail gives
+$\E N_n\asymp e^{c_n}\to\infty$.  The two-coordinate Gaussian density
+comparison used in \eqref{eq:fixed-budget-factorial-tail}, now on the
+region $b_p-c_n$ with $c_n=o(\log p)$, gives
+\begin{equation*}
+ \E\{N_n(N_n-1)\}=\{1+o(1)\}(\E N_n)^2.
+\end{equation*}
+Thus $N_n\ge s$ with probability tending to one by the second-moment
+inequality.  This proves the asserted window for the $s$ largest
+products.  The marginal tail also gives
 $\E|\mathcal I(w)|\le Ce^w$ uniformly for
 $c_n\le w\le(\log p)/2$.  Markov's inequality, first on dyadic $w$ and
 then by monotonicity, yields
@@ -1909,7 +2225,7 @@ $\mathcal P$ of size-$s$ supports,
 \end{split}
 \end{equation}
 For a distributional lower bound, suppose in addition that $m=o(n)$.
-Let
+Let the fixed deterministic family
 $\mathcal P\subseteq\mathcal N_\epsilon$ have cardinality $M\ge2$
 and satisfy
 \begin{equation}\label{eq:coefficient-packing}
@@ -1939,9 +2255,9 @@ $1-e^{-u^2/2}-Ce^{-cm}-C\omega_n\zeta^{-3}$,
 \end{theorem}
 
 \begin{proof}
-The influence representation \eqref{eq:influence-function}, relative
-sub-Gaussianity, Bernstein's inequality, and a union over the supports
-bound the empirical linear field by
+Equation~\eqref{eq:intrinsic-linear-row-bound} with $H=0$, Bernstein's
+inequality, and a union over the supports bound the empirical linear
+field by
 \begin{equation*}
         C\left\{
         \frac{\widetilde\Psi_s}{\sigma_0}\delta
@@ -1949,6 +2265,9 @@ bound the empirical linear field by
         +\frac{\sigma_r}{\sigma_0}\delta^2
         \right\}.
 \end{equation*}
+Here the Bernstein linear term is absorbed by the final summand because
+$\sqrt{\phi_s}\le1$ and
+$\widetilde\Psi_s\le\sigma_r$.
 The first-order remainder in
 Theorem~\ref{thm:critical-empirical-expansion} is of the final order.
 Since $B_S(\Gamma)\le B_{S^\star}(\Gamma)$, this proves
@@ -2015,16 +2334,60 @@ Let $\iota_S:\R^S\to\R^p$ denote coordinate embedding, put
 $q_S(z)=\iota_SC_{SS}^{-1}z_S$, $q_\emptyset(z)=0$, and write
 $\norm{z}_A=(z^\top Az)^{1/2}$ for $A\succeq0$.
 
+\begin{lemma}[Anchored score approximation]
+\label{lem:anchored-score-approximation}
+Suppose Assumption~\ref{ass:sparse-moments},
+\eqref{eq:local-treatment}, $\delta\le\delta_0$, and $m=o(n)$ hold.
+Fix $S_0$ with $|S_0|\le s$, and put
+\begin{equation*}
+ B_{*,S_0}=\max_{|S|=s}B_S(\Gamma)-B_{S_0}(\Gamma),
+ \qquad
+ \omega_n=\left(\frac mn\right)^{1/6}+\delta.
+\end{equation*}
+Then
+\begin{equation}\label{eq:anchored-score-approximation}
+\begin{split}
+ d_3\Bigg(
+ &\frac{\max_{|S|=s}\{B_S(\hat\Gamma)-B_{S_0}(\hat\Gamma)\}
+ -B_{*,S_0}}{a_n^{\mathrm{score}}},\\
+ &\frac{\{T_C(Z_1,Z_2)-Q_{S_0}(Z_1,Z_2)\}/(n\sigma_0^2)
+ -B_{*,S_0}}{a_n^{\mathrm{score}}}
+ \Bigg)\lesssim\omega_n.
+\end{split}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Under \eqref{eq:local-treatment},
+$a_n^{\mathrm{score}}\le a_n\le Ca_n^{\mathrm{score}}$.
+The anchored conclusion of Theorem~\ref{thm:matched-moments} therefore
+remains valid at the score normalization, after changing its constant.
+Put
+\begin{equation*}
+ R_n^G=\sup_{|S|\le s}\left|
+ \mathcal T^G_{n,S}-\frac{Q_S(Z_1,Z_2)}{n\sigma_0^2}\right|.
+\end{equation*}
+Equation~\eqref{eq:score-reduction-truncated-error} gives
+\begin{equation*}
+ \E\left(1\wedge\frac{R_n^G}{a_n^{\mathrm{score}}}\right)
+ \lesssim\delta.
+\end{equation*}
+The absolute difference between the two anchored matched maxima is at
+most $2R_n^G$.  Since every test function in $d_3$ is Lipschitz, the
+triangle inequality proves \eqref{eq:anchored-score-approximation}.
+\end{proof}
+
 \begin{theorem}[Conditional score packing]
 \label{thm:conditional-score-packing}
-Let $\mathcal P=\mathcal P(Z_2)$ be a measurable family of $M\ge2$
-size-$s$ supports, let $S_0$ be a fixed anchor with $|S_0|\le s$, and fix
-$K\ge1$.  Suppose
-that, on a $Z_2$-measurable event of probability at least $1-\pi_0$,
+Fix a deterministic integer $M\ge2$ and a deterministic
+$\pi_0\in[0,1]$.  Let $\mathcal P=\mathcal P(Z_2)$ be a measurable family
+containing exactly $M$ size-$s$ supports, let $S_0$ be a fixed anchor with
+$|S_0|\le s$, and fix $K\ge1$.  Suppose that, on a $Z_2$-measurable event
+of probability at least $1-\pi_0$,
 there are measurable $\lambda_n>0$ and $\Delta_n\ge0$ such that
 \begin{equation}\label{eq:conditional-score-packing}
 \begin{gathered}
-        \min_{S\ne T}
+        \min_{\substack{S,T\in\mathcal P\\S\ne T}}
         \norm{q_S(Z_2)-q_T(Z_2)}_{\Sigma_{1\mid2}}
         \ge\lambda_n,\\
         \max_{S\in\mathcal P}
@@ -2054,7 +2417,9 @@ event, outside an additional event of probability $Ce^{-cm}$, has
 \end{split}
 \end{equation}
 Under these same additional moment conditions, suppose moreover that
-$m=o(n)$, $\lambda_n\ge\underline\lambda_n$, and
+$m=o(n)$ and that there are deterministic sequences
+$\underline\lambda_n>0$ and $\overline\Delta_n\ge0$ for which
+$\lambda_n\ge\underline\lambda_n$ and
 $\Delta_n\le\overline\Delta_n$ on the packing event.  For
 $0<\zeta\le1$, with probability at least
 \begin{equation*}
@@ -2081,11 +2446,23 @@ minoration and Gaussian lower-tail concentration, using the radius in
 $c\lambda_n\sqrt{\log M}$; the final line of that display accounts for
 the conditional mean.  This proves \eqref{eq:conditional-score-lower}.
 The uniform score reduction proves
-\eqref{eq:conditional-matched-coefficient-lower}.  The Lindeberg proof
-of Theorem~\ref{thm:matched-moments} allows subtraction of the fixed
-support $S_0$.  Combining its anchored form with the score reduction and
-a smooth cutoff of width $\zeta$ proves
-\eqref{eq:conditional-empirical-coefficient-lower}.
+\eqref{eq:conditional-matched-coefficient-lower}.  On the packing event,
+the deterministic envelopes give
+\begin{equation*}
+ \frac{T_C(Z_1,Z_2)-Q_{S_0}(Z_1,Z_2)}{n\sigma_0^2}
+ \ge\ell_n,
+ \qquad
+ \ell_n=\frac{c\underline\lambda_n\sqrt{\log M}
+ -\overline\Delta_n}{n\sigma_0^2},
+\end{equation*}
+except with conditional probability $Ce^{-c\log M}$.  Apply the smooth
+cutoff inequality to Lemma~\ref{lem:anchored-score-approximation} at the
+deterministic threshold
+$(\ell_n-B_{*,S_0})/a_n^{\mathrm{score}}$, where
+$B_{*,S_0}=\max_{|S|=s}B_S(\Gamma)-B_{S_0}(\Gamma)$.  The cutoff has width $\zeta$,
+so its first three derivatives are bounded by $C\zeta^{-3}$.  This proves
+\eqref{eq:conditional-empirical-coefficient-lower} with the stated
+probability.
 \end{proof}
 
 For example, if $\Sigma_{1\mid2}\asymp\sigma_0^2C$ on $2s$-sparse
@@ -2129,12 +2506,14 @@ Define the embedded empirical outcome score
 Suppose Assumption~\ref{ass:sparse-moments} holds and
 $\delta\le\delta_0$.  Suppose $\mathbf x$ is independent of
 $\mathcal F=\sigma(\mathbf X,\mathbf r)$ and has uniform exponential multiplier
-minoration.  Let $\mathcal P$ be an $\mathcal F$-measurable family of
-$M\ge2$ size-$s$ supports, let $K\ge1$ be fixed, and let
+minoration.  Fix a deterministic integer $M\ge2$ and a deterministic
+$\pi_0\in[0,1]$.  Let $\mathcal P$ be an $\mathcal F$-measurable family
+containing exactly $M$ size-$s$ supports, let $K\ge1$ be fixed, and let
 $\Lambda_n>0$ be $\mathcal F$-measurable.  Suppose that, on an
 $\mathcal F$-measurable event of probability at least $1-\pi_0$,
 \begin{equation}\label{eq:experimental-score-packing}
-        \min_{S\ne T}\norm{q_{n,S}-q_{n,T}}_C\ge\Lambda_n,
+        \min_{\substack{S,T\in\mathcal P\\S\ne T}}
+        \norm{q_{n,S}-q_{n,T}}_C\ge\Lambda_n,
         \qquad
         \max_{S\in\mathcal P}\norm{q_{n,S}}_C\le K\Lambda_n .
 \end{equation}
@@ -2205,29 +2584,86 @@ is \eqref{eq:experimental-upper-scale}.
 \end{proof}
 
 The packing premise has the same top-$s$ construction in both the noise
-and signal regimes.  Suppose there are $N\ge2s$, $b_n>0$, and
-$\mathcal J\subseteq[p]$, $|\mathcal J|\ge N$, together with a fixed
-$K_{\mathrm{pool}}\ge1$ and a sufficiently small fixed
-$c_{\mathrm{pool}}>0$, such that
-\[
-        b_n\le|Z_{2n,j}|\le K_{\mathrm{pool}}b_n,\qquad j\in\mathcal J,
-        \qquad
-        \rho_s(C)\le c_{\mathrm{pool}}/K_{\mathrm{pool}}.
-\]
-A constant-weight Varshamov--Gilbert family on $\mathcal J$, with
-$L_N=\log(eN/s)$, satisfies
+and signal regimes.  A greedy packing of the constant-weight Hamming
+slice supplies the deterministic code used below.
+
+\begin{lemma}[Measurable top-$s$ score pool]
+\label{lem:top-s-score-pool}
+Fix a deterministic $N\ge2s$ and a deterministic constant-weight code
+$\mathcal A_N\subseteq\{A\subseteq[N]:|A|=s\}$ satisfying
+\begin{equation*}
+ \log|\mathcal A_N|\ge cs\log(eN/s),
+ \qquad |A\mathbin\triangle B|\ge cs,
+ \quad A\ne B.
+\end{equation*}
+Let $\mathcal J$ be a measurable random subset of $[p]$ with
+$|\mathcal J|\ge N$, write $j_1<\cdots<j_N$ for its first $N$ elements,
+and define
+\begin{equation*}
+ \mathcal P(\mathcal J)
+ =\bigl\{\{j_k:k\in A\}:A\in\mathcal A_N\bigr\}.
+\end{equation*}
+Then $\mathcal P(\mathcal J)$ is measurable and has deterministic
+cardinality $M=|\mathcal A_N|$.  Suppose, for $z=Z_{2n}$,
+\begin{equation*}
+ b_n\le|z_j|\le K_{\mathrm{pool}}b_n,
+ \qquad j\in\mathcal J,
+ \qquad
+ \rho_s(C)\le c_{\mathrm{pool}}/K_{\mathrm{pool}},
+\end{equation*}
+where $K_{\mathrm{pool}}$ is fixed and $c_{\mathrm{pool}}>0$ is a
+sufficiently small fixed constant.  Then, with $L_N=\log(eN/s)$,
 \begin{equation}\label{eq:top-s-score-pool}
 \begin{gathered}
-        \log M\ge csL_N,\qquad
-        \min_{S\ne T}\norm{q_{n,S}-q_{n,T}}_C\ge cb_n\sqrt s,\\
-        \max_S\norm{q_{n,S}}_C\le Cb_n\sqrt s.
+ \log M\ge csL_N,\qquad
+ \min_{\substack{S,T\in\mathcal P(\mathcal J)\\S\ne T}}
+ \norm{q_{n,S}-q_{n,T}}_C\ge cb_n\sqrt s,\\
+ \max_{S\in\mathcal P(\mathcal J)}
+ \norm{q_{n,S}}_C\le Cb_n\sqrt s.
 \end{gathered}
 \end{equation}
-Thus \eqref{eq:experimental-matching} follows when $L_N\gtrsim L$ and
-\[
-        b_n\sqrt s\gtrsim
-        \sqrt n(\Psi_s^2+\sigma_r^2\delta^2)^{1/2}.
-\]
+\end{lemma}
+
+\begin{proof}
+Such a deterministic code exists.  Indeed, greedily pack the
+constant-weight slice and delete after each choice every set at symmetric
+difference less than $c_0s$.  Standard binomial bounds give, for a
+sufficiently small absolute $c_0>0$,
+\begin{equation*}
+ \frac{\binom Ns}
+ {\sum_{k\le c_0s/2}\binom sk\binom{N-s}{k}}
+ \ge \exp\{cs\log(eN/s)\}.
+\end{equation*}
+Put $\widetilde q_S=\iota_Sz_S$ and $\rho=\rho_s(C)$.  Local isotropy
+and the inverse identity give
+\begin{equation*}
+ \norm{q_{n,S}-\widetilde q_S}_2
+ \le\frac{\rho}{1-\rho}\norm{z_S}_2
+ \le2\rho K_{\mathrm{pool}}b_n\sqrt s.
+\end{equation*}
+For distinct codewords,
+\begin{equation*}
+ \norm{\widetilde q_S-\widetilde q_T}_2^2
+ =\sum_{j\in S\mathbin\triangle T}z_j^2
+ \ge cb_n^2s.
+\end{equation*}
+Choosing $c_{\mathrm{pool}}$ sufficiently small therefore gives
+$\norm{q_{n,S}-q_{n,T}}_2\ge cb_n\sqrt s$.  The difference is supported
+on at most $2s$ coordinates, so local isotropy converts this Euclidean
+bound into the $C$-norm bound in \eqref{eq:top-s-score-pool}.  Finally,
+\begin{equation*}
+ \norm{q_{n,S}}_C^2=z_S^\top C_{SS}^{-1}z_S
+ \le\frac{\norm{z_S}_2^2}{1-\rho}
+ \le Cb_n^2s.
+\end{equation*}
+\end{proof}
+
+Thus \eqref{eq:experimental-matching} follows on this pool event when
+$L_N\gtrsim L$ and
+\begin{equation*}
+ b_n\sqrt s\gtrsim
+ \sqrt n(\Psi_s^2+\sigma_r^2\delta^2)^{1/2}.
+\end{equation*}
 The noise and signal choices are respectively
 $b_n\asymp\sigma_r\sqrt L$ and
 $b_n\asymp\sqrt n\,\Psi_s/\sqrt s$.
@@ -2279,6 +2715,10 @@ Assume throughout that
 Write $|H|_{y,s}$ for the sparse norm in
 \eqref{eq:sparse-moment-size} with $r$ replaced by $y$ and with
 $|H_{yy}|/\Var(y)$ included.
+The support-specific net proof of
+Lemma~\ref{lem:sparse-hybrid-moments} applies to this full fixed-dimensional
+target block and gives the same tail and fixed-moment bounds for
+$|\hat\Gamma_y-\Gamma_y|_{y,s}$ and its deterministic hybrids.
 
 Under the null $\beta_0=0$, put
 \begin{equation*}
@@ -2366,24 +2806,43 @@ $\hat t^{\mathrm{LS}}$, after changing the remainder constant.
 Support compression reduces every singular population block to its
 range, on which the Schur complements are ordinary smooth functions.
 On $|H_n|_{y,s}\le C\delta$, differentiation of
-\eqref{eq:t-functional} and the floors in \eqref{eq:t-floors} give
+\eqref{eq:t-functional} and the floors in \eqref{eq:t-floors} give a
+sharper anchored derivative bound through
+Lemma~\ref{lem:residual-field-row-bounds}.  Indeed, take
+$U=(x,y)^\top$, $D_U=\operatorname{diag}\{\sigma_0,\sqrt{\Var(y)}\}$,
+$\varphi(R)=R_{12}/(R_{11}R_{22})^{1/2}$.  Then
+\begin{equation*}
+ \lambda_s\le\sqrt{\phi_s}+\sqrt{\theta_s}.
+\end{equation*}
+The standardized derivatives in
+\eqref{eq:standardized-target-derivatives} are bounded by a constant.
+Consequently,
 \begin{equation}\label{eq:studentized-derivative-envelope}
 \begin{split}
         \max_{|S|=s}\sup_{|H|_{y,s}\le1}
         \left|D\{\tau_S-c_{s,n}\tau_\emptyset\}
         (\Gamma_y)[H]\right|
-        \lesssim\sqrt{\theta_s}+\sqrt{\phi_s}+\delta,
+        \lesssim\sqrt{\theta_s}+\sqrt{\phi_s}+\frac{s}{n},
         \qquad
         c_{s,n}=\sqrt{\frac{n-1}{n-s-1}}.
 \end{split}
 \end{equation}
-The first two terms are the outcome and treatment scores; the last comes
-from the local population correlation.  The second and third derivatives
-are uniformly bounded on the same neighborhood.  Sparse-moment
-concentration and the third-order Taylor remainder give
+Here $|1-c_{s,n}|\lesssim s/n$; the first two terms are the outcome and
+treatment projection sizes.  The second and third derivatives are
+uniformly bounded on the same neighborhood.  Sparse-moment
+concentration puts $|H_n|_{y,s}\le C\delta$ outside an event of
+probability $Ce^{-cm}$.  Relative inverse perturbation then keeps both
+residual variances along $\Gamma_y+tH_n$, $0\le t\le1$, above one half of
+the floors in \eqref{eq:t-floors}.  Taylor's formula with the bounded
+third derivative therefore gives
 \eqref{eq:critical-studentized-expansion}.  The linear and quadratic
 terms in the anchored field are bounded by
-$C\sqrt m\{\sqrt{\theta_s}+\sqrt{\phi_s}+\delta\}$, while the
+\begin{equation*}
+ C\sqrt m\left\{\sqrt{\theta_s}+\sqrt{\phi_s}
+ +\frac{s}{n}+\delta\right\}
+ \le C\sqrt m\{\sqrt{\theta_s}+\sqrt{\phi_s}+\delta\},
+\end{equation*}
+while the
 population difference is $O(1)$ by
 \eqref{eq:local-testing-condition}.  This proves
 \eqref{eq:general-studentized-upper-scale}; sparse treatment alignment
@@ -2462,33 +2921,59 @@ alignment, both conclusions remain valid after replacing $a_n^t$ by
 \end{corollary}
 
 \begin{proof}
-The rowwise replacement argument in the proof of
-Theorem~\ref{thm:matched-moments} applies with target $(x,y)$ and searched
-functional
+Apply Lemma~\ref{lem:residual-field-row-bounds} with target $(x,y)$ and
+the normalized anchored functional
 \begin{equation*}
- \sqrt{\frac{n-s-1}{n}}\,\tau_S
+ \Phi_{n,S}
+ =\sqrt{\frac{n-s-1}{n}}\,\tau_S
  -\sqrt{\frac{n-1}{n}}\,\tau_\emptyset.
 \end{equation*}
-The floors in \eqref{eq:t-floors} bound its standardized curvature, and
-\eqref{eq:studentized-derivative-envelope} bounds its first derivative by
-$C\{\sqrt{\theta_s}+\sqrt{\phi_s}+\delta\}$.  After multiplication by
-$\sqrt n$, the linear and quadratic scales are respectively
-$\sqrt m\{\sqrt{\theta_s}+\sqrt{\phi_s}+\delta\}$ and
-$\sqrt m\,\delta$, both bounded by $Ca_n^t$.  The centered Taylor diagonal
-is negligible, its expectation is covariance-matched, and the off-diagonal
-increment is linear in the incoming row.  The same replacement argument
-therefore gives \eqref{eq:studentized-matched-approximation}; the cubic
-Taylor error costs $O(\delta)$ after normalization.  Sparse treatment
+The specialization in the proof of
+\eqref{eq:studentized-derivative-envelope} has
+\begin{equation*}
+ \lambda_s\le\sqrt{\theta_s}+\sqrt{\phi_s},
+ \qquad
+ \left|\sqrt{\frac{n-s-1}{n}}
+ -\sqrt{\frac{n-1}{n}}\right|\lesssim\frac{s}{n},
+ \qquad \kappa_\varphi\lesssim1.
+\end{equation*}
+Thus, with
+$\alpha_{t,s}=\sqrt{\theta_s}+\sqrt{\phi_s}+s/n$, the lemma gives
+\begin{align*}
+ \sup_{|S|=s}
+ \norm{D\Phi_{n,S}(\Gamma_y)[Y]
+ +D^2\Phi_{n,S}(\Gamma_y)[H,Y]}_{\psi_1\mid H}
+ &\lesssim\alpha_{t,s}+|H|_{y,s},\\
+ \sup_{|S|=s}\norm{D^2\Phi_{n,S}(\Gamma_y)[Y,Y]}_{L_q}
+ &\lesssim q(s+q).
+\end{align*}
+The same diagonal estimate holds for the matched Gaussian row, and the
+two diagonal expectations agree.  These are precisely the three inputs
+used in the diagonal split and rowwise replacement in the proof of
+Theorem~\ref{thm:matched-moments}.  The natural scale before restoring
+the factor $\sqrt n$ is
+\begin{equation*}
+ \alpha_{t,s}\delta+\delta^2
+ \lesssim\delta\{\sqrt{\theta_s}+\sqrt{\phi_s}+\delta\}
+ =\frac{a_n^t}{\sqrt n}.
+\end{equation*}
+Repeating that diagonal and off-diagonal calculation therefore gives
+\eqref{eq:studentized-matched-approximation}; the cubic Taylor remainder,
+$O(\sqrt n\,\delta^3)$, costs $O(\delta)$ after normalization.  Sparse treatment
 alignment absorbs $\sqrt{\phi_s}$ and gives the claim with $\bar a_n^t$.
 Finally, \eqref{eq:least-squares-truncated-transfer} changes either
 normalized first argument by $O(\delta)$ in the $d_3$ metric, because
 $a_n^t,\bar a_n^t\ge\sqrt m\,\delta$.
 \end{proof}
 
-For every support whose outcome residual is nonzero, put
+For every $|S|\le s$, put
 \begin{equation}\label{eq:studentized-directions}
 \begin{gathered}
-        u_{n,S}=\frac{M_S\mathbf y}{\norm{M_S\mathbf y}_2},
+        u_{n,S}=\begin{cases}
+        M_S\mathbf y/\norm{M_S\mathbf y}_2,
+        &\norm{M_S\mathbf y}_2>0,\\
+        0,&\norm{M_S\mathbf y}_2=0,
+        \end{cases}
         \qquad
         \nu_{n,S}
         =\sqrt{\frac{n-|S|-1}{n-\operatorname{rank}(\mathbf X_S)}},\\
@@ -2503,13 +2988,16 @@ For every support whose outcome residual is nonzero, put
 In addition to the assumptions of Theorem~\ref{thm:studentized-search},
 suppose that $\mathbf x$ is independent of
 $\mathcal F=\sigma(\mathbf X,\mathbf y)$ and has
-uniform exponential multiplier minoration.  Let
-$\mathcal P$ be an $\mathcal F$-measurable family of $M\ge2$ size-$s$
-supports, let $K\ge1$ be fixed, and let $\lambda_n>0$ be
+uniform exponential multiplier minoration.  Fix a deterministic integer
+$M\ge2$ and a deterministic $\pi_0\in[0,1]$.  Let
+$\mathcal P$ be an $\mathcal F$-measurable family containing exactly $M$
+size-$s$ supports, let $K\ge1$ be fixed, and let $\lambda_n>0$ be
 $\mathcal F$-measurable.  Suppose that, on an $\mathcal F$-measurable
 event of probability at least $1-\pi_0$,
 \begin{equation}\label{eq:studentized-packing-event}
 \begin{gathered}
+        \min_{S\in\mathcal P\cup\{\emptyset\}}
+        \norm{M_S\mathbf y}_2>0,\\
         \min_{\substack{S,T\in\mathcal P\\S\ne T}}
         \norm{u_{n,S}^{\Delta}-u_{n,T}^{\Delta}}_2
         \ge\lambda_n,\\
@@ -2545,7 +3033,9 @@ Let $\hat\sigma_0^2=\mathbf x^\top\mathbf x/n$ and set
         \{n-\operatorname{rank}(\mathbf X_S)\}}
         {\mathbf x^\top\mathbf x/n}-1 .
 \end{equation*}
-The partial-correlation identity gives exactly
+For every support with
+$\mathbf x^\top M_S\mathbf x>0$ and
+$\norm{M_S\mathbf y}_2>0$, the partial-correlation identity gives exactly
 \begin{equation}\label{eq:exact-studentized-direction}
         \hat t_{0,S}
         =\nu_{n,S}\frac{\mathbf x^\top u_{n,S}}{\hat\sigma_0}
@@ -2561,6 +3051,23 @@ over the supports, gives
         \max_{|S|=s}|\mathbf x^\top u_{n,S}|\le C\sigma_0\sqrt m
 \end{equation*}
 outside an event of probability $Ce^{-cm}$.  Since
+$P_S=I-M_S$ has rank at most $s$, the quadratic assertion follows
+explicitly from
+\begin{equation*}
+ \max_{|S|=s}\mathbf x^\top P_S\mathbf x\le C\sigma_0^2m,
+ \qquad
+ \mathbf x^\top\mathbf x\ge c n\sigma_0^2,
+\end{equation*}
+because
+\begin{equation*}
+ 1+\Delta^x_{n,S}
+ =\frac{n}{n-r_S}\left(1-
+ \frac{\mathbf x^\top P_S\mathbf x}
+ {\mathbf x^\top\mathbf x}\right),
+ \qquad r_S=\operatorname{rank}(\mathbf X_S).
+\end{equation*}
+The linear assertion is the corresponding union bound over the unit
+vectors $u_{n,S}$.  Since
 $\Delta^x_{n,\emptyset}=0$, \eqref{eq:exact-studentized-direction} yields
 \begin{equation*}
         \max_{|S|=s}\left|
@@ -2634,23 +3141,119 @@ Apply this identity to $a=M_S\mathbf y$ and $b=M_T\mathbf y$, then use
 \end{equation*}
 \end{proof}
 
-Thus an empirical constant-weight family satisfying
-\begin{equation*}
- \min_{S\ne T}\norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}
- \ge cb_n\sqrt s,
+\begin{lemma}[Score packing implies direction packing]
+\label{lem:score-direction-packing}
+Let $\mathcal P$ be a family of size-$s$ supports and put
+$r_{n,S}=\norm{M_S\mathbf y}_2$.  Suppose, for fixed constants
+$c_r,c_d,\kappa>0$ and $K_q<\infty$, that
+\begin{align}
+ \min_{S\in\mathcal P\cup\{\emptyset\}}r_{n,S}
+ &\ge c_r\norm{\mathbf y}_2,
+ \label{eq:studentized-residual-floor}\\
+ \min_{\substack{S,T\in\mathcal P\\S\ne T}}
+ \norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}
+ &\ge d_n,
  \qquad
- \max_S\norm{\hat q_{n,S}}_{\hat C}\le Cb_n\sqrt s
+ \max_{S\in\mathcal P}\norm{\hat q_{n,S}}_{\hat C}
+ \le K_qd_n,
+ \label{eq:studentized-score-geometry}\\
+ (r_{n,S}-r_{n,T})^2
+ &\le(1-\kappa)
+ \norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}^2,
+ \quad S\ne T,\quad S,T\in\mathcal P,
+ \label{eq:studentized-angular-condition}\\
+ \frac{d_n}{\norm{\mathbf y}_2}
+ &\ge c_d\frac{s+1}{n}.
+ \label{eq:studentized-rank-scale}
+\end{align}
+If $\delta\le\delta_0$ for a sufficiently small fixed constant, then
+\begin{equation}\label{eq:studentized-direction-packing}
+ \min_{\substack{S,T\in\mathcal P\\S\ne T}}
+ \norm{u_{n,S}^{\Delta}-u_{n,T}^{\Delta}}_2
+ \ge c\frac{d_n}{\norm{\mathbf y}_2},
+ \qquad
+ \max_{S\in\mathcal P}\norm{u_{n,S}^{\Delta}}_2
+ \le C\frac{d_n}{\norm{\mathbf y}_2}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+For $|S|\le s$, small $\delta$ gives
+\begin{equation*}
+ 0<c\le\nu_{n,S}\le C,
+ \qquad
+ |\nu_{n,S}-\nu_{n,T}|\le C\frac{s+1}{n}.
 \end{equation*}
-gives the studentized packing whenever the bracket in
-\eqref{eq:studentized-score-direction-bridge} retains a fixed fraction of
-the pairwise score distance; the outcome floor and the identity with
-$T=\emptyset$ give the radius bound.  Under relative restricted isometry
-and local isotropy with $\delta+\rho_s(C)=o(1)$, inverse perturbation on
-each $2s$-coordinate union transfers the pool in
-\eqref{eq:top-s-score-pool} to this empirical geometry.  A noise pool with
-$b_n\asymp\sqrt{\Var(y)L}$ then gives $\lambda_n\asymp\delta$; a signal
-pool with $b_n\asymp\sqrt n\,\Psi_s/\sqrt s$ gives
-$\lambda_n\asymp\sqrt{\theta_s}$.  The latter pool is a multiplicity
-condition, not a consequence of the signal norm alone.
+Equations~\eqref{eq:studentized-score-direction-bridge} and
+\eqref{eq:studentized-angular-condition}, together with
+$r_{n,S}r_{n,T}\le\norm{\mathbf y}_2^2$, give the separation in
+\eqref{eq:studentized-direction-packing}.  Taking $T=\emptyset$ in
+\eqref{eq:studentized-score-direction-bridge}, dropping the nonpositive
+radial term in its bracket, and using
+\eqref{eq:studentized-residual-floor} gives
+\begin{equation*}
+ \norm{u_{n,S}^{\Delta}}_2
+ \le C\left\{\frac{s+1}{n}
+ +\frac{\norm{\hat q_{n,S}}_{\hat C}}{\norm{\mathbf y}_2}\right\}.
+\end{equation*}
+Equations~\eqref{eq:studentized-score-geometry} and
+\eqref{eq:studentized-rank-scale} prove the radius bound.
+\end{proof}
+
+The angular condition has the equivalent residual-energy form
+\begin{equation}\label{eq:studentized-energy-balance}
+ \left|\norm{\hat q_{n,S}}_{\hat C}^2
+ -\norm{\hat q_{n,T}}_{\hat C}^2\right|
+ \le\sqrt{1-\kappa}\,(r_{n,S}+r_{n,T})
+ \norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}.
+\end{equation}
+Indeed,
+$r_{n,S}^2=\norm{\mathbf y}_2^2-\norm{\hat q_{n,S}}_{\hat C}^2$.
+A simpler sufficient condition is
+\begin{equation}\label{eq:studentized-simple-energy-balance}
+ \max_{S\in\mathcal P}\norm{\hat q_{n,S}}_{\hat C}
+ \le\sqrt{1-\kappa}
+ \min_{S\in\mathcal P}r_{n,S}.
+\end{equation}
+This follows from the triangle inequality because the left side of
+\eqref{eq:studentized-energy-balance} is at most
+\begin{equation*}
+ 2\max_{R\in\mathcal P}\norm{\hat q_{n,R}}_{\hat C}
+ \norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C},
+\end{equation*}
+whereas $r_{n,S}+r_{n,T}$ is at least twice the minimum residual norm.
+
+Under the randomized null, $g_n=Z_{2n}$.  Relative restricted isometry
+and inverse perturbation on every
+$2s$-coordinate union gives, uniformly over the pool in
+Lemma~\ref{lem:top-s-score-pool},
+\begin{equation*}
+ \norm{\hat q_{n,S}-q_{n,S}}_C
+ \le C\delta\norm{q_{n,S}}_C,
+ \qquad
+ \norm z_{\hat C}=\{1+O(\delta)\}\norm z_C
+ \quad\text{for }|\operatorname{supp}(z)|\le2s.
+\end{equation*}
+Thus local isotropy and $\delta+\rho_s(C)=o(1)$ transfer
+\eqref{eq:top-s-score-pool} to the empirical geometry in
+\eqref{eq:studentized-score-geometry}.  The outcome floor in
+\eqref{eq:t-floors} and sparse concentration also give
+\eqref{eq:studentized-residual-floor} outside an event of probability
+$Ce^{-cm}$.  On
+$\norm{\mathbf y}_2\asymp\sqrt{n\Var(y)}$, a noise pool with
+$b_n\asymp\sqrt{\Var(y)L}$ has $d_n\asymp\sqrt{\Var(y)m}$ and therefore
+gives $\lambda_n\asymp\delta$.  Since
+$(s+1)/n=o(\delta)$ when $m=o(n)$, it satisfies
+\eqref{eq:studentized-rank-scale}; its score radius is $o(r_{n,S})$, so
+\eqref{eq:studentized-simple-energy-balance} holds.  A signal pool with
+$b_n\asymp\sqrt n\,\Psi_s/\sqrt s$ has
+$d_n\asymp\sqrt n\,\Psi_s$ and gives
+$\lambda_n\asymp\sqrt{\theta_s}$ provided
+\eqref{eq:studentized-angular-condition} holds and
+$\sqrt{\theta_s}\gtrsim(s+1)/n$.  The latter rank-scale condition is
+automatic in the signal-dominated regime
+$\sqrt{\theta_s}\gtrsim\delta$.  The signal pool and its
+energy balance are multiplicity conditions, not consequences of the
+signal norm alone.
 
 \end{document}
