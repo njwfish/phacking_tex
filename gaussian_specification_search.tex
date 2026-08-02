@@ -40,7 +40,8 @@ scale and yields experimental, observational, and studentized bounds.  In
 the subcritical regime, a covariance-matched Gaussian matrix preserves
 the linear influence process and the quadratic chaos.  A local-treatment
 condition reduces this field to linear--bilinear score chaos while leaving
-the outcome signal unrestricted.  Local isotropy gives an observable
+the outcome signal unrestricted, and a fixed-direction comparison is
+valid throughout $s\log(ep/s)=o(n)$.  Local isotropy then gives an observable
 top-$s$ product approximation.  For Gaussian noise controls, its two
 empirical score channels are conditionally independent Gaussian vectors,
 so the independent-product law holds throughout $s\log(ep/s)=o(n)$.
@@ -937,7 +938,7 @@ The Gaussian case follows from the same net calculation.
 \begin{corollary}[Local-treatment stochastic approximation]
 \label{cor:local-treatment-stochastic}
 Suppose Assumption~\ref{ass:sparse-moments} and
-\eqref{eq:local-treatment} hold, and $m^4=o(n)$.  Then
+\eqref{eq:local-treatment} hold, and $m=o(n)$.  Then
 \begin{equation}\label{eq:local-treatment-stochastic-approximation}
 \begin{split}
         d_3\bigg(
@@ -948,7 +949,7 @@ Suppose Assumption~\ref{ass:sparse-moments} and
         {n\sigma_0^2a_n^{\mathrm{loc}}}
         \bigg)
         \lesssim
-        \left(\frac{m^4}{n}\right)^{1/6}+\delta.
+        \left(\frac{m}{n}\right)^{1/6}+\delta.
 \end{split}
 \end{equation}
 \end{corollary}
@@ -957,45 +958,179 @@ Suppose Assumption~\ref{ass:sparse-moments} and
 Equation~\eqref{eq:empirical-chaos-degeneration} reduces the proof to a
 rowwise replacement of the centered score sums
 $(Z_{1n}-\sqrt n d,Z_{2n}-\sqrt n h)$ by Gaussian scores with the same
-covariance.  Each support value is normalized by
+covariance.  Put
 \begin{equation*}
-        n\sigma_0^2a_n^{\mathrm{loc}}
+        D_n=n\sigma_0^2a_n^{\mathrm{loc}}
         =\sigma_0\{\sqrt{nm}\,\widetilde\Psi_s+\sigma_rm\}.
 \end{equation*}
-If $W_i$ is the centered leave-one-row hybrid score sum, the directional
-derivative of the normalized support value in a row direction
-$\chi_i/\sqrt n$ is bounded by
+Let
 \begin{equation*}
-        \frac{C|\chi_i|_{C,s}}{\sqrt{mn}}
-        \left(1+\frac{|W_i|_{C,s}}{\sqrt m}
-        +\frac{|\chi_i|_{C,s}}{\sqrt{mn}}\right),
+ W_i=(W_{1i},W_{2i})
+ =\frac1{\sqrt n}\left(\sum_{k<i}\chi_k^G+\sum_{k>i}\chi_k\right)
 \end{equation*}
-and its second derivative is bounded by
-$C|\chi_i|_{C,s}^2/(mn)$.  The leave-one-row sum is independent of
-$\chi_i$.
-Lemma~\ref{lem:sparse-score-moments} and H\"older's inequality therefore
-give the same integrated derivative bounds as if the parenthetical
-factor were constant.  Smoothing the maximum with inverse temperature
-$\lambda m$, as in Theorem~\ref{thm:matched-moments}, therefore bounds the
-third derivative in one row direction by
+be the centered leave-one-row hybrid score sum.  It is independent of the
+row $\xi=(\xi_1,\xi_2)$ to be inserted.  Write
 \begin{equation*}
-        C|\chi_i|_{C,s}^3\left\{
-        \frac1{m^{3/2}n^{3/2}}
-        +\frac{\lambda}{\sqrt m\,n^{3/2}}
-        +\frac{\lambda^2\sqrt m}{n^{3/2}}
-        \right\}.
+        z_i=(\sqrt n\,d+W_{1i},\sqrt n\,h+W_{2i}).
 \end{equation*}
-Lemma~\ref{lem:sparse-score-moments} makes the sum of the Lindeberg
-remainders
+The normalized support value changes exactly by
 \begin{equation*}
-        O\left(\frac1{\sqrt n}
-        +\frac{\lambda m}{\sqrt n}
-        +\frac{\lambda^2m^2}{\sqrt n}\right).
+\begin{split}
+ \ell^{(1)}_{i,S}(\xi)+\ell^{(2)}_{i,S}(\xi)
+ ={}&-\frac{\xi_{1S}^\top C_{SS}^{-1}z_{2i,S}
+        +z_{1i,S}^\top C_{SS}^{-1}\xi_{2S}}
+        {\sqrt n\,D_n}\\
+ &-\frac{\xi_{1S}^\top C_{SS}^{-1}\xi_{2S}}{nD_n}.
+\end{split}
 \end{equation*}
-Balancing the last term with the smoothing error $1/\lambda$ using
-$\lambda=(\sqrt n/m^2)^{1/3}$ gives $(m^4/n)^{1/6}$.  Writing $\mathcal E_n$ for
-the degeneration remainder, its deterministic bound and
-the $L_3$ sparse-moment bound give
+For every fixed collection of a bounded number of supports and every
+fixed moment order, relative sub-Gaussianity and H\"older's inequality
+give
+\begin{equation*}
+ \norm{\ell^{(1)}_{i,S}(\xi)}_{L_q(\xi\mid W_i)}
+ \le \frac{C\Lambda_i}{\sqrt{mn}},
+ \qquad
+ \norm{\ell^{(2)}_{i,S}(\xi)}_{L_q(\xi)}\le\frac{Cs}{nm},
+ \qquad
+ \left\|\max_{|S|=s}|\ell^{(2)}_{i,S}(\xi)|\right\|_{L_q(\xi)}
+ \le\frac Cn,
+\end{equation*}
+where
+\begin{equation*}
+ \Lambda_i=1+\frac{\norm{W_{1i}}_{C,s}}{\sigma_0\sqrt m}
+       +\frac{\norm{W_{2i}}_{C,s}}{\sigma_r\sqrt m}.
+\end{equation*}
+For deterministic $a,b\in\R^p$, the directional estimate behind these
+bounds is
+\begin{equation}\label{eq:fixed-score-direction}
+ \norm{a^\top\xi_1+b^\top\xi_2}_{\psi_1}
+ \le C\left\{\sigma_0(a^\top Ca)^{1/2}
+ +\sigma_r(b^\top Cb)^{1/2}\right\}.
+\end{equation}
+This follows by writing each summand as a centered product of two linear
+forms in the augmented sub-Gaussian row.  The matched Gaussian score has
+the same bound because it has the same covariance.
+Indeed, local treatment gives
+$\sqrt n\norm{d}_{C,s}\lesssim\sigma_0\sqrt m$, while
+\begin{equation*}
+ \norm{z_{2i}}_{C,s}\le
+ \sqrt n\,\widetilde\Psi_s+\sigma_r\sqrt m\,\Lambda_i,
+ \qquad
+ D_n=\sigma_0\sqrt m
+ \{\sqrt n\,\widetilde\Psi_s+\sigma_r\sqrt m\}.
+\end{equation*}
+These relations give the stated linear-increment bound even when the
+outcome score is unrestricted.  Lemma~\ref{lem:sparse-score-moments}
+gives bounded fixed moments of $\Lambda_i$.
+
+Let $\mathbf Q_i=(Q_{i,S}:|S|=s)$ be the vector of normalized base
+values, where
+\begin{equation*}
+        Q_{i,S}=\frac{Q_S(z_{1i},z_{2i})}{D_n},
+\end{equation*}
+and, for a test function $f$ from the definition of $d_3$, define
+\begin{equation*}
+ F_{\lambda,f}((t_S))=f\left\{
+ \frac1{\lambda m}\log\sum_{|S|=s}\exp(\lambda m t_S)
+ \right\}.
+\end{equation*}
+Its first three
+derivative tensors have total variation bounded by
+\begin{equation*}
+        C,\qquad C(1+\lambda m),\qquad
+        C\{1+\lambda m+(\lambda m)^2\},
+\end{equation*}
+respectively.  Let $\pi_S$ be the Gibbs weights before inserting the
+row.  At an intermediate point of the linear increment they are
+\begin{equation*}
+ w_S(t)=\frac{\pi_S\exp\{t\lambda m\ell^{(1)}_{i,S}(\xi)\}}
+ {\sum_T\pi_T\exp\{t\lambda m\ell^{(1)}_{i,T}(\xi)\}},
+ \qquad \overline\ell_i=\sum_T\pi_T\ell^{(1)}_{i,T}.
+\end{equation*}
+Jensen's inequality gives, for $k\le3$,
+\begin{equation*}
+ \prod_{a=1}^kw_{S_a}(t)
+ \le\prod_{a=1}^k\pi_{S_a}
+ \exp\left\{t\lambda m
+ \left(\sum_{a=1}^k\ell^{(1)}_{i,S_a}
+ -k\overline\ell_i\right)\right\}.
+\end{equation*}
+The bracketed linear form is centered in the inserted score row.
+Equation~\eqref{eq:fixed-score-direction}, the triangle inequality for
+the $C$-seminorm, and convexity over the weights $\pi_T$ bound its
+conditional $\psi_1$ norm by $C_k\Lambda_i/\sqrt{mn}$.  On
+\begin{equation*}
+        \Lambda_i\le c(n/m)^{1/3},
+\end{equation*}
+the tilt has bounded exponential moment because
+\begin{equation*}
+        \lambda m\frac{\Lambda_i}{\sqrt{mn}}\le c
+        \qquad\text{for}\qquad
+        \lambda=(n/m)^{1/6}.
+\end{equation*}
+The tail bound in Lemma~\ref{lem:sparse-score-moments} gives
+\begin{equation*}
+ \max_{i\le n}\Prob\{\Lambda_i>c(n/m)^{1/3}\}
+ \le 2\exp(-c'n^{2/3}m^{1/3}),
+\end{equation*}
+so the sum over the $n$ hybrids of the complementary probabilities is
+$o\{(m/n)^{1/6}\}$.  The same
+tilt bound, followed by H\"older's inequality, applies when one of the
+factors is the quadratic increment $\ell^{(2)}_{i,S}$.
+
+Writing $\ell_i^{(j)}=(\ell_{i,S}^{(j)}:|S|=s)$, expansion first in the
+quadratic increment and then in the linear increment gives
+\begin{equation}\label{eq:two-stage-score-expansion}
+\begin{split}
+ F_{\lambda,f}(\mathbf Q_i+\ell_i^{(1)}+\ell_i^{(2)})
+ ={}&F_{\lambda,f}(\mathbf Q_i)
+ +DF_{\lambda,f}(\mathbf Q_i)[\ell_i^{(1)}+\ell_i^{(2)}]
+ +\frac12D^2F_{\lambda,f}(\mathbf Q_i)[\ell_i^{(1)},\ell_i^{(1)}]\\
+ &+D^2F_{\lambda,f}(\mathbf Q_i)[\ell_i^{(1)},\ell_i^{(2)}]
+ +\mathcal R_i.
+\end{split}
+\end{equation}
+On $\Lambda_i\le c(n/m)^{1/3}$, the preceding Gibbs bound and the increment
+moments give
+\begin{equation}\label{eq:two-stage-score-remainder}
+\begin{split}
+ \E(|\mathcal R_i|\mid W_i)
+ \le C\{1+\lambda m+(\lambda m)^2\}
+ \left\{\frac{\Lambda_i^3}{(mn)^{3/2}}
+ +\frac{\Lambda_i^2s}{m^2n^2}\right\}
+ +\frac{C(1+\lambda m)}{n^2}.
+\end{split}
+\end{equation}
+Indeed, the first Taylor expansion has deterministic remainder
+$C(1+\lambda m)\max_S|\ell^{(2)}_{i,S}|^2$.  The quadratic increment
+therefore never enters an exponential tilt; the two terms inside braces
+in \eqref{eq:two-stage-score-remainder} come from three linear
+increments and from two linear increments with one quadratic increment.
+The conditional expectations of $\ell^{(1)}_{i,S}$ and
+$\ell^{(2)}_{i,S}$, and the
+conditional products
+$\ell^{(1)}_{i,S}\ell^{(1)}_{i,T}$, agree for the original and Gaussian
+rows because their first two score moments agree.  The uncancelled terms,
+summed over the replacement path, are therefore bounded by
+\begin{equation}\label{eq:refined-score-replacement-error}
+ C\left\{
+ \frac{\lambda s}{\sqrt{nm}}
+ +\lambda^2\sqrt{\frac mn}
+ +\frac{1+\lambda m}{n}
+ \right\}.
+\end{equation}
+The linear--quadratic product contributes the first term, three linear
+increments contribute the second, and the uniform $L_2$ bound on the
+quadratic increment gives the last.  The mixed higher-order term is at
+most $C\lambda^2s/n$ and is absorbed by the second term when
+$s\le m\le n$.  Under this relation, the choice
+$\lambda=(n/m)^{1/6}$ makes every term in
+\eqref{eq:refined-score-replacement-error} at most a constant times
+$(m/n)^{1/6}$.  The soft-maximum error is $1/\lambda$ and has the same
+order.
+
+Writing $\mathcal E_n$ for the degeneration remainder, its deterministic
+bound and the $L_3$ sparse-moment bound give
 \begin{equation*}
         \E\min\left\{\frac{|\mathcal E_n|}{a_n^{\mathrm{loc}}},1\right\}
         \lesssim\delta,
@@ -1797,6 +1932,17 @@ the ordered-atom argument from Lemma~\ref{lem:gaussian-product-extremes}
 gives \eqref{eq:experimental-product-order-limit}.
 \end{proof}
 
+The range in \eqref{eq:experimental-extreme-regime} is uniform over the
+relative sub-Gaussian class and cannot be enlarged while retaining the
+same Gaussian centering.  At a product excursion $t\asymp\log p$, the
+cubic term in the fixed-dimensional Cram\'er expansion has size
+$t^{3/2}/\sqrt n$.  The two product saddles give opposite cubic terms,
+but their probabilities add rather than cancel; a nonzero third
+cumulant therefore changes the limiting exceedance intensity when
+$\log p\asymp n^{1/3}$.  Extending the range requires vanishing sparse
+third cumulants together with a fourth-order comparison, or a
+distribution-dependent correction to $b_p$.
+
 \begin{corollary}[Fixed-budget calibration]
 \label{cor:fixed-budget-calibration}
 Let $s$ be fixed and $p\to\infty$.  Suppose either
@@ -2204,7 +2350,7 @@ bounds $\lambda_n\ge\underline\lambda_n$ and
 $\Delta_n\le\overline\Delta_n$.  Put
 \begin{equation*}
         \omega_n^{\mathrm{score}}
-        =\left(\frac{m^4}{n}\right)^{1/6}+\delta.
+        =\left(\frac{m}{n}\right)^{1/6}+\delta.
 \end{equation*}
 For every $0<\zeta\le1$, with probability at least
 \begin{equation*}
@@ -3536,7 +3682,7 @@ size requirements:
  m^7=o(n)
  &\quad\Longrightarrow\quad
  d_3\!\left(\frac{M_n-b_*}{a_n},\frac{M_n^G-b_*}{a_n}\right)=o(1),\\
- m^4=o(n),\ \sqrt{\phi_{2s}}\lesssim\delta
+ m=o(n),\ \sqrt{\phi_{2s}}\lesssim\delta
  &\quad\Longrightarrow\quad
  d_3\!\left(
  \frac{M_n}{a_n^{\mathrm{loc}}},
@@ -3549,7 +3695,7 @@ size requirements:
  +o_{\Prob}(a_n^{\mathrm{loc}}).
 \end{aligned}
 \end{equation}
-Along the $m^4=o(n)$ score-comparison branch, when additionally
+Along the $m=o(n)$ score-comparison branch, when additionally
 $m\to\infty$, sparse score isotropy and the mean cap further couple the matched
 top-$s$ functional to its independent-coordinate analogue.  The last
 line of \eqref{eq:unified-gaussian-spine} is fully observable.  When the
@@ -3559,6 +3705,13 @@ independent-coordinate law under the same broad condition $m=o(n)$.
 At fixed $s$, Lemma~\ref{lem:experimental-product-extremes} and
 Corollary~\ref{cor:fixed-budget-calibration} extend the Poisson
 calibration to the sub-Gaussian experimental null.
+For general sub-Gaussian scores, the cubic Cram\'er correction makes
+$\log p=o(n^{1/3})$ the maximal uniform range for the centering $b_p$.
+With Gaussian controls the raw score process is already Gaussian, so its
+point-process limit has no corresponding restriction; in that branch
+the displayed range comes from the uniform coefficient-to-product
+reduction.  A sharper Gaussian-control range would require an
+excursion-local Gram expansion.
 
 For lower bounds, the critical expansion reduces the problem to a
 quantile of the empirical linear--quadratic field.  In the subcritical
