@@ -23,7 +23,7 @@
 
 \setlength{\emergencystretch}{3em}
 
-\title{Matched Gaussian Chaos and Contrast Approximation}
+\title{Matched Gaussian Chaos and Covariance-Aware Products}
 \author{Th\'eo Voldoire and Nic Fishman}
 \date{}
 
@@ -36,26 +36,26 @@ Searching over $s$ controls reduces the largest regression coefficient to
 a covariance-normalized bilinear functional of two empirical score
 vectors.  Under relative sub-Gaussianity and
 $[s\log(ep/s)]^4=o(n)$, a matched Gaussian law approximates this
-functional while retaining its fourth-moment dependence.  A fixed
-two-dimensional rotation writes every support value as one projection
-energy minus another.  Any support chosen from the first contrast then
-approximates the search up to its sparse-projection gap and one
-$s$-dimensional remainder energy.  Conditional covariance and mean bounds
-make the remainder negligible for arbitrary control covariance, so a
-support with a negligible projection gap gives a stochastic
-approximation.  Under Kronecker Gaussian score covariance, the remainder
-has an exact conditional noncentral chi-square law.  A bounded restricted
-condition number gives a sorting-based
-constant-factor approximation and a computable forward-selection
-certificate, while local isotropy recovers the top-$s$ product formula.
+functional while retaining its fourth-moment dependence.  Every support
+value is obtained by sequentially residualizing its selected score
+coordinates and summing the resulting products.  A fixed rotation
+separates every product into an
+active squared contrast and a passive squared contrast.  A path selected
+from the active contrast therefore gives a stochastic product
+approximation whose error is bounded by its active projection gap and
+selected passive energy.  Under Kronecker Gaussian score covariance, the
+passive energy has an exact conditional noncentral chi-square law.  The
+construction allows arbitrary, possibly singular control covariance.  A
+residual certificate controls the active gap under bounded sparse
+conditioning, while local isotropy makes the coordinatewise top-$s$
+product formula first-order accurate.
 \end{abstract}
 
 \section{Regression search}
 
 Adding controls changes the coefficient on $x_0$ through two score
-projections.  The reduction below isolates this dependence in a bilinear
-search over supports, whose covariance geometry is the only obstacle to
-the coordinatewise top-$s$ construction.
+projections.  Each support value is a sum of products between the two
+scores after sequential residualization by the control covariance.
 
 For independent and identically distributed observations
 $i=1,\ldots,n$, consider the centered linear model
@@ -82,7 +82,8 @@ noise has uniformly bounded $\psi_2$ norm.  Rescaling a control leaves
 every selected column span unchanged, so we assume throughout that
 $C_{jj}=1$ for every $j$.
 
-Write $[p]=\{1,\ldots,p\}$.  For $S\subseteq[p]$, let $M_S$ project
+Write $[p]=\{1,\ldots,p\}$ and fix a total order on $[p]$ to resolve ties
+and order selected supports.  For $S\subseteq[p]$, let $M_S$ project
 orthogonally off the column span of $X_{-0,S}$, and define
 \begin{equation}\label{eq:searched-coefficient}
         \widehat\beta_{0,S}
@@ -103,6 +104,26 @@ $|S|=s$.  Define the residual outcome and its score mean by
 \end{equation}
 Then $\Cov(x_0^{(i)},r^{(i)})=0$.  We assume $\sigma_r>0$.
 
+Collect the empirical control scores in
+\begin{equation}\label{eq:score-sum}
+        Z_n=\begin{pmatrix}Z_{1n}\\Z_{2n}\end{pmatrix}
+        :=\begin{pmatrix}
+        X_{-0}^\top x_0/\sqrt n\\
+        X_{-0}^\top r/\sqrt n
+        \end{pmatrix}.
+\end{equation}
+
+Every inverse below is the inverse on the range, or equivalently the
+Moore--Penrose inverse in the original coordinates.  Expressions
+involving an inverse square root or a whitened operator norm are likewise
+read on that range.  Indeed, if $q\in\ker(C_{JJ})$, then
+$q^\top X_{-0,J}^{(i)}=0$ almost surely, so range compression preserves
+every selected column span.  A vector $v$ is
+score-compatible through order $2s$ if
+$v_J\in\operatorname{range}(C_{JJ})$ whenever $|J|\le2s$.  The empirical
+and matched score vectors used below are score-compatible because they
+preserve every population linear dependence among the controls.
+
 For $v\in\R^p$ and $1\le k\le2s$, define the
 covariance-normalized sparse norm
 \begin{equation}\label{eq:sparse-norm}
@@ -110,8 +131,7 @@ covariance-normalized sparse norm
         =\sup_{J\subseteq[p],\,|J|\le k}
         \left(v_J^\top C_{JJ}^{-1}v_J\right)^{1/2},
 \end{equation}
-and assume that the blocks $C_{JJ}$ are positive definite for
-$|J|\le2s$.  Write
+where this norm will be applied to score-compatible vectors.  Write
 \begin{equation}\label{eq:scales}
         L=\log(ep/s),
         \qquad
@@ -126,21 +146,106 @@ The population score means are diffuse when
         \lesssim\sigma_r\delta_{s,n,p}.
 \end{equation}
 
-For $a,b\in\R^p$ and $S\subseteq[p]$ with $|S|\le2s$, put
+For score-compatible $a,b\in\R^p$ and $S\subseteq[p]$ with
+$|S|\le2s$,
+put
 \begin{equation}\label{eq:search-functional}
         Q_S(a,b)=-a_S^\top C_{SS}^{-1}b_S,
         \qquad
         T_C(a,b)=\max_{|S|=s}Q_S(a,b).
 \end{equation}
-For centered jointly Gaussian $a$ and $b$, each
+For centered, jointly Gaussian, score-compatible vectors $a$ and $b$, each
 $Q_S(a,b)-\E Q_S(a,b)$ is a second-order Gaussian chaos, and $T_C(a,b)$
 is the maximum of the corresponding uncentered quadratic forms.
 
-\section{Contrast approximation}
+\begin{theorem}[Regression reduction]
+\label{thm:regression-reduction}
+Suppose the regression model \eqref{eq:model} satisfies
+\eqref{eq:proxy-energy} and $sL=o(n)$.  Then
+\begin{equation}\label{eq:empirical-chaos}
+        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
+        +O_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
+        \right).
+\end{equation}
+\end{theorem}
 
-The bilinear search has a one-contrast reduction.  For positive
-$\sigma_a,\sigma_b$ and $a,b\in\R^p$, define the search contrast and its
-remainder by
+\section{Conditional products}
+
+For a general covariance, the product contributed by a coordinate depends
+on the coordinates selected before it.  For a score-compatible
+$v\in\R^p$,
+$S\subseteq[p]$ with $|S|<2s$, and $j\notin S$, define the standardized
+residual
+\begin{equation}\label{eq:residual-score}
+        v_{j\mid S}
+        :=\frac{v_j-C_{jS}C_{SS}^{-1}v_S}
+        {\{1-C_{jS}C_{SS}^{-1}C_{Sj}\}^{1/2}}
+\end{equation}
+when the denominator is positive, and set $v_{j\mid S}=0$ otherwise.
+Compatibility makes the residual numerator zero in the latter case.
+
+\begin{theorem}[Conditional product identity]
+\label{thm:conditional-products}
+For every pair of score-compatible vectors $a,b$, every
+$S\subseteq[p]$ with $|S|<2s$, and every $j\notin S$,
+\begin{equation}\label{eq:conditional-product-increment}
+        Q_{S\cup\{j\}}(a,b)-Q_S(a,b)
+        =-a_{j\mid S}b_{j\mid S}.
+\end{equation}
+Consequently, for distinct $j_1,\ldots,j_s$, with
+$J_t=\{j_1,\ldots,j_t\}$ and $J_0=\emptyset$,
+\begin{equation}\label{eq:conditional-product-sum}
+\begin{split}
+        Q_{J_s}(a,b)
+        &=-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}},\\
+        T_C(a,b)
+        &=\max_{\substack{j_1,\ldots,j_s\in[p]\\
+        \mathrm{distinct}}}
+        \left\{-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}\right\}.
+\end{split}
+\end{equation}
+The sum in \eqref{eq:conditional-product-sum} depends only on $J_s$, not
+on its ordering.
+\end{theorem}
+
+\begin{proof}
+If the residual variance in \eqref{eq:residual-score} is positive, support
+compression followed by block inversion gives
+\begin{equation*}
+\begin{split}
+        &a_{S\cup\{j\}}^\top
+        C_{S\cup\{j\},S\cup\{j\}}^{-1}b_{S\cup\{j\}}
+        -a_S^\top C_{SS}^{-1}b_S\\
+        &\qquad=
+        \frac{(a_j-C_{jS}C_{SS}^{-1}a_S)
+        (b_j-C_{jS}C_{SS}^{-1}b_S)}
+        {1-C_{jS}C_{SS}^{-1}C_{Sj}}
+        =a_{j\mid S}b_{j\mid S},
+\end{split}
+\end{equation*}
+which proves \eqref{eq:conditional-product-increment}.  If the residual
+variance is zero, $j$ adds no direction to the control span and both sides
+of \eqref{eq:conditional-product-increment} vanish.  Telescoping over the
+ordered support proves \eqref{eq:conditional-product-sum}; its
+terminal value is $Q_{J_s}(a,b)$ and is therefore independent of the
+ordering.
+\end{proof}
+
+When $C=I$, conditional products reduce to the coordinatewise products
+$-a_jb_j$.  For non-diagonal $C$, the
+inverse covariance introduces cross-coordinate terms that no fixed list
+of coordinatewise products can represent.  Conditional products are the
+corresponding covariance-aware factors.
+
+The same products yield a stochastic approximation when the support is
+selected through one fixed rotation.  For positive $\sigma_a,\sigma_b$
+and score-compatible $a,b\in\R^p$, define the active and passive contrasts
+by
 \begin{equation}\label{eq:contrasts}
         G=\frac{1}{\sqrt2}\left(\frac a{\sigma_a}
         -\frac b{\sigma_b}\right),
@@ -148,7 +253,13 @@ remainder by
         H=\frac{1}{\sqrt2}\left(\frac a{\sigma_a}
         +\frac b{\sigma_b}\right).
 \end{equation}
-Polarization gives, for every support $S$,
+Residualization commutes with this rotation, and polarization gives
+\begin{equation}\label{eq:conditional-product-contrast}
+        -a_{j\mid S}b_{j\mid S}
+        =\frac{\sigma_a\sigma_b}{2}
+        \left(G_{j\mid S}^2-H_{j\mid S}^2\right).
+\end{equation}
+Summing \eqref{eq:conditional-product-contrast} over a support recovers
 \begin{equation}\label{eq:contrast-identity}
         Q_S(a,b)
         =\frac{\sigma_a\sigma_b}{2}
@@ -157,140 +268,183 @@ Polarization gives, for every support $S$,
         -H_S^\top C_{SS}^{-1}H_S
         \right).
 \end{equation}
-Thus a support chosen from $G$ leaves only one remainder energy to
-control, rather than a second maximum over the support family.
 
-\begin{theorem}[Contrast approximation]
-\label{thm:contrast-approximation}
-For every $a,b\in\R^p$ and every size-$s$ support $\widehat S$,
-\begin{equation}\label{eq:contrast-transfer}
+\begin{theorem}[Conditional product approximation]
+\label{thm:product-approximation}
+Let $a,b$ be score-compatible and let $\sigma_a,\sigma_b>0$.  Let
+$j_1,\ldots,j_s$ be distinct and put
+$J_0=\emptyset$ and $J_t=\{j_1,\ldots,j_t\}$.  Then
+\begin{equation}\label{eq:product-error-budget}
 \begin{split}
-        0\le T_C(a,b)-Q_{\widehat S}(a,b)
-        \le\frac{\sigma_a\sigma_b}{2}\bigg\{
-        &\norm{G}_{C,s}^2
-        -G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        G_{\widehat S}\\
-        &+H_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        H_{\widehat S}\bigg\}.
+        &\left\{T_C(a,b)-Q_{J_s}(a,b)\right\}
+        +\left\{\frac{\sigma_a\sigma_b}{2}
+        \norm{G}_{C,s}^2-T_C(a,b)\right\}\\
+        &\qquad=\frac{\sigma_a\sigma_b}{2}\left\{
+        \norm{G}_{C,s}^2
+        -\sum_{t=1}^sG_{j_t\mid J_{t-1}}^2
+        +\sum_{t=1}^sH_{j_t\mid J_{t-1}}^2
+        \right\}.
 \end{split}
 \end{equation}
-In particular, let $S_G$ maximize
-$G_S^\top C_{SS}^{-1}G_S$ over $|S|=s$, with ties resolved
-deterministically.  Then
-\begin{equation}\label{eq:contrast-oracle-bound}
+Both terms on the left are nonnegative.  In particular,
+\begin{equation}\label{eq:product-transfer}
 \begin{split}
-        0
-        &\le T_C(a,b)-Q_{S_G}(a,b)\\
-        &\le
+        0&\le T_C(a,b)
+        +\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}\\
+        &\le\frac{\sigma_a\sigma_b}{2}\left\{
+        \norm{G}_{C,s}^2
+        -\sum_{t=1}^sG_{j_t\mid J_{t-1}}^2
+        +\sum_{t=1}^sH_{j_t\mid J_{t-1}}^2
+        \right\}.
+\end{split}
+\end{equation}
+Let $S_G$ maximize
+$G_S^\top C_{SS}^{-1}G_S$ over $|S|=s$.  Using the fixed order for ties
+and for the elements of $S_G$, write $S_G=\{j_1,\ldots,j_s\}$ and put
+$J_t=\{j_1,\ldots,j_t\}$.  Along this path,
+\begin{equation}\label{eq:product-oracle-budget}
+\begin{split}
+        &\left\{T_C(a,b)-Q_{S_G}(a,b)\right\}
+        +\left\{\frac{\sigma_a\sigma_b}{2}
+        \norm{G}_{C,s}^2-T_C(a,b)\right\}\\
+        &\qquad=
         \frac{\sigma_a\sigma_b}{2}
-        H_{S_G}^\top C_{S_GS_G}^{-1}H_{S_G},
+        \sum_{t=1}^sH_{j_t\mid J_{t-1}}^2.
 \end{split}
 \end{equation}
-and this remainder also bounds
-$\sigma_a\sigma_b\norm{G}_{C,s}^2/2-T_C(a,b)$ from above.
 \end{theorem}
 
 \begin{proof}
-The remainder energy in \eqref{eq:contrast-identity} is nonnegative, so
+The conditional product identity gives
 \begin{equation*}
-        T_C(a,b)
-        \le\frac{\sigma_a\sigma_b}{2}\norm{G}_{C,s}^2.
+        \sum_{t=1}^sG_{j_t\mid J_{t-1}}^2
+        =G_{J_s}^\top C_{J_sJ_s}^{-1}G_{J_s},
+        \qquad
+        \sum_{t=1}^sH_{j_t\mid J_{t-1}}^2
+        =H_{J_s}^\top C_{J_sJ_s}^{-1}H_{J_s}.
 \end{equation*}
-Subtracting \eqref{eq:contrast-identity} at $\widehat S$ proves
-\eqref{eq:contrast-transfer}.  Taking $\widehat S=S_G$ removes the
-optimization gap, while evaluating the maximum at $S_G$ proves the final
-upper bound.
+Equation~\eqref{eq:contrast-identity} therefore proves
+\eqref{eq:product-error-budget}.  Its two left-hand terms are
+nonnegative because $Q_{J_s}(a,b)\le T_C(a,b)$ and the passive energy in
+\eqref{eq:contrast-identity} is nonnegative.  Dropping the second term
+proves \eqref{eq:product-transfer}.  The active gap vanishes on $S_G$,
+which proves \eqref{eq:product-oracle-budget}.
 \end{proof}
 
-The stochastic result uses the following sparse conditional covariance
-domination: for a constant $K$,
-\begin{equation}\label{eq:conditional-passive-covariance}
-        \Cov(H_J\mid G)\preceq K C_{JJ}
-        \qquad\text{for every }|J|\le s.
-\end{equation}
-Although \eqref{eq:conditional-passive-covariance} is stated over the
-support family, the proof uses it only at the support selected from $G$.
+The product sum is a stochastic approximation whenever its active gap
+and selected passive energy are negligible.
 
-\begin{corollary}[Stochastic contrast approximation]
-\label{cor:stochastic-contrast}
-Let $a,b$ be random vectors, let $\widehat S$ be any $G$-measurable
-size-$s$ support, and suppose
-\eqref{eq:conditional-passive-covariance} holds with $K=O(1)$.  Then
-\begin{equation}\label{eq:passive-contrast-size}
-        H_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}H_{\widehat S}
-        =O_{\Prob}\left(
-        s+\norm{\E[H\mid G]}_{C,s}^2
-        \right).
-\end{equation}
-If $L\to\infty$,
-\begin{equation}\label{eq:passive-mean-condition}
-        \norm{\E[H\mid G]}_{C,s}^2=o_{\Prob}(sL),
+\begin{corollary}[Stochastic product approximation]
+\label{cor:stochastic-products}
+Let $a,b$ be score-compatible random vectors, put $J_0=\emptyset$, and let
+$J_t=J_{t-1}\cup\{j_t\}$, where $j_t\notin J_{t-1}$, be a
+$G$-measurable ordered path.  Suppose
+\begin{equation}\label{eq:selected-passive-energy}
+        \E\!\left[
+        H_{J_s}^\top C_{J_sJ_s}^{-1}H_{J_s}\mid G
+        \right]=o_{\Prob}(sL)
 \end{equation}
 and
 \begin{equation}\label{eq:generic-projection-gap}
         \norm{G}_{C,s}^2
-        -G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        G_{\widehat S}=o_{\Prob}(sL),
+        -G_{J_s}^\top C_{J_sJ_s}^{-1}G_{J_s}=o_{\Prob}(sL).
 \end{equation}
-then
-\begin{equation}\label{eq:stochastic-contrast-computed}
+Then
+\begin{equation}\label{eq:stochastic-product-computed}
         T_C(a,b)
-        =Q_{\widehat S}(a,b)
+        =-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}
         +o_{\Prob}(\sigma_a\sigma_b sL).
 \end{equation}
-For $\widehat S=S_G$, the optimization gap vanishes and
-\begin{equation}\label{eq:stochastic-contrast-oracle}
+If $J_s=S_G$ with the fixed ordering, the active gap vanishes,
+so \eqref{eq:selected-passive-energy} alone gives
+\begin{equation}\label{eq:stochastic-product-oracle}
+\begin{split}
         T_C(a,b)
-        =Q_{S_G}(a,b)+o_{\Prob}(\sigma_a\sigma_b sL)
-        =\frac{\sigma_a\sigma_b}{2}\norm{G}_{C,s}^2
+        &=-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}
+        +o_{\Prob}(\sigma_a\sigma_b sL)\\
+        &=\frac{\sigma_a\sigma_b}{2}\norm{G}_{C,s}^2
         +o_{\Prob}(\sigma_a\sigma_b sL).
+\end{split}
 \end{equation}
 \end{corollary}
 
 \begin{proof}
-Conditioning on $G$ fixes $\widehat S$, whose conditional expected
-remainder energy is at most
-\begin{equation*}
-        Ks+
-        \E[H_{\widehat S}\mid G]^\top
-        C_{\widehat S\widehat S}^{-1}
-        \E[H_{\widehat S}\mid G].
-\end{equation*}
-Conditional Markov inequality proves \eqref{eq:passive-contrast-size},
-and Theorem~\ref{thm:contrast-approximation} proves the remaining claims.
+Conditional Markov inequality turns \eqref{eq:selected-passive-energy}
+into
+$H_{J_s}^\top C_{J_sJ_s}^{-1}H_{J_s}=o_{\Prob}(sL)$.
+Theorem~\ref{thm:product-approximation} then proves both claims.
 \end{proof}
 
-For a Gaussian pair with Kronecker covariance, the remainder has an exact
-law.  Suppose, for $-1<\gamma<1$, that
+A convenient sufficient condition for \eqref{eq:selected-passive-energy}
+is $L\to\infty$, together with the following sparse conditional covariance
+bound for a constant $K=O(1)$:
+\begin{equation}\label{eq:conditional-passive-covariance}
+        \Cov(H_J\mid G)\preceq K C_{JJ}
+        \qquad\text{for every }|J|\le s,
+\end{equation}
+and the conditional mean bound
+\begin{equation}\label{eq:passive-mean-condition}
+        \norm{\E[H\mid G]}_{C,s}^2=o_{\Prob}(sL).
+\end{equation}
+Conditioning on $G$ fixes $J_s$ and bounds its conditional expected
+passive energy by
+\begin{equation*}
+        Ks+
+        \E[H_{J_s}\mid G]^\top
+        C_{J_sJ_s}^{-1}\E[H_{J_s}\mid G].
+\end{equation*}
+Conditional Markov inequality therefore gives
+\begin{equation}\label{eq:passive-energy-size}
+        H_{J_s}^\top C_{J_sJ_s}^{-1}H_{J_s}
+        =O_{\Prob}\left(
+        s+\norm{\E[H\mid G]}_{C,s}^2
+        \right).
+\end{equation}
+The same conditional expectation bound proves
+\eqref{eq:selected-passive-energy}.
+
+For a Gaussian pair with Kronecker covariance, the passive residuals have
+an exact law.  Suppose $a,b$ are score-compatible and, for
+$-1<\gamma<1$, that
 \begin{equation}\label{eq:separable-gaussian-channels}
         \begin{pmatrix}a/\sigma_a\\ b/\sigma_b\end{pmatrix}
+        -\E\begin{pmatrix}a/\sigma_a\\ b/\sigma_b\end{pmatrix}
         \sim N\!\left(
-        \begin{pmatrix}m_a\\m_b\end{pmatrix},
+        0,
         \begin{pmatrix}1&\gamma\\\gamma&1\end{pmatrix}\otimes C
         \right).
 \end{equation}
 The contrasts $G$ and $H$ are independent Gaussian vectors with
 covariances $(1-\gamma)C$ and $(1+\gamma)C$, respectively.
 
-\begin{corollary}[Gaussian contrasts]
-\label{cor:gaussian-contrasts}
-Under \eqref{eq:separable-gaussian-channels}, every $G$-measurable
-size-$s$ support $\widehat S$ satisfies, conditionally on $G$,
+\begin{corollary}[Gaussian conditional products]
+\label{cor:gaussian-conditional-products}
+Under \eqref{eq:separable-gaussian-channels}, let $J_0=\emptyset$ and
+$J_t=J_{t-1}\cup\{j_t\}$, where $j_t\notin J_{t-1}$, be any
+$G$-measurable ordered path.
+Conditionally on $G$,
 \begin{equation}\label{eq:passive-chi-square}
-        \frac{H_{\widehat S}^\top
-        C_{\widehat S\widehat S}^{-1}H_{\widehat S}}
+        \frac{\displaystyle\sum_{t=1}^s
+        H_{j_t\mid J_{t-1}}^2}
         {1+\gamma}
-        \sim\chi_s^2\!\left(
-        \frac{(\E H)_{\widehat S}^\top
-        C_{\widehat S\widehat S}^{-1}(\E H)_{\widehat S}}
+        \sim\chi_{r_s}^2\!\left(
+        \frac{(\E H)_{J_s}^\top
+        C_{J_sJ_s}^{-1}(\E H)_{J_s}}
         {1+\gamma}
-        \right).
+        \right),
+        \qquad r_s=\operatorname{rank}(C_{J_sJ_s}).
 \end{equation}
-In the centered case, for every positive definite $C$,
-\begin{equation}\label{eq:centered-gaussian-contrast}
+On the support $S_G$ in its fixed order, the centered case gives,
+for every $C$,
+\begin{equation}\label{eq:centered-gaussian-products}
 \begin{split}
         T_C(a,b)
-        &=Q_{S_G}(a,b)+O_{\Prob}(\sigma_a\sigma_b s)\\
+        &=-\sum_{t=1}^s
+        a_{j_t\mid J_{t-1}}b_{j_t\mid J_{t-1}}
+        +O_{\Prob}(\sigma_a\sigma_b s)\\
         &=\frac{\sigma_a\sigma_b}{2}\norm{G}_{C,s}^2
         +O_{\Prob}(\sigma_a\sigma_b s).
 \end{split}
@@ -299,14 +453,18 @@ In the centered case, for every positive definite $C$,
 
 \begin{proof}
 Independence makes the conditional law of $H$ equal to its marginal law.
-Whitening its selected $s$-block gives
-\eqref{eq:passive-chi-square}; Theorem~\ref{thm:contrast-approximation}
-then gives \eqref{eq:centered-gaussian-contrast}.
+Along the conditionally fixed path, the $r_s$ nonzero Gaussian residuals
+are independent with variance $1+\gamma$.  Their squared means sum to
+$(\E H)_{J_s}^\top C_{J_sJ_s}^{-1}(\E H)_{J_s}$, which proves
+\eqref{eq:passive-chi-square}.  Theorem~\ref{thm:product-approximation}
+then gives \eqref{eq:centered-gaussian-products}.
 \end{proof}
 
-\section{Gaussian score approximation}
+\section{Matched Gaussian scores}
 
-Define the centered row score and its covariance by
+The regression application requires a Gaussian pair to which the
+conditional-product approximation applies.  Define the centered row score
+and its covariance by
 \begin{equation}\label{eq:matched-score}
         U^{(i)}=
         \begin{pmatrix}
@@ -316,13 +474,9 @@ Define the centered row score and its covariance by
         \qquad
         \Sigma_U=\Var(U^{(i)}),
 \end{equation}
-and collect the empirical scores in
-\begin{equation}\label{eq:score-sum}
-        Z_n=\begin{pmatrix}Z_{1n}\\Z_{2n}\end{pmatrix}
-        :=\begin{pmatrix}
-        X_{-0}^\top x_0/\sqrt n\\
-        X_{-0}^\top r/\sqrt n
-        \end{pmatrix}
+so the empirical scores in \eqref{eq:score-sum} satisfy
+\begin{equation}\label{eq:score-decomposition}
+        Z_n
         =\begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
         +\frac1{\sqrt n}\sum_{i=1}^nU^{(i)}.
 \end{equation}
@@ -336,22 +490,437 @@ The matched Gaussian score vector is
 The covariance $\Sigma_U$ contains the fourth-moment contribution of the
 design.
 
-For a pair $z=(z_1,z_2)$, write
-\begin{equation}\label{eq:standardized-sparse-norm}
-        \norm{z}_s
-        =\frac{\norm{z_1}_{C,s}}{\sigma_0}
-        +\frac{\norm{z_2}_{C,s}}{\sigma_r}.
-\end{equation}
-
 For real random variables $\zeta,\widetilde\zeta$, write
 \begin{equation*}
         d_3(\zeta,\widetilde\zeta)
         =\sup_{\varphi}
         |\E\varphi(\zeta)-\E\varphi(\widetilde\zeta)|.
 \end{equation*}
-The supremum is over all three times continuously differentiable
-$\varphi$ such that
+The supremum is over $\varphi\in C^3(\R)$ satisfying
 $\max_{0\le j\le3}\norm{\varphi^{(j)}}_\infty\le1$.
+
+\begin{theorem}[Matched Gaussian approximation]
+\label{thm:matched-chaos}
+Suppose the assumptions of Theorem~\ref{thm:regression-reduction} hold and
+$(sL)^4=o(n)$.  Then the matched Gaussian vector in
+\eqref{eq:matched-gaussian} satisfies
+\begin{equation}\label{eq:smooth-approximation}
+        d_3\!\left(
+        \frac{n\sigma_0}{\sigma_rsL}
+        \left\{
+        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
+        -\widehat\beta_{0,\emptyset}
+        \right\},
+        \frac{T_C(Z_1,Z_2)}{\sigma_0\sigma_rsL}
+        \right)
+        \lesssim
+        \left(\frac{(sL)^4}{n}\right)^{1/6}
+        +o(1).
+\end{equation}
+In particular, the two scalar laws can be coupled so that
+\begin{equation}\label{eq:coupled-approximation}
+        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{T_C(Z_1,Z_2)}{n\sigma_0^2}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right).
+\end{equation}
+\end{theorem}
+
+The conditional-product construction applies directly to the matched pair.
+
+\begin{corollary}[Matched conditional products]
+\label{cor:matched-conditional-products}
+Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold,
+$L\to\infty$, and the matched Gaussian scores satisfy
+\eqref{eq:separable-gaussian-channels} with
+$(a,b)=(Z_1,Z_2)$ and $(\sigma_a,\sigma_b)=(\sigma_0,\sigma_r)$.  If
+\begin{equation}\label{eq:matched-passive-mean}
+        n\norm{d/\sigma_0+h/\sigma_r}_{C,s}^2=o(sL),
+\end{equation}
+write $S_G=\{j_1,\ldots,j_s\}$ in the fixed order and put
+$J_t=\{j_1,\ldots,j_t\}$.  The coupling in
+Theorem~\ref{thm:matched-chaos} then satisfies
+\begin{equation}\label{eq:matched-conditional-product-coupling}
+\begin{split}
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        &=\widehat\beta_{0,\emptyset}
+        -\frac{1}{n\sigma_0^2}\sum_{t=1}^s
+        (Z_1)_{j_t\mid J_{t-1}}(Z_2)_{j_t\mid J_{t-1}}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right)\\
+        &=\widehat\beta_{0,\emptyset}
+        +\frac{\sigma_r}{2n\sigma_0}\norm{G}_{C,s}^2
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right).
+\end{split}
+\end{equation}
+The corresponding distributional approximation is
+\begin{equation}\label{eq:matched-conditional-product-distribution}
+\begin{split}
+        d_3\!\left(
+        \frac{n\sigma_0}{\sigma_rsL}
+        \left\{
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        -\widehat\beta_{0,\emptyset}
+        \right\},
+        \frac{\norm{G}_{C,s}^2}{2sL}
+        \right)=o(1).
+\end{split}
+\end{equation}
+If a $G$-measurable support $\widehat S$ with $|\widehat S|=s$ satisfies
+\begin{equation}\label{eq:computed-projection-gap}
+        \norm{G}_{C,s}^2
+        -G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
+        G_{\widehat S}
+        =o_{\Prob}(sL),
+\end{equation}
+then write $\widehat S=\{\widehat j_1,\ldots,\widehat j_s\}$ in the fixed
+order and put $\widehat J_t=\{\widehat j_1,\ldots,\widehat j_t\}$.  The
+first equality in \eqref{eq:matched-conditional-product-coupling} holds
+with
+\begin{equation}\label{eq:computed-product-sum}
+        -\frac{1}{n\sigma_0^2}\sum_{t=1}^s
+        (Z_1)_{\widehat j_t\mid\widehat J_{t-1}}
+        (Z_2)_{\widehat j_t\mid\widehat J_{t-1}}.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Under \eqref{eq:separable-gaussian-channels},
+$\E H=\sqrt{n/2}\,(d/\sigma_0+h/\sigma_r)$.
+Equations~\eqref{eq:product-oracle-budget},
+\eqref{eq:passive-chi-square}, and
+\eqref{eq:matched-passive-mean} make the product approximation error
+$o_{\Prob}(\sigma_0\sigma_rsL)$.  Substitution in
+\eqref{eq:coupled-approximation} and
+\eqref{eq:smooth-approximation} proves
+\eqref{eq:matched-conditional-product-coupling} and
+\eqref{eq:matched-conditional-product-distribution}.
+Equation~\eqref{eq:product-transfer} proves the final claim.
+\end{proof}
+
+For jointly Gaussian rows, the score covariance is
+\begin{equation}\label{eq:gaussian-score-covariance}
+        \Sigma_U=
+        \begin{pmatrix}
+        \sigma_0^2C+dd^\top&hd^\top\\
+        dh^\top&\sigma_r^2C+hh^\top
+        \end{pmatrix}.
+\end{equation}
+Gaussian regression then couples the empirical and matched scores directly
+under $sL=o(n)$.
+
+\begin{corollary}[Gaussian rows]
+\label{cor:gaussian}
+If $(x_0^{(i)},r^{(i)},X_{-0}^{(i)})$ is jointly Gaussian, then under
+\eqref{eq:proxy-energy} and $sL=o(n)$,
+\begin{equation*}
+        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{T_C(Z_1,Z_2)}{n\sigma_0^2}
+        +O_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
+        \right),
+\end{equation*}
+on an extension of the data probability space, with $\Sigma_U$ given by
+\eqref{eq:gaussian-score-covariance}.
+\end{corollary}
+
+\begin{corollary}[Centered Gaussian rows]
+\label{cor:centered-gaussian-rows}
+Suppose $(x_0^{(i)},r^{(i)},X_{-0}^{(i)})$ is jointly Gaussian,
+$d=h=0$, and $sL=o(n)$.  For every $C$, let $G$ be the contrast in
+\eqref{eq:contrasts} formed
+from $(Z_1,Z_2)$ with scales $(\sigma_0,\sigma_r)$.  Write
+$S_G=\{j_1,\ldots,j_s\}$ in the fixed order and put
+$J_t=\{j_1,\ldots,j_t\}$.  On an extension of the data probability space,
+\begin{equation}\label{eq:centered-gaussian-regression}
+\begin{split}
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        &=\widehat\beta_{0,\emptyset}
+        -\frac{1}{n\sigma_0^2}\sum_{t=1}^s
+        (Z_1)_{j_t\mid J_{t-1}}(Z_2)_{j_t\mid J_{t-1}}
+        +O_{\Prob}\!\left[
+        \frac{\sigma_r}{\sigma_0}
+        \left\{\frac{s}{n}+\delta_{s,n,p}^3\right\}
+        \right]\\
+        &=\widehat\beta_{0,\emptyset}
+        +\frac{\sigma_r}{2n\sigma_0}\norm{G}_{C,s}^2
+        +O_{\Prob}\!\left[
+        \frac{\sigma_r}{\sigma_0}
+        \left\{\frac{s}{n}+\delta_{s,n,p}^3\right\}
+        \right].
+\end{split}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+When $d=h=0$, \eqref{eq:gaussian-score-covariance} is the Kronecker law
+\eqref{eq:separable-gaussian-channels} with $\gamma=0$.
+Corollary~\ref{cor:gaussian} reduces the regression search to $T_C$, and
+\eqref{eq:centered-gaussian-products} replaces $T_C$ by the conditional
+product sum and the active contrast energy with an
+$O_{\Prob}(\sigma_0\sigma_rs)$ remainder.
+\end{proof}
+
+Condition \eqref{eq:proxy-energy} gives an $O(sL)$ bound on the remainder
+mean energy, whereas \eqref{eq:matched-passive-mean} requires little-$o$.
+Equivalently, the two standardized score means must cancel at the
+$\sqrt{sL/n}$ scale.  This condition holds automatically when $d=h=0$.
+
+\section{Selecting the product path}
+
+Selecting a support from $G$ amounts to the sparse projection problem
+\begin{equation}\label{eq:sparse-projection-program}
+        \norm{G}_{C,s}^2
+        =\max_{\theta\in\R^p,\,\norm{\theta}_0\le s}
+        \left\{2G^\top\theta-\theta^\top C\theta\right\}.
+\end{equation}
+An exact sparse-regression solver eliminates the active gap in
+\eqref{eq:product-transfer}.  More generally, if a solver returns a
+size-$s$ support $\widehat S$ and an upper bound
+$B\ge\norm{G}_{C,s}^2$, then
+\begin{equation}\label{eq:computed-product-certificate}
+\begin{split}
+        0\le T_C(a,b)-Q_{\widehat S}(a,b)
+        \le\frac{\sigma_a\sigma_b}{2}\bigg\{
+        &B-G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
+        G_{\widehat S}\\
+        &+H_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
+        H_{\widehat S}\bigg\}.
+\end{split}
+\end{equation}
+By \eqref{eq:conditional-product-sum}, $Q_{\widehat S}(a,b)$ is the
+returned product sum.  The bound separates its active optimization error
+from its passive energy.
+For a finite family, braces with subscript $(t)$ below denote its $t$th
+largest member.
+
+The certificates below use the restricted condition number
+\begin{equation}\label{eq:restricted-condition-number}
+        \kappa_s(C)
+        =\sup_{1\le|J|\le2s}
+        \frac{\lambda_{\max}(C_{JJ})}{\lambda_{\min}(C_{JJ})}.
+\end{equation}
+We set $\kappa_s(C)=\infty$ if any such block is singular.
+
+The residuals in \eqref{eq:residual-score} also give the exact marginal
+active gain:
+\begin{equation}\label{eq:projection-increment}
+\begin{split}
+        G_{S\cup\{j\}}^\top C_{S\cup\{j\},S\cup\{j\}}^{-1}
+        G_{S\cup\{j\}}
+        -G_S^\top C_{SS}^{-1}G_S
+        =G_{j\mid S}^2.
+\end{split}
+\end{equation}
+Starting from $J_0=\emptyset$, forward projection chooses
+\begin{equation}\label{eq:forward-path}
+        j_t\in\arg\max_{j\notin J_{t-1}}G_{j\mid J_{t-1}}^2,
+        \qquad J_t=J_{t-1}\cup\{j_t\},
+        \qquad 1\le t\le s,
+\end{equation}
+with ties resolved by the fixed order.  Thus it takes the largest active
+increment at each step.  The same residuals give an upper certificate for
+any computed support.
+
+\begin{corollary}[Projection certificate]
+\label{cor:projection-certificate}
+Suppose $2s\le p$ and $\kappa_s(C)<\infty$.  For every $S$ with
+$|S|\le s$,
+\begin{equation}\label{eq:projection-gap-certificate}
+\begin{split}
+        0\le\norm{G}_{C,s}^2-G_S^\top C_{SS}^{-1}G_S
+        \le \kappa_s(C)\sum_{t=1}^s
+        \{G_{j\mid S}^2:j\notin S\}_{(t)}.
+\end{split}
+\end{equation}
+For a size-$s$ support, the right side of
+\eqref{eq:product-transfer} is therefore at most
+\begin{equation}\label{eq:computed-residual-certificate}
+        \frac{\sigma_a\sigma_b}{2}
+        \left\{
+        \kappa_s(C)\sum_{t=1}^s
+        \{G_{j\mid S}^2:j\notin S\}_{(t)}
+        +H_S^\top C_{SS}^{-1}H_S
+        \right\}.
+\end{equation}
+\end{corollary}
+
+Suppose $2s\le p$ and $\kappa_s(C)<\infty$.  Along the path
+\eqref{eq:forward-path}, each quantity
+\begin{equation}\label{eq:forward-upper-bound}
+        G_{J_t}^\top C_{J_tJ_t}^{-1}G_{J_t}
+        +\kappa_s(C)\sum_{\ell=1}^s
+        \{G_{j\mid J_t}^2:j\notin J_t\}_{(\ell)}
+        \qquad(0\le t\le s)
+\end{equation}
+is an upper bound for $\norm{G}_{C,s}^2$.  Their minimum can therefore be
+used as $B$ in \eqref{eq:computed-product-certificate}.  When $C=I$,
+the bound at $t=0$ is the top-$s$ square sum and equals the energy reached
+by forward projection, so the computed optimization gap vanishes.  More
+generally, whenever this certified gap is $o_{\Prob}(sL)$ and
+\eqref{eq:selected-passive-energy} holds for $J_s$,
+Corollary~\ref{cor:stochastic-products} makes the returned product sum
+$Q_{J_s}(a,b)$ a stochastic approximation to $T_C(a,b)$.
+
+The restricted condition number also gives a coarser nonadaptive rule.
+Let $S_{\mathrm{top}}$ index the largest $s$ values of $G_j^2$, with ties
+resolved by the fixed order.
+
+\begin{corollary}[Top-$s$ contrast]
+\label{cor:top-s-contrast}
+If $\kappa_s(C)<\infty$, then
+\begin{equation}\label{eq:top-s-contrast-energy}
+        G_{S_{\mathrm{top}}}^\top
+        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}G_{S_{\mathrm{top}}}
+        \ge\frac{1}{\kappa_s(C)}\norm{G}_{C,s}^2.
+\end{equation}
+Consequently,
+\begin{equation}\label{eq:top-s-contrast-bound}
+        \frac{T_C(a,b)}{\kappa_s(C)}
+        -\frac{\sigma_a\sigma_b}{2}
+        H_{S_{\mathrm{top}}}^\top
+        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}
+        H_{S_{\mathrm{top}}}
+        \le Q_{S_{\mathrm{top}}}(a,b)\le T_C(a,b).
+\end{equation}
+Under \eqref{eq:conditional-passive-covariance} with $K=O(1)$, the
+remainder in \eqref{eq:top-s-contrast-bound} is
+$O_{\Prob}\{\sigma_a\sigma_b
+(s+\norm{\E[H\mid G]}_{C,s}^2)\}$.
+\end{corollary}
+
+\subsection{Static products}
+
+Conditional products depend on the selected path through the covariance.
+Under local isotropy this dependence is negligible, and one static sort
+recovers the coordinatewise product approximation.  When $C=I$,
+\begin{equation}\label{eq:top-s-products}
+        T_I(a,b)
+        =\max_{|S|=s}\sum_{j\in S}(-a_jb_j)
+        =\sum_{t=1}^s\{-a_jb_j:j\in[p]\}_{(t)}.
+\end{equation}
+This is the top-$s$ product form.  Under the unit-variance normalization,
+local isotropy measures how far the reachable covariance blocks depart
+from $I$:
+\begin{equation}\label{eq:local-isotropy}
+        \rho_s(C)
+        :=\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
+\end{equation}
+If $\rho_s(C)<1$, every such covariance block is positive definite.
+
+\begin{theorem}[Top-$s$ product approximation]
+\label{thm:top-s-products}
+For every pair of score-compatible vectors $a,b\in\R^p$,
+\begin{equation}\label{eq:static-product-bound}
+        |T_C(a,b)-T_I(a,b)|
+        \le\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $S$ with $|S|=s$ and put
+$u=C_{SS}^{-1/2}a_S$ and $v=C_{SS}^{-1/2}b_S$.  Then
+\begin{equation*}
+        Q_S(a,b)+a_S^\top b_S
+        =u^\top(C_{SS}-I)v,
+\end{equation*}
+whose absolute value is at most
+$\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}$.  Taking the uniform bound over
+$S$ and using
+$|\max_S x_S-\max_S y_S|\le\max_S|x_S-y_S|$ proves the result.
+\end{proof}
+
+\begin{corollary}[Coordinatewise matched products]
+\label{cor:matched-products}
+Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold and
+$\rho_s(C)=o(1)$.  The coupling in
+Theorem~\ref{thm:matched-chaos} satisfies
+\begin{equation}\label{eq:matched-product-coupling}
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        =\widehat\beta_{0,\emptyset}
+        +\frac{1}{n\sigma_0^2}
+        \sum_{t=1}^s\{-Z_{1j}Z_{2j}:j\in[p]\}_{(t)}
+        +o_{\Prob}\!\left(
+        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
+        \right).
+\end{equation}
+An independent matched Gaussian draw also gives
+\begin{equation}\label{eq:matched-product-distribution}
+\begin{split}
+        d_3\!\left(
+        \frac{n\sigma_0}{\sigma_rsL}
+        \left\{
+        \sup_{|S|=s}\widehat\beta_{0,S}
+        -\widehat\beta_{0,\emptyset}
+        \right\},
+        \frac{1}{\sigma_0\sigma_rsL}
+        \sum_{t=1}^s\{-Z_{1j}Z_{2j}:j\in[p]\}_{(t)}
+        \right)=o(1).
+\end{split}
+\end{equation}
+For jointly Gaussian rows, \eqref{eq:matched-product-coupling} and
+\eqref{eq:matched-product-distribution} hold under the assumptions of
+Corollary~\ref{cor:gaussian}, with $\rho_s(C)=o(1)$ and $sL=o(n)$.
+\end{corollary}
+
+The second argument in \eqref{eq:matched-product-distribution} is the
+top-$s$ sum of $p$ matched Gaussian score products, which can be sorted
+directly.  The products need not be independent because $\Sigma_U$ retains
+the fourth-moment dependence of the data rows.  The quantity $\rho_s(C)$
+controls the static-search error, and $\Sigma_U$ specifies the joint law
+of the matched products.  If
+$\Sigma_U=\diag(\sigma_0^2I,\sigma_r^2I)$, all $2p$ Gaussian score
+coordinates are mutually independent and the top-$s$ sum consists of
+independent Gaussian products.
+
+\section{Design conditions}
+
+The proof of Theorem~\ref{thm:regression-reduction} uses a relative
+restricted-isometry property over $2s$-coordinate blocks, with reference
+geometry $C$ and error scale $\delta_{s,n,p}$.  Replacing $Z_n$ by $Z$
+requires $(sL)^4=o(n)$, while the direct coupling for Gaussian rows
+requires only $sL=o(n)$.
+
+The conditional product identity and
+Theorem~\ref{thm:product-approximation} are pointwise in $C$ and in the
+two scores, so relative restricted isometry enters only through the
+regression reduction.  The stochastic product remainder is governed
+instead by the selected conditional second moment of $H$.
+
+Bounded restricted condition number
+\eqref{eq:restricted-condition-number} gives the sorting approximation in
+Corollary~\ref{cor:top-s-contrast} and the certificate in
+Corollary~\ref{cor:projection-certificate}.  Local isotropy is the
+stronger condition $\rho_s(C)=o(1)$, under which
+Theorem~\ref{thm:top-s-products} gives the top-$s$ product formula to
+first order.
+
+The Kronecker law \eqref{eq:separable-gaussian-channels} is an additional
+score-law condition, distinct from relative restricted isometry.  For a
+general score law, the conditional product identity is still exact, and
+\eqref{eq:selected-passive-energy} together with the active projection gap
+\eqref{eq:generic-projection-gap} gives the stochastic approximation.
+The covariance and mean bounds
+\eqref{eq:conditional-passive-covariance} and
+\eqref{eq:passive-mean-condition} are uniform sufficient conditions for
+the selected passive energy to be negligible.
+
+\appendix
+
+\section{Gaussian approximation details}
+
+For a pair $z=(z_1,z_2)$, write
+\begin{equation}\label{eq:standardized-sparse-norm}
+        \norm{z}_s
+        =\frac{\norm{z_1}_{C,s}}{\sigma_0}
+        +\frac{\norm{z_2}_{C,s}}{\sigma_r}.
+\end{equation}
 
 \begin{lemma}[Sparse score moments]
 \label{lem:sparse-score-moments}
@@ -363,10 +932,10 @@ $1\le q\le6$,
 \begin{equation}\label{eq:sparse-score-moments}
 \begin{split}
         \E\norm{\widetilde U^{(i)}}_s^q&\lesssim(sL)^{q/2},\\
-        \E\left|
+        \E\norm{
         \begin{pmatrix}\sqrt n\,d\\\sqrt n\,h\end{pmatrix}
         +\frac1{\sqrt n}\sum_{i=1}^n\widetilde U^{(i)}
-        \right|_s^q
+        }_s^q
         &\lesssim(sL)^{q/2}.
 \end{split}
 \end{equation}
@@ -389,7 +958,7 @@ For one row, the product structure in \eqref{eq:matched-score} gives
         +\frac{\norm{h}_{C,s}}{\sigma_r}.
 \end{split}
 \end{equation}
-For each $J$, a fixed net of the $C_{JJ}$-unit sphere has at most
+For each $J$, a fixed net of the compressed $C_{JJ}$-unit sphere has at most
 $9^{|J|}$ points, and there are at most $(ep/s)^s$ supports.  The
 relative sub-Gaussian assumption and integration of the resulting union
 bound show that the supremum in \eqref{eq:row-score-factorization} has
@@ -416,49 +985,7 @@ condition \eqref{eq:proxy-energy} makes the standardized sparse norm of
 the deterministic mean $O(\sqrt{sL})$.
 \end{proof}
 
-\begin{theorem}[Gaussian approximation]
-\label{thm:matched-chaos}
-Suppose the regression model \eqref{eq:model} satisfies
-\eqref{eq:proxy-energy} and
-$sL=o(n)$.  Then
-\begin{equation}\label{eq:empirical-chaos}
-\begin{split}
-        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
-        &=\widehat\beta_{0,\emptyset}
-        +\frac{T_C(Z_{1n},Z_{2n})}{n\sigma_0^2}
-        +O_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
-        \right).
-\end{split}
-\end{equation}
-
-If in addition $(sL)^4=o(n)$, then the matched Gaussian vector in
-\eqref{eq:matched-gaussian} satisfies
-\begin{equation}\label{eq:smooth-approximation}
-        d_3\!\left(
-        \frac{n\sigma_0}{\sigma_rsL}
-        \left\{
-        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
-        -\widehat\beta_{0,\emptyset}
-        \right\},
-        \frac{T_C(Z_1,Z_2)}{\sigma_0\sigma_rsL}
-        \right)
-        \lesssim
-        \left(\frac{(sL)^4}{n}\right)^{1/6}
-        +o(1).
-\end{equation}
-In particular, the two scalar laws can be coupled so that
-\begin{equation}\label{eq:coupled-approximation}
-        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{T_C(Z_1,Z_2)}{n\sigma_0^2}
-        +o_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
-        \right).
-\end{equation}
-\end{theorem}
-
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:regression-reduction}]
 The empirical reduction follows from an exact regression identity.  With
 $\widehat C=X_{-0}^\top X_{-0}/n$, block projection gives
 \begin{equation}\label{eq:exact-regression}
@@ -496,8 +1023,10 @@ because $x_0^{(i)}$ and $r^{(i)}$ are uncorrelated sub-Gaussian
 variables.  Substitution into \eqref{eq:exact-regression}, followed by
 the inverse perturbation bound on \eqref{eq:block-gram}, proves
 \eqref{eq:empirical-chaos}.
+\end{proof}
 
-For the Gaussian approximation, write
+\begin{proof}[Proof of Theorem~\ref{thm:matched-chaos}]
+Write
 $\widetilde Q_S(z)=Q_S(z_1,z_2)/(\sigma_0\sigma_r)$ and smooth the
 supremum with $\lambda>0$ by
 \begin{equation*}
@@ -556,6 +1085,86 @@ by \eqref{eq:score-size}; smoothing the scalar test functions and applying
 the standard coupling characterization of weak convergence then yields
 \eqref{eq:coupled-approximation}.
 \end{proof}
+
+\section{Further proofs}
+
+\begin{proof}[Proof of Corollary~\ref{cor:gaussian}]
+Gaussian regression writes the control row as a sum of its projections
+onto $x_0^{(i)}$ and $r^{(i)}$ and an independent Gaussian remainder.
+Conditional on the two scalar sample vectors, the remainder contributes a
+matrix Gaussian whose column covariance is their standardized
+$2\times2$ sample Gram matrix.  Replacing this matrix by the identity and
+coupling the three scalar quadratic sums to Gaussian variables costs
+$O_{\Prob}(\delta_{s,n,p})$ in the standardized sparse score norm.
+The Lipschitz bound for \eqref{eq:search-functional}, together with
+\eqref{eq:score-size}, makes the coupling error smaller than the block-Gram
+error already present in \eqref{eq:empirical-chaos}.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:projection-certificate}]
+Let $A$ maximize the projection energy and put $R=A\setminus S$.  With
+\begin{equation*}
+        w=G_R-C_{RS}C_{SS}^{-1}G_S,
+        \qquad
+        \Gamma=C_{RR}-C_{RS}C_{SS}^{-1}C_{SR},
+        \qquad D=\diag(\Gamma),
+\end{equation*}
+block inversion gives the joint gain $w^\top\Gamma^{-1}w$, while the sum
+of the singleton gains is $w^\top D^{-1}w$.  The eigenvalues of the Schur
+complement $\Gamma$ lie between the extreme eigenvalues of
+$C_{A\cup S,A\cup S}$, and $D\preceq\lambda_{\max}(\Gamma)I$.  Therefore
+\begin{equation*}
+        w^\top D^{-1}w
+        \ge\frac{1}{\kappa_s(C)}w^\top\Gamma^{-1}w.
+\end{equation*}
+Projection energy is monotone, so the joint gain is at least the gap
+between the energies on $A$ and $S$.  The sum of the $s$ largest residual
+gains dominates the singleton gains over $R$, proving
+\eqref{eq:projection-gap-certificate}.  Combining this bound with
+\eqref{eq:product-transfer} proves \eqref{eq:computed-residual-certificate}.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:top-s-contrast}]
+Let $S_G$ maximize the projection energy and put
+$J=S_{\mathrm{top}}\cup S_G$.  The definition of $S_{\mathrm{top}}$
+gives $\norm{G_{S_{\mathrm{top}}}}_2^2\ge
+\norm{G_{S_G}}_2^2$.  Interlacing then gives
+\begin{equation*}
+\begin{split}
+        G_{S_{\mathrm{top}}}^\top
+        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}G_{S_{\mathrm{top}}}
+        &\ge\frac{\norm{G_{S_{\mathrm{top}}}}_2^2}
+        {\lambda_{\max}(C_{JJ})}\\
+        &\ge\frac{\lambda_{\min}(C_{JJ})}
+        {\lambda_{\max}(C_{JJ})}
+        G_{S_G}^\top C_{S_GS_G}^{-1}G_{S_G},
+\end{split}
+\end{equation*}
+which proves \eqref{eq:top-s-contrast-energy}.
+Equation~\eqref{eq:contrast-identity} gives
+$T_C(a,b)\le\sigma_a\sigma_b\norm{G}_{C,s}^2/2$, so
+\eqref{eq:top-s-contrast-energy} proves
+\eqref{eq:top-s-contrast-bound}.  Equation
+\eqref{eq:passive-energy-size} gives its stochastic remainder.
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:matched-products}]
+Theorem~\ref{thm:top-s-products} and
+Lemma~\ref{lem:sparse-score-moments} give
+\begin{equation*}
+        |T_C(Z_1,Z_2)-T_I(Z_1,Z_2)|
+        =O_{\Prob}\{\rho_s(C)\sigma_0\sigma_rsL\}
+        =o_{\Prob}(\sigma_0\sigma_rsL).
+\end{equation*}
+Substitution in \eqref{eq:coupled-approximation} and
+\eqref{eq:smooth-approximation} proves
+\eqref{eq:matched-product-coupling} and
+\eqref{eq:matched-product-distribution}.  For Gaussian
+rows, use Corollary~\ref{cor:gaussian} and
+$\delta_{s,n,p}^3=o(sL/n)$.
+\end{proof}
+
+\section{Gaussian multiplier}
 
 A Gaussian multiplier estimates $\Sigma_U$ from the row scores.
 Let $\bar U=n^{-1}\sum_iU^{(i)}$ and define
@@ -617,8 +1226,8 @@ $\bar U\bar U^\top$ is smaller by the score-size bound.
 
 \begin{corollary}[Gaussian multiplier]
 \label{cor:multiplier}
-Under the assumptions of Theorem~\ref{thm:matched-chaos}, including
-$(sL)^4=o(n)$, the conditional law of
+Under the assumptions of Theorem~\ref{thm:matched-chaos}, the conditional
+law of
 \begin{equation}\label{eq:multiplier-statistic}
         \frac{T_C(\widehat Z_1,\widehat Z_2)}{\sigma_0\sigma_rsL}
 \end{equation}
@@ -657,507 +1266,5 @@ $1/\lambda$, so $\lambda=\nu_n^{-1/2}$ gives a normalized $d_3$ error
 $O_{\Prob}(\sqrt{\nu_n})$.  Combining this interpolation bound with
 Theorem~\ref{thm:matched-chaos} proves the corollary.
 \end{proof}
-
-For jointly Gaussian rows, the score covariance is
-\begin{equation}\label{eq:gaussian-score-covariance}
-        \Sigma_U=
-        \begin{pmatrix}
-        \sigma_0^2C+dd^\top&hd^\top\\
-        dh^\top&\sigma_r^2C+hh^\top
-        \end{pmatrix}.
-\end{equation}
-Gaussian regression then couples the empirical and matched scores directly
-under $sL=o(n)$.
-
-\begin{corollary}[Gaussian rows]
-\label{cor:gaussian}
-If $(x_0^{(i)},r^{(i)},X_{-0}^{(i)})$ is jointly Gaussian, then under
-\eqref{eq:proxy-energy} and $sL=o(n)$,
-\begin{equation*}
-        \sup_{S\subseteq[p],\,|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{T_C(Z_1,Z_2)}{n\sigma_0^2}
-        +O_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\delta_{s,n,p}^3
-        \right),
-\end{equation*}
-on an extension of the data probability space, with $\Sigma_U$ given by
-\eqref{eq:gaussian-score-covariance}.
-\end{corollary}
-
-\begin{proof}
-Gaussian regression writes the control row as a sum of its projections
-onto $x_0^{(i)}$ and $r^{(i)}$ and an independent Gaussian remainder.
-Conditional on the two scalar sample vectors, the remainder contributes a
-matrix Gaussian whose $2\times2$ column covariance is their sample Gram
-matrix.  Replacing that Gram matrix by the identity and coupling the three
-scalar quadratic sums to Gaussian variables costs
-$O_{\Prob}(\delta_{s,n,p})$ in the standardized sparse score norm.
-The Lipschitz bound for \eqref{eq:search-functional}, together with
-\eqref{eq:score-size}, makes the coupling error smaller than the block-Gram
-error already present in \eqref{eq:empirical-chaos}.
-\end{proof}
-
-\begin{corollary}[Separable matched scores]
-\label{cor:separable-matched-scores}
-Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
-$(sL)^4=o(n)$ and $L\to\infty$, and the matched Gaussian scores satisfy
-\eqref{eq:separable-gaussian-channels} with
-$(a,b)=(Z_1,Z_2)$ and $(\sigma_a,\sigma_b)=(\sigma_0,\sigma_r)$.  If
-\begin{equation}\label{eq:matched-passive-mean}
-        n\norm{d/\sigma_0+h/\sigma_r}_{C,s}^2=o(sL),
-\end{equation}
-then the coupling in Theorem~\ref{thm:matched-chaos} satisfies
-\begin{equation}\label{eq:matched-contrast-coupling}
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{\sigma_r}{2n\sigma_0}\norm{G}_{C,s}^2
-        +o_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
-        \right).
-\end{equation}
-The corresponding distributional approximation is
-\begin{equation}\label{eq:matched-contrast-distribution}
-\begin{split}
-        d_3\!\left(
-        \frac{n\sigma_0}{\sigma_rsL}
-        \left\{
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        -\widehat\beta_{0,\emptyset}
-        \right\},
-        \frac{\norm{G}_{C,s}^2}{2sL}
-        \right)=o(1).
-\end{split}
-\end{equation}
-If a $G$-measurable support $\widehat S$ satisfies
-\begin{equation}\label{eq:computed-projection-gap}
-        \norm{G}_{C,s}^2
-        -G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        G_{\widehat S}
-        =o_{\Prob}(sL),
-\end{equation}
-then $Q_{\widehat S}(Z_1,Z_2)/(n\sigma_0^2)$ may replace the
-contrast-energy term in \eqref{eq:matched-contrast-coupling}.
-\end{corollary}
-
-\begin{proof}
-Under \eqref{eq:separable-gaussian-channels},
-$\E H=\sqrt{n/2}\,(d/\sigma_0+h/\sigma_r)$.
-Equations~\eqref{eq:contrast-oracle-bound},
-\eqref{eq:passive-chi-square}, and
-\eqref{eq:matched-passive-mean} make the contrast error
-$o_{\Prob}(\sigma_0\sigma_rsL)$.  Substitution in
-\eqref{eq:coupled-approximation} and
-\eqref{eq:smooth-approximation} proves
-\eqref{eq:matched-contrast-coupling} and
-\eqref{eq:matched-contrast-distribution}.  Equation
-\eqref{eq:contrast-transfer} proves the final claim.
-\end{proof}
-
-\begin{corollary}[Centered Gaussian rows]
-\label{cor:centered-gaussian-rows}
-Suppose $(x_0^{(i)},r^{(i)},X_{-0}^{(i)})$ is jointly Gaussian,
-$d=h=0$, and $sL=o(n)$.  For every $C$ satisfying the standing sparse
-block assumptions, let $G$ be the contrast in \eqref{eq:contrasts} formed
-from $(Z_1,Z_2)$ with scales $(\sigma_0,\sigma_r)$.  No local-isotropy
-condition is imposed, and on an extension of the data probability space,
-\begin{equation}\label{eq:centered-gaussian-regression}
-\begin{split}
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{\sigma_r}{2n\sigma_0}\norm{G}_{C,s}^2
-        +O_{\Prob}\!\left[
-        \frac{\sigma_r}{\sigma_0}
-        \left\{\frac{s}{n}+\delta_{s,n,p}^3\right\}
-        \right].
-\end{split}
-\end{equation}
-\end{corollary}
-
-\begin{proof}
-When $d=h=0$, \eqref{eq:gaussian-score-covariance} is the Kronecker law
-\eqref{eq:separable-gaussian-channels} with $\gamma=0$.
-Corollary~\ref{cor:gaussian} reduces the regression search to $T_C$, and
-\eqref{eq:centered-gaussian-contrast} replaces $T_C$ by the search
-contrast energy with an $O_{\Prob}(\sigma_0\sigma_rs)$ remainder.
-\end{proof}
-
-Condition \eqref{eq:matched-passive-mean} is sharper than
-\eqref{eq:proxy-energy}: the latter yields only an $O(sL)$ bound for the
-remainder mean energy.  Corollary~\ref{cor:separable-matched-scores}
-therefore requires a sharper little-$o$ bound, which may arise from
-cancellation between the two standardized score means.
-Corollary~\ref{cor:centered-gaussian-rows} has no such restriction because
-both means vanish.
-
-\section{Sparse projection}
-
-The search contrast gives the sparse projection program
-\begin{equation}\label{eq:sparse-projection-program}
-        \norm{G}_{C,s}^2
-        =\max_{\theta\in\R^p,\,\norm{\theta}_0\le s}
-        \left\{2G^\top\theta-\theta^\top C\theta\right\}.
-\end{equation}
-An exact sparse-regression solver eliminates the projection gap in
-\eqref{eq:contrast-transfer}.  More generally, if a solver returns a
-support $\widehat S$ and an upper bound
-$B\ge\norm{G}_{C,s}^2$, then
-\begin{equation}\label{eq:computed-contrast-certificate}
-\begin{split}
-        0\le T_C(a,b)-Q_{\widehat S}(a,b)
-        \le\frac{\sigma_a\sigma_b}{2}\bigg\{
-        &B-G_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        G_{\widehat S}\\
-        &+H_{\widehat S}^\top C_{\widehat S\widehat S}^{-1}
-        H_{\widehat S}\bigg\}.
-\end{split}
-\end{equation}
-This separates the computed optimization error from the remainder energy.
-For a finite family, braces with subscript $(t)$ below denote its $t$th
-largest member.
-
-A bounded restricted condition number gives a direct top-$s$
-construction.  Write
-\begin{equation}\label{eq:restricted-condition-number}
-        \kappa_s(C)
-        =\sup_{1\le|J|\le2s}
-        \frac{\lambda_{\max}(C_{JJ})}{\lambda_{\min}(C_{JJ})},
-\end{equation}
-and let $S_{\mathrm{top}}$ index the largest $s$ values of $G_j^2$, with
-ties resolved deterministically.
-
-\begin{corollary}[Top-$s$ contrast]
-\label{cor:top-s-contrast}
-For every $C$,
-\begin{equation}\label{eq:top-s-contrast-energy}
-        G_{S_{\mathrm{top}}}^\top
-        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}G_{S_{\mathrm{top}}}
-        \ge\frac{1}{\kappa_s(C)}\norm{G}_{C,s}^2.
-\end{equation}
-Consequently, the selected support value satisfies
-\begin{equation}\label{eq:top-s-contrast-bound}
-        \frac{T_C(a,b)}{\kappa_s(C)}
-        -\frac{\sigma_a\sigma_b}{2}
-        H_{S_{\mathrm{top}}}^\top
-        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}
-        H_{S_{\mathrm{top}}}
-        \le Q_{S_{\mathrm{top}}}(a,b)\le T_C(a,b).
-\end{equation}
-Under \eqref{eq:conditional-passive-covariance} with $K=O(1)$, the
-remainder in \eqref{eq:top-s-contrast-bound} is
-$O_{\Prob}\{\sigma_a\sigma_b
-(s+\norm{\E[H\mid G]}_{C,s}^2)\}$.
-\end{corollary}
-
-\begin{proof}
-Let $S_G$ maximize the projection energy and put
-$J=S_{\mathrm{top}}\cup S_G$.  The definition of $S_{\mathrm{top}}$
-gives $\norm{G_{S_{\mathrm{top}}}}_2^2\ge
-\norm{G_{S_G}}_2^2$.  Interlacing then gives
-\begin{equation*}
-\begin{split}
-        G_{S_{\mathrm{top}}}^\top
-        C_{S_{\mathrm{top}}S_{\mathrm{top}}}^{-1}G_{S_{\mathrm{top}}}
-        &\ge\frac{\norm{G_{S_{\mathrm{top}}}}_2^2}
-        {\lambda_{\max}(C_{JJ})}\\
-        &\ge\frac{\lambda_{\min}(C_{JJ})}
-        {\lambda_{\max}(C_{JJ})}
-        G_{S_G}^\top C_{S_GS_G}^{-1}G_{S_G},
-\end{split}
-\end{equation*}
-which proves \eqref{eq:top-s-contrast-energy}.
-The upper bound in Theorem~\ref{thm:contrast-approximation} and the
-identity \eqref{eq:contrast-identity} prove
-\eqref{eq:top-s-contrast-bound};
-\eqref{eq:passive-contrast-size} gives its stochastic remainder.
-\end{proof}
-
-A covariance-aware search uses the exact marginal projection gains.  For
-$v\in\R^p$, $S\subseteq[p]$ with $|S|<2s$, and $j\notin S$, define
-\begin{equation}\label{eq:residual-score}
-        v_{j\mid S}
-        :=\frac{v_j-C_{jS}C_{SS}^{-1}v_S}
-        {\{1-C_{jS}C_{SS}^{-1}C_{Sj}\}^{1/2}},
-        \qquad v_{j\mid\emptyset}:=v_j.
-\end{equation}
-Block inversion gives
-\begin{equation}\label{eq:projection-increment}
-\begin{split}
-        G_{S\cup\{j\}}^\top C_{S\cup\{j\},S\cup\{j\}}^{-1}
-        G_{S\cup\{j\}}
-        -G_S^\top C_{SS}^{-1}G_S
-        =G_{j\mid S}^2.
-\end{split}
-\end{equation}
-Forward projection therefore takes the largest squared residualized
-coordinate at each step.  These coordinates also give an upper
-certificate for any computed support.
-
-\begin{corollary}[Projection certificate]
-\label{cor:projection-certificate}
-Suppose $2s\le p$.  For every $S$ with $|S|\le s$,
-\begin{equation}\label{eq:projection-gap-certificate}
-\begin{split}
-        0\le\norm{G}_{C,s}^2-G_S^\top C_{SS}^{-1}G_S
-        \le \kappa_s(C)\sum_{t=1}^s
-        \{G_{j\mid S}^2:j\notin S\}_{(t)}.
-\end{split}
-\end{equation}
-For a size-$s$ support, the right side of
-\eqref{eq:contrast-transfer} is therefore at most
-\begin{equation}\label{eq:computed-residual-certificate}
-        \frac{\sigma_a\sigma_b}{2}
-        \left\{
-        \kappa_s(C)\sum_{t=1}^s
-        \{G_{j\mid S}^2:j\notin S\}_{(t)}
-        +H_S^\top C_{SS}^{-1}H_S
-        \right\}.
-\end{equation}
-\end{corollary}
-
-\begin{proof}
-Let $A$ maximize the projection energy and put $R=A\setminus S$.  With
-\begin{equation*}
-        w=G_R-C_{RS}C_{SS}^{-1}G_S,
-        \qquad
-        \Gamma=C_{RR}-C_{RS}C_{SS}^{-1}C_{SR},
-        \qquad D=\diag(\Gamma),
-\end{equation*}
-block inversion gives the joint gain $w^\top\Gamma^{-1}w$, while the sum
-of the singleton gains is $w^\top D^{-1}w$.  The eigenvalues of the Schur
-complement $\Gamma$ lie between the extreme eigenvalues of
-$C_{A\cup S,A\cup S}$, and $D\preceq\lambda_{\max}(\Gamma)I$.  Therefore
-\begin{equation*}
-        w^\top D^{-1}w
-        \ge\frac{1}{\kappa_s(C)}w^\top\Gamma^{-1}w.
-\end{equation*}
-Projection energy is monotone, so the joint gain is at least the gap
-between the energies on $A$ and $S$.  The sum of the $s$ largest residual
-gains dominates the singleton gains over $R$, proving
-\eqref{eq:projection-gap-certificate}.  Combining this bound with
-\eqref{eq:contrast-transfer} proves \eqref{eq:computed-residual-certificate}.
-\end{proof}
-
-Suppose $2s\le p$.  The forward-projection path is defined by
-$J_0=\emptyset$ and
-\begin{equation*}
-        j_t\in\arg\max_{j\notin J_{t-1}}G_{j\mid J_{t-1}}^2,
-        \qquad J_t=J_{t-1}\cup\{j_t\},
-        \qquad 1\le t\le s,
-\end{equation*}
-with ties resolved deterministically.  Each quantity
-\begin{equation}\label{eq:forward-upper-bound}
-        G_{J_t}^\top C_{J_tJ_t}^{-1}G_{J_t}
-        +\kappa_s(C)\sum_{\ell=1}^s
-        \{G_{j\mid J_t}^2:j\notin J_t\}_{(\ell)}
-        \qquad(0\le t\le s)
-\end{equation}
-is an upper bound for $\norm{G}_{C,s}^2$.  Their minimum can therefore be
-used as $B$ in \eqref{eq:computed-contrast-certificate}.  When $C=I$,
-the bound at $t=0$ is the top-$s$ square sum and equals the energy reached
-by forward projection, so the computed optimization gap vanishes.  More
-generally, whenever this certified gap is $o_{\Prob}(sL)$,
-Corollary~\ref{cor:stochastic-contrast} makes
-$Q_{J_s}(a,b)$ a stochastic approximation to $T_C(a,b)$.
-
-\section{Product approximation}
-
-The contrast approximation leaves the support geometry intact.  Under
-local isotropy this geometry disappears and the sharper product formula
-from the isotropic model is recovered.  When $C=I$,
-\begin{equation}\label{eq:top-s-products}
-        T_I(a,b)
-        =\max_{|S|=s}\sum_{j\in S}(-a_jb_j)
-        =\sum_{t=1}^s\{-a_jb_j:j\in[p]\}_{(t)}.
-\end{equation}
-This is the top-$s$ product form.  Under the unit-variance normalization,
-local isotropy measures how far the reachable covariance blocks depart
-from $I$:
-\begin{equation}\label{eq:local-isotropy}
-        \rho_s(C)
-        :=\sup_{|J|\le2s}\norm{C_{JJ}-I}_{\mathrm{op}}.
-\end{equation}
-
-\begin{theorem}[Top-$s$ product approximation]
-\label{thm:top-s-products}
-For every $a,b\in\R^p$,
-\begin{equation}\label{eq:static-product-bound}
-        |T_C(a,b)-T_I(a,b)|
-        \le\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}.
-\end{equation}
-\end{theorem}
-
-\begin{proof}
-Fix $S$ with $|S|=s$ and put
-$u=C_{SS}^{-1/2}a_S$ and $v=C_{SS}^{-1/2}b_S$.  Then
-\begin{equation*}
-        Q_S(a,b)+a_S^\top b_S
-        =u^\top(C_{SS}-I)v,
-\end{equation*}
-whose absolute value is at most
-$\rho_s(C)\norm{a}_{C,s}\norm{b}_{C,s}$.  Taking the uniform bound over
-$S$ and using
-$|\max_S x_S-\max_S y_S|\le\max_S|x_S-y_S|$ proves the result.
-\end{proof}
-
-\begin{corollary}[Matched Gaussian products]
-\label{cor:matched-products}
-Suppose the assumptions of Theorem~\ref{thm:matched-chaos} hold, including
-$(sL)^4=o(n)$, and $\rho_s(C)=o(1)$.  The coupling in
-Theorem~\ref{thm:matched-chaos} satisfies
-\begin{equation}\label{eq:matched-product-coupling}
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        =\widehat\beta_{0,\emptyset}
-        +\frac{1}{n\sigma_0^2}
-        \sum_{t=1}^s\{-Z_{1j}Z_{2j}:j\in[p]\}_{(t)}
-        +o_{\Prob}\!\left(
-        \frac{\sigma_r}{\sigma_0}\frac{sL}{n}
-        \right).
-\end{equation}
-An independent matched Gaussian draw also gives
-\begin{equation}\label{eq:matched-product-distribution}
-\begin{split}
-        d_3\!\left(
-        \frac{n\sigma_0}{\sigma_rsL}
-        \left\{
-        \sup_{|S|=s}\widehat\beta_{0,S}
-        -\widehat\beta_{0,\emptyset}
-        \right\},
-        \frac{1}{\sigma_0\sigma_rsL}
-        \sum_{t=1}^s\{-Z_{1j}Z_{2j}:j\in[p]\}_{(t)}
-        \right)=o(1).
-\end{split}
-\end{equation}
-For jointly Gaussian rows, \eqref{eq:matched-product-coupling} and
-\eqref{eq:matched-product-distribution} hold under the assumptions of
-Corollary~\ref{cor:gaussian}, with $\rho_s(C)=o(1)$ and $sL=o(n)$.
-\end{corollary}
-
-\begin{proof}
-Theorem~\ref{thm:top-s-products} and
-Lemma~\ref{lem:sparse-score-moments} give
-\begin{equation*}
-        |T_C(Z_1,Z_2)-T_I(Z_1,Z_2)|
-        =O_{\Prob}\{\rho_s(C)\sigma_0\sigma_rsL\}
-        =o_{\Prob}(\sigma_0\sigma_rsL).
-\end{equation*}
-Substitution in \eqref{eq:coupled-approximation} and
-\eqref{eq:smooth-approximation} proves
-\eqref{eq:matched-product-coupling} and
-\eqref{eq:matched-product-distribution}.  For Gaussian
-rows, use Corollary~\ref{cor:gaussian} and
-$\delta_{s,n,p}^3=o(sL/n)$.
-\end{proof}
-
-The second argument in \eqref{eq:matched-product-distribution} is the
-top-$s$ sum of $p$ covariance-matched score products, which can be sorted
-directly.  The products need not be independent because $\Sigma_U$ retains
-the fourth-moment dependence of the data rows.  The covariance $C$
-governs separability of the search, while $\Sigma_U$ governs dependence
-among the product coordinates.  If
-$\Sigma_U=\diag(\sigma_0^2I,\sigma_r^2I)$, all $2p$ Gaussian score
-coordinates are mutually independent and the top-$s$ sum consists of
-independent Gaussian products.
-
-For the empirical scores, Theorem~\ref{thm:top-s-products} and
-\eqref{eq:score-size} replace $T_C(Z_{1n},Z_{2n})$ in
-\eqref{eq:empirical-chaos} by $T_I(Z_{1n},Z_{2n})$ whenever
-$\rho_s(C)=o(1)$; \eqref{eq:top-s-products} identifies this value with the
-empirical top-$s$ product sum.  For the multiplier scores,
-Lemma~\ref{lem:multiplier-covariance} and a conditional Gaussian net bound
-give the corresponding sparse-score bounds.  When $\rho_s(C)=o(1)$, the
-same theorem replaces $T_C(\widehat Z_1,\widehat Z_2)$ in
-\eqref{eq:multiplier-statistic} by
-$T_I(\widehat Z_1,\widehat Z_2)$.
-Bounded Lipschitz test functions transfer this conditional approximation
-to the multiplier law.
-
-\section{Relation to the design assumptions}
-
-The whitened block-Gram event \eqref{eq:block-gram} is a relative
-restricted-isometry property over $2s$-coordinate blocks, with error scale
-$\delta_{s,n,p}$, and controls the reduction from the regression search to
-$T_C$.  Replacing $Z_n$ by $Z$ requires $(sL)^4=o(n)$, while the direct
-coupling for Gaussian rows requires only $sL=o(n)$.  This relative
-restricted-isometry property is centered at $C$ and imposes no isotropy on
-the population covariance.
-
-Theorem~\ref{thm:contrast-approximation} is pointwise in $C$ and in the
-two scores, so the relative restricted-isometry property enters only
-through the regression reduction.
-The stochastic remainder is governed instead by the conditional
-covariance and mean of $H$.
-
-The restricted condition number \eqref{eq:restricted-condition-number}
-gives the sorting approximation in Corollary~\ref{cor:top-s-contrast} and
-the certificate in Corollary~\ref{cor:projection-certificate} without
-requiring $C$ to approach $I$.  Local isotropy is the stronger condition
-$\rho_s(C)=o(1)$, under which
-Theorem~\ref{thm:top-s-products} gives the top-$s$ product formula to
-first order.
-
-Under $\rho_s(C)=o(1)$, coordinatewise and invariant proxy bounds are
-related by
-\begin{equation}\label{eq:coordinate-to-invariant}
-        \norm{v}_{C,2s}
-        \le\frac{\sqrt{2s}\norm{v}_\infty}
-        {\sqrt{1-\rho_s(C)}}
-        \qquad(v\in\R^p).
-\end{equation}
-Write the residual outcome scale as
-\begin{equation*}
-        \varsigma^2
-        =\Var(y^{(i)}-\beta_0x_0^{(i)})
-        =\beta_{-0}^\top C\beta_{-0}+\Var(\varepsilon^{(i)}).
-\end{equation*}
-In particular, the coordinatewise conditions
-\begin{equation*}
-        \norm{d}_\infty\lesssim\sigma_0\sqrt{L/n},
-        \qquad
-        \norm{C\beta_{-0}}_\infty
-        \lesssim\varsigma\sqrt{L/n}
-\end{equation*}
-imply
-$\norm{d}_{C,2s}\lesssim\sigma_0\delta_{s,n,p}$ and
-$\norm{C\beta_{-0}}_{C,2s}
-\lesssim\varsigma\delta_{s,n,p}$ by
-\eqref{eq:coordinate-to-invariant}.  The covariance-normalized conditions
-also permit individual coordinates to be larger.
-A partition of each $2s$-set into two $s$-sets gives
-\begin{equation*}
-        \norm{C\beta_{-0}}_{C,2s}^2
-        \le\frac{2\{1+\rho_s(C)\}}{1-\rho_s(C)}
-        \norm{C\beta_{-0}}_{C,s}^2.
-\end{equation*}
-Thus
-$\norm{C\beta_{-0}}_{C,s}
-\lesssim\varsigma\delta_{s,n,p}$ also yields
-$\norm{C\beta_{-0}}_{C,2s}
-\lesssim\varsigma\delta_{s,n,p}$.  If, in addition,
-$|d^\top\beta_{-0}|=o(\sigma_0\varsigma\delta_{s,n,p})$, then
-\eqref{eq:residual-outcome}, $sL=o(n)$, and the first bound in
-\eqref{eq:proxy-energy} give
-\begin{equation*}
-        \frac{\sigma_r}{\varsigma}\longrightarrow1,
-        \qquad
-        \norm{h-C\beta_{-0}}_{C,2s}
-        =o(\varsigma\delta_{s,n,p}^2).
-\end{equation*}
-Thus either
-$\norm{C\beta_{-0}}_\infty
-\lesssim\varsigma\sqrt{L/n}$ or
-$\norm{C\beta_{-0}}_{C,s}
-\lesssim\varsigma\delta_{s,n,p}$, together with
-$|d^\top\beta_{-0}|
-=o(\sigma_0\varsigma\delta_{s,n,p})$ and the bound on
-$\norm{d}_{C,2s}$ in \eqref{eq:proxy-energy}, implies the corresponding
-bound on $\norm{h}_{C,2s}$.
-
-The Kronecker separation in \eqref{eq:separable-gaussian-channels} is not
-a consequence of the relative restricted-isometry property.  The
-deterministic contrast transfer remains valid without separation, while
-\eqref{eq:conditional-passive-covariance} and
-\eqref{eq:passive-mean-condition}, together with $L\to\infty$, suffice
-for a negligible stochastic remainder.
 
 \end{document}
