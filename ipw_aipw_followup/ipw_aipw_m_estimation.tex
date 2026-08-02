@@ -1,0 +1,574 @@
+\documentclass[a4paper,10pt,english]{article}
+
+\usepackage[margin=2.3cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+
+\newtheorem{proposition}{Proposition}[section]
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
+\newcommand{\R}{\mathbb R}
+\newcommand{\1}{\mathbf 1}
+
+\setlength{\emergencystretch}{3em}
+
+\title{Specification Search with Estimated Weights and Outcomes}
+\author{Th\'eo Voldoire and Nic Fishman}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Specification search over inverse-probability-weighted and augmented
+inverse-probability-weighted estimators is a search over fitted nuisance
+models as well as reported targets.  A support-indexed estimating equation
+gives a common expansion for both estimators.  Its linear term is the usual
+influence function corrected for nuisance estimation, while its quadratic
+term is a covariance-aware polynomial in the nuisance score and derivative
+fields.  Logistic IPW generally retains the linear nuisance channel.  At the
+true propensity and outcome regressions, AIPW is orthogonal, its influence
+function is common to every correctly specified support, and searched
+contrasts begin with mixed propensity--outcome errors.  This note develops
+the deterministic expansion and the exact AIPW remainder that form the basis
+for a uniform stochastic approximation.
+\end{abstract}
+
+\section{A support-indexed M-estimator}
+
+Let $O_1,\ldots,O_n$ be independent observations with law $P$, and write
+$P_n f=n^{-1}\sum_{i=1}^n f(O_i)$ and
+$\mathbb G_n f=\sqrt n(P_n-P)f$.  Candidate covariates are indexed by
+$[p]$, and the researcher may fit any support $S$ in
+\begin{equation*}
+        \mathcal S_s=\{S\subseteq[p]:|S|\le s\}.
+\end{equation*}
+For each $S$, let $\eta_S\in\R^{d_S}$ collect the nuisance parameters and
+let $m_S(O;\eta_S)\in\R^{d_S}$ be their estimating function.  Its
+population root $\eta_S^\star$ and empirical root $\hat\eta_S$ satisfy
+\begin{equation}\label{eq:nuisance-roots}
+        Pm_S(O;\eta_S^\star)=0,
+        \qquad
+        P_nm_S(O;\hat\eta_S)=0.
+\end{equation}
+The support-specific target is the mean of a scalar estimating map
+$q_S(O;\eta_S)$,
+\begin{equation}\label{eq:target-definition}
+        \theta_S^\star=Pq_S(O;\eta_S^\star),
+        \qquad
+        \hat\theta_S=P_nq_S(O;\hat\eta_S).
+\end{equation}
+This form includes a joint Z-estimator because $q_S(O;\eta_S)-\theta$ is
+the estimating equation for $\theta$.
+
+Write a dot for differentiation with respect to $\eta_S$ and set
+\begin{equation}\label{eq:population-derivatives}
+        H_S=P\dot m_S(O;\eta_S^\star),
+        \qquad
+        a_S=P\dot q_S(O;\eta_S^\star).
+\end{equation}
+Here $H_S$ is a $d_S\times d_S$ matrix and $a_S$ is a $d_S$-vector.  The
+following deterministic expansion isolates the only first-order object
+needed for all supports.
+
+\begin{proposition}[Uniform M-estimation expansion]
+\label{prop:first-order}
+Suppose every $H_S$ is invertible and, for a constant $\kappa$,
+\begin{equation*}
+        \max_{S\in\mathcal S_s}\norm{H_S^{-1}}_{\mathrm{op}}\le\kappa.
+\end{equation*}
+On an event on which all empirical roots in \eqref{eq:nuisance-roots}
+exist, put
+\begin{align*}
+ r_n&=\max_{S\in\mathcal S_s}\norm{\hat\eta_S-\eta_S^\star},\\
+ \epsilon_{m,n}
+ &=\max_{S\in\mathcal S_s}\sup_{0\le t\le1}
+ \norm{P_n\dot m_S\{O;\eta_S^\star
+ +t(\hat\eta_S-\eta_S^\star)\}-H_S}_{\mathrm{op}},\\
+ \epsilon_{q,n}
+ &=\max_{S\in\mathcal S_s}\sup_{0\le t\le1}
+ \norm{P_n\dot q_S\{O;\eta_S^\star
+ +t(\hat\eta_S-\eta_S^\star)\}-a_S}.
+\end{align*}
+Then, simultaneously over $S\in\mathcal S_s$,
+\begin{equation}\label{eq:nuisance-first-order}
+ \hat\eta_S-\eta_S^\star
+ =-\frac1{\sqrt n}H_S^{-1}\mathbb G_nm_S(O;\eta_S^\star)
+ +R_{\eta,S},
+ \qquad
+ \norm{R_{\eta,S}}\le\kappa\epsilon_{m,n}r_n,
+\end{equation}
+and
+\begin{equation}\label{eq:target-first-order}
+ \hat\theta_S-\theta_S^\star
+ =\frac1{\sqrt n}\mathbb G_n\varphi_S+R_{\theta,S},
+ \qquad
+ \varphi_S
+ =q_S(O;\eta_S^\star)-\theta_S^\star
+ -a_S^\top H_S^{-1}m_S(O;\eta_S^\star),
+\end{equation}
+where
+\begin{equation}\label{eq:first-order-remainder}
+ |R_{\theta,S}|
+ \le
+ \bigl(\max_{T\in\mathcal S_s}\norm{a_T}\,
+       \kappa\epsilon_{m,n}+\epsilon_{q,n}\bigr)r_n.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The fundamental theorem of calculus and the empirical equation give
+\begin{equation*}
+ 0=\frac1{\sqrt n}\mathbb G_nm_S(O;\eta_S^\star)
+   +H_S(\hat\eta_S-\eta_S^\star)
+   +\int_0^1\{P_n\dot m_S(O;\eta_{S,t})-H_S\}
+      (\hat\eta_S-\eta_S^\star)\,dt,
+\end{equation*}
+where $\eta_{S,t}=\eta_S^\star+t(\hat\eta_S-\eta_S^\star)$.
+Multiplication by $H_S^{-1}$ proves \eqref{eq:nuisance-first-order} and
+its remainder bound.  Applying the same identity to $q_S$ yields
+\begin{equation*}
+ \hat\theta_S-\theta_S^\star
+ =\frac1{\sqrt n}\mathbb G_nq_S(O;\eta_S^\star)
+  +a_S^\top(\hat\eta_S-\eta_S^\star)+R_{q,S},
+ \qquad |R_{q,S}|\le\epsilon_{q,n}r_n.
+\end{equation*}
+Substitution of \eqref{eq:nuisance-first-order} proves
+\eqref{eq:target-first-order}--\eqref{eq:first-order-remainder}.
+\end{proof}
+
+The population derivative $a_S$ determines whether fitted nuisances enter
+the target at first order.  When $a_S=0$, Proposition~\ref{prop:first-order}
+reduces the leading term to $\mathbb G_n
+q_S(O;\eta_S^\star)/\sqrt n$.  If this function is also common across the
+searched supports, its empirical fluctuation cancels from every searched
+contrast.  The first support-dependent term is then quadratic.
+
+\section{The quadratic Taylor field}
+
+The quadratic term is the analogue of the covariance-aware field for
+linear-regression search.  It can be written without choosing a particular
+nuisance model.  Let $\ddot m_S[u,u]$ denote the vector obtained by applying
+the Hessian of each component of $m_S$ to $(u,u)$, and use the same notation
+for the scalar Hessian of $q_S$.  Define
+\begin{equation}\label{eq:u-definition}
+        u_S=H_S^{-1}\mathbb G_nm_S(O;\eta_S^\star).
+\end{equation}
+
+\begin{proposition}[Second-order expansion]
+\label{prop:second-order}
+Suppose the maps $m_S$ and $q_S$ are three times continuously
+differentiable on neighborhoods of their population roots.  Let $c_n\ge1$
+satisfy $c_n/\sqrt n=o(1)$.  Use a star on a function or derivative to
+mean evaluation at $\eta_S^\star$.  Assume uniformly over
+$S\in\mathcal S_s$ that the inverse Jacobians and population derivatives
+through order three are bounded.  Assume also that the empirical third
+derivatives are $O_{\Prob}(1)$ on the line segment from $\eta_S^\star$ to
+$\hat\eta_S$ and that
+\begin{equation}\label{eq:second-order-field-size}
+ \norm{\mathbb G_nm_S^\star}
+ +|\mathbb G_nq_S^\star|
+ +\norm{\mathbb G_n\dot m_S^\star}_{\mathrm{op}}
+ +\norm{\mathbb G_n\dot q_S^\star}
+ +\norm{\mathbb G_n\ddot m_S^\star}
+ +\norm{\mathbb G_n\ddot q_S^\star}
+ =O_{\Prob}(c_n),
+\end{equation}
+and that $\max_S\norm{\hat\eta_S-\eta_S^\star}
+=O_{\Prob}(c_n/\sqrt n)$.  Then, uniformly over $S$,
+\begin{equation}\label{eq:nuisance-second-order}
+\begin{split}
+ \hat\eta_S-\eta_S^\star
+ ={}&-\frac{u_S}{\sqrt n}
+ +\frac1nH_S^{-1}\left\{
+       \mathbb G_n\dot m_S^\star u_S
+       -\frac12P\ddot m_S^\star[u_S,u_S]
+       \right\}
+ +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right),
+\end{split}
+\end{equation}
+and
+\begin{equation}\label{eq:target-second-order}
+ \hat\theta_S-\theta_S^\star
+ =\frac{L_S}{\sqrt n}+\frac{Q_S}{n}
+ +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right),
+\end{equation}
+where
+\begin{align}
+ L_S={}&\mathbb G_nq_S^\star-a_S^\top u_S,
+ \label{eq:linear-field}\\
+ Q_S={}&a_S^\top H_S^{-1}\left\{
+       \mathbb G_n\dot m_S^\star u_S
+       -\frac12P\ddot m_S^\star[u_S,u_S]
+       \right\}
+       -(\mathbb G_n\dot q_S^\star)^\top u_S
+       +\frac12P\ddot q_S^\star[u_S,u_S].
+ \label{eq:quadratic-field}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Put $\Delta_S=\hat\eta_S-\eta_S^\star$.  Taylor expansion of the empirical
+nuisance equation around $\eta_S^\star$ gives
+\begin{equation*}
+ 0=\frac1{\sqrt n}\mathbb G_nm_S^\star
+   +H_S\Delta_S
+   +\frac1{\sqrt n}\mathbb G_n\dot m_S^\star\Delta_S
+   +\frac12P\ddot m_S^\star[\Delta_S,\Delta_S]
+   +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right),
+\end{equation*}
+uniformly in $S$.
+The empirical Hessian fluctuation and the third-order Taylor term are of
+the displayed remainder order under \eqref{eq:second-order-field-size}.
+Define
+\begin{equation*}
+ v_S=H_S^{-1}\left\{
+       \mathbb G_n\dot m_S^\star u_S
+       -\frac12P\ddot m_S^\star[u_S,u_S]\right\}.
+\end{equation*}
+Substitution of $-u_S/\sqrt n+v_S/n$ into the preceding display cancels
+its terms of orders $n^{-1/2}$ and $n^{-1}$.  The remaining terms are
+$O_{\Prob}(c_n^3/n^{3/2})$ uniformly in $S$.  The empirical Jacobian on
+the segment joining $\eta_S^\star$ and $\hat\eta_S$ is
+$H_S+o_{\Prob}(1)$ uniformly in $S$, so the mean value identity and
+boundedness of $H_S^{-1}$ give \eqref{eq:nuisance-second-order}.  A Taylor
+expansion of the target yields
+\begin{equation*}
+ \hat\theta_S-\theta_S^\star
+ =\frac1{\sqrt n}\mathbb G_nq_S^\star
+  +a_S^\top\Delta_S
+  +\frac1{\sqrt n}(\mathbb G_n\dot q_S^\star)^\top\Delta_S
+  +\frac12P\ddot q_S^\star[\Delta_S,\Delta_S]
+  +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right).
+\end{equation*}
+Substitution of \eqref{eq:nuisance-second-order} proves
+\eqref{eq:target-second-order}--\eqref{eq:quadratic-field}.
+\end{proof}
+
+The expansion depends on the data only through the joint empirical field
+\begin{equation}\label{eq:joint-empirical-field}
+ \left\{\mathbb G_nq_S^\star,\,
+ \mathbb G_nm_S^\star,\,
+ \mathbb G_n\dot q_S^\star,\,
+ \mathbb G_n\dot m_S^\star:S\in\mathcal S_s\right\}.
+\end{equation}
+Replacing this field by a centered Gaussian field with the same covariance
+turns \eqref{eq:linear-field}--\eqref{eq:quadratic-field} into a matched
+Gaussian polynomial.  A uniform stochastic approximation amounts to
+coupling this polynomial to the empirical Taylor field while controlling
+both the Taylor remainder and the replacement error at the scale of the
+maximum.  Pointwise M-estimation theory supplies neither control.
+
+When $a_S=0$, the quadratic field simplifies to
+\begin{equation}\label{eq:orthogonal-quadratic-field}
+ Q_S=-(\mathbb G_n\dot q_S^\star)^\top
+ H_S^{-1}\mathbb G_nm_S^\star
+ +\frac12P\ddot q_S^\star
+ \left[H_S^{-1}\mathbb G_nm_S^\star,
+       H_S^{-1}\mathbb G_nm_S^\star\right].
+\end{equation}
+The first term is a covariance-aware product of a target-derivative score
+and a nuisance score.  The second records the curvature of the target map.
+Orthogonality removes the remaining nuisance-curvature terms because they
+are multiplied by $a_S$.
+
+\section{Logistic propensity scores and IPW}
+
+Let $A\in\{0,1\}$ be treatment, $Y=A Y(1)+(1-A)Y(0)$ the observed
+outcome, and $X\in\R^p$ the candidate covariates.  Suppose treatment is
+unconfounded given $X$ and the true propensity
+$e_0(X)=\Prob(A=1\mid X)$ is bounded away from zero and one.  Write
+\begin{equation*}
+        \mu_a(X)=\E\{Y(a)\mid X\},
+        \qquad
+        \theta_0=\E\{\mu_1(X)-\mu_0(X)\}.
+\end{equation*}
+For a support $S$, let $Z_S=(1,X_S^\top)^\top$ and fit the logistic model
+\begin{equation}\label{eq:logistic-propensity}
+        e_S(X;\gamma)=\Lambda(Z_S^\top\gamma),
+        \qquad
+        \Lambda(t)=\frac{e^t}{1+e^t}.
+\end{equation}
+The population and empirical logistic scores are
+\begin{equation}\label{eq:logistic-score}
+ P\{Z_S(A-e_S(X;\gamma_S^\star))\}=0,
+ \qquad
+ P_n\{Z_S(A-e_S(X;\hat\gamma_S))\}=0.
+\end{equation}
+Define
+\begin{equation}\label{eq:ipw-map}
+ q_S^{\mathrm{IPW}}(O;\gamma)
+ =\frac{AY}{e_S(X;\gamma)}
+  -\frac{(1-A)Y}{1-e_S(X;\gamma)},
+ \qquad
+ \hat\theta_S^{\mathrm{IPW}}
+ =P_nq_S^{\mathrm{IPW}}(O;\hat\gamma_S).
+\end{equation}
+This is the Horvitz--Thompson form; normalized weights are covered by
+adding their two normalizing equations to the stacked estimating system.
+The corresponding population target is
+\begin{equation*}
+        \theta_S^{\mathrm{IPW},\star}
+        =Pq_S^{\mathrm{IPW}}(O;\gamma_S^\star).
+\end{equation*}
+
+Put $e_S^\star(X)=e_S(X;\gamma_S^\star)$ and
+\begin{align}
+ J_S&=P\{e_S^\star(X)(1-e_S^\star(X))Z_SZ_S^\top\},
+ \label{eq:fisher-information}\\
+ a_S^{\mathrm{IPW}}
+ &=-P\left[Z_S\left\{
+       \frac{AY(1-e_S^\star)}{e_S^\star}
+       +\frac{(1-A)Ye_S^\star}{1-e_S^\star}
+       \right\}\right].
+ \label{eq:ipw-derivative}
+\end{align}
+The logistic nuisance Jacobian is $H_S=-J_S$, while
+$a_S^{\mathrm{IPW}}$ is the population derivative of the IPW target.
+Proposition~\ref{prop:first-order} therefore gives the uniform influence
+representation
+\begin{equation}\label{eq:ipw-influence}
+\begin{split}
+ \sqrt n(\hat\theta_S^{\mathrm{IPW}}
+             -\theta_S^{\mathrm{IPW},\star})
+ ={}&\mathbb G_n
+ \{q_S^{\mathrm{IPW}}(O;\gamma_S^\star)
+       -\theta_S^{\mathrm{IPW},\star}\}\\
+ &+(a_S^{\mathrm{IPW}})^\top J_S^{-1}
+       \mathbb G_n\{Z_S(A-e_S^\star)\}+o_{\Prob}(1),
+\end{split}
+\end{equation}
+provided the remainders in Proposition~\ref{prop:first-order} are
+$o_{\Prob}(n^{-1/2})$ uniformly over the searched supports.  If the
+logistic model contains $e_0$, then
+$\theta_S^{\mathrm{IPW},\star}=\theta_0$.  The second term in
+\eqref{eq:ipw-influence} nevertheless remains unless the IPW target is
+orthogonal to propensity estimation.
+
+Under random assignment with probability $\pi$, every support contains
+the true intercept-only propensity and
+\begin{equation}\label{eq:randomized-information}
+        J_S=\pi(1-\pi)P(Z_SZ_S^\top).
+\end{equation}
+Thus the inverse sparse covariance blocks in the linear-regression theory
+become inverse sparse Fisher-information blocks here.  The covariance-aware
+product in \eqref{eq:orthogonal-quadratic-field} is recovered when the
+linear derivative $a_S^{\mathrm{IPW}}$ vanishes; with prognostic covariates,
+the shifted product retains the signal-dominated linear channel in
+\eqref{eq:ipw-influence}.
+
+\section{AIPW and orthogonality}
+
+For candidate functions $e,\bar\mu_0,\bar\mu_1$, define the augmented map
+\begin{equation}\label{eq:aipw-map}
+\begin{split}
+ q^{\mathrm{AIPW}}(O;e,\bar\mu_0,\bar\mu_1)
+ ={}&\bar\mu_1(X)-\bar\mu_0(X)
+ +\frac{A}{e(X)}\{Y-\bar\mu_1(X)\}\\
+ &-\frac{1-A}{1-e(X)}\{Y-\bar\mu_0(X)\}.
+\end{split}
+\end{equation}
+The same support may index the propensity and outcome-regression models.
+When the nuisances use different supports, $S$ denotes their tuple.  Their
+estimating equations can be stacked into $m_S$, so
+Propositions~\ref{prop:first-order} and \ref{prop:second-order} apply
+without changing the generic object.
+
+The AIPW population map has an exact mixed remainder that does not depend
+on parametric models.
+
+\begin{proposition}[Exact mixed remainder]
+\label{prop:aipw-mixed-remainder}
+Let $\bar e$ be bounded away from zero and one, and let
+$\bar\mu_0,\bar\mu_1$ be arbitrary square-integrable functions.  Under
+unconfoundedness,
+\begin{equation}\label{eq:aipw-bias-identity}
+\begin{split}
+ &Pq^{\mathrm{AIPW}}(O;\bar e,\bar\mu_0,\bar\mu_1)-\theta_0\\
+ &\quad=\E\left[(\bar e(X)-e_0(X))
+ \left\{
+ \frac{\bar\mu_1(X)-\mu_1(X)}{\bar e(X)}
+ +\frac{\bar\mu_0(X)-\mu_0(X)}{1-\bar e(X)}
+ \right\}\right].
+\end{split}
+\end{equation}
+Consequently, the population map equals $\theta_0$ if either the
+propensity is correct or both outcome regressions are correct.  At
+$(e_0,\mu_0,\mu_1)$ its derivative in every nuisance direction is zero.
+\end{proposition}
+
+\begin{proof}
+Conditional expectation of \eqref{eq:aipw-map} given $X$ replaces
+$A\{Y-\bar\mu_1(X)\}$ by
+$e_0(X)\{\mu_1(X)-\bar\mu_1(X)\}$ and the corresponding control term by
+$(1-e_0(X))\{\mu_0(X)-\bar\mu_0(X)\}$.  Subtraction of
+$\mu_1(X)-\mu_0(X)$ and collection of the two outcome-regression errors
+gives \eqref{eq:aipw-bias-identity}.  The identity is bilinear at the
+truth, which proves both conclusions.
+\end{proof}
+
+The parametric case fits directly into the same-sample expansion.  For
+$a\in\{0,1\}$, let
+\begin{equation}\label{eq:linear-outcome-models}
+        \mu_{a,S}(X;\alpha_{a,S})=Z_S^\top\alpha_{a,S}
+\end{equation}
+and take
+\begin{equation*}
+ \eta_S=(\gamma_S^\top,\alpha_{0,S}^\top,\alpha_{1,S}^\top)^\top.
+\end{equation*}
+Write $q^{\mathrm{AIPW}}(O;\eta_S)$ for the augmented map obtained from
+these three models and $\1(\cdot)$ for the indicator function.  The
+stacked empirical estimator solves
+\begin{equation}\label{eq:stacked-aipw-scores}
+\begin{split}
+ P_n\{Z_S(A-e_S(X;\hat\gamma_S))\}&=0,\\
+ P_n\{\1(A=a)Z_S(Y-Z_S^\top\hat\alpha_{a,S})\}&=0,
+ \qquad a\in\{0,1\}.
+\end{split}
+\end{equation}
+The in-sample AIPW estimator is
+\begin{equation}\label{eq:in-sample-aipw}
+ \hat\theta_S^{\mathrm{AIPW}}
+ =P_nq^{\mathrm{AIPW}}
+ \{O;e_S(\,\cdot\,;\hat\gamma_S),
+       \mu_{0,S}(\,\cdot\,;\hat\alpha_{0,S}),
+       \mu_{1,S}(\,\cdot\,;\hat\alpha_{1,S})\}.
+\end{equation}
+
+The quadratic field is explicit when every searched support contains the
+true nuisance functions.  Put
+\begin{align}
+ K_{1,S}&=P\{e_0(X)Z_SZ_S^\top\},
+ &
+ K_{0,S}&=P\{(1-e_0(X))Z_SZ_S^\top\},
+ \label{eq:outcome-information}\\
+ \xi_{\gamma,S}
+ &=J_S^{-1}\mathbb G_n\{Z_S(A-e_0(X))\},
+ &
+ \xi_{a,S}
+ &=K_{a,S}^{-1}\mathbb G_n
+   [\1(A=a)Z_S\{Y-\mu_a(X)\}].
+ \label{eq:nuisance-score-fields}
+\end{align}
+Let $\dot q_{\gamma,S}^\star,\dot q_{0,S}^\star,\dot q_{1,S}^\star$
+denote the derivatives of the AIPW map with respect to
+$\gamma,\alpha_0,\alpha_1$, evaluated at the true nuisance functions.
+
+\begin{proposition}[In-sample AIPW field]
+\label{prop:aipw-field}
+Suppose every searched logistic and linear model contains
+$e_0,\mu_0,\mu_1$, and suppose the conditions of
+Proposition~\ref{prop:second-order} hold for the stacked equations in
+\eqref{eq:stacked-aipw-scores}.  Then, uniformly over $S$,
+\begin{equation}\label{eq:aipw-quadratic-expansion}
+ \hat\theta_S^{\mathrm{AIPW}}-\theta_0
+ =(P_n-P)q_0+\frac{Q_S^{\mathrm{AIPW}}}{n}
+ +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right),
+\end{equation}
+where $q_0=q^{\mathrm{AIPW}}(O;e_0,\mu_0,\mu_1)$ and
+\begin{equation}\label{eq:aipw-quadratic-field}
+\begin{split}
+ Q_S^{\mathrm{AIPW}}
+ ={}&(\mathbb G_n\dot q_{\gamma,S}^\star)^\top\xi_{\gamma,S}
+    +(\mathbb G_n\dot q_{0,S}^\star)^\top\xi_{0,S}
+    +(\mathbb G_n\dot q_{1,S}^\star)^\top\xi_{1,S}\\
+ &+\xi_{\gamma,S}^\top
+   (K_{0,S}\xi_{1,S}+K_{1,S}\xi_{0,S}).
+\end{split}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The stacked population Jacobian is
+$-\operatorname{diag}(J_S,K_{0,S},K_{1,S})$, so
+\eqref{eq:nuisance-second-order} gives
+\begin{equation*}
+ \sqrt n
+ \begin{pmatrix}
+ \hat\gamma_S-\gamma_S^\star\\
+ \hat\alpha_{0,S}-\alpha_{0,S}^\star\\
+ \hat\alpha_{1,S}-\alpha_{1,S}^\star
+ \end{pmatrix}
+ =
+ \begin{pmatrix}
+ \xi_{\gamma,S}\\ \xi_{0,S}\\ \xi_{1,S}
+ \end{pmatrix}
+ +O_{\Prob}\left(\frac{c_n^2}{\sqrt n}\right).
+\end{equation*}
+At the truth, Proposition~\ref{prop:aipw-mixed-remainder} gives
+$a_S=0$, and $q_S^\star=q_0$ for every support.  The empirical derivative
+term in \eqref{eq:orthogonal-quadratic-field} gives the first line of
+\eqref{eq:aipw-quadratic-field}.  Applying
+\eqref{eq:aipw-bias-identity} to the first-order nuisance expansions gives
+\begin{equation*}
+ n\{Pq^{\mathrm{AIPW}}(O;\hat\eta_S)-\theta_0\}
+ =\xi_{\gamma,S}^\top
+  (K_{0,S}\xi_{1,S}+K_{1,S}\xi_{0,S})
+  +O_{\Prob}\left(\frac{c_n^3}{\sqrt n}\right),
+\end{equation*}
+which is the remaining term in \eqref{eq:aipw-quadratic-field}.
+\end{proof}
+
+The common empirical mean in \eqref{eq:aipw-quadratic-expansion} cancels
+from every searched contrast.  The full same-sample dependence remains in
+the joint score field
+$(\xi_{\gamma,S},\xi_{0,S},\xi_{1,S},
+\mathbb G_n\dot q_{\gamma,S}^\star,
+\mathbb G_n\dot q_{0,S}^\star,
+\mathbb G_n\dot q_{1,S}^\star)$.  Its covariance is retained by the matched
+Gaussian field.  If only one nuisance model is correct, double robustness
+still fixes the population target, but a support-dependent first-order
+field can remain through the misspecified nuisance.  Double robustness and
+orthogonality are therefore distinct for specification search.
+When supports have different pseudo-true nuisance functions, the general
+expansion in \eqref{eq:target-second-order} retains their population
+landscape and support-dependent linear field without further changes.
+
+\section{Uniform stochastic approximation}
+
+The generic expansion reduces the uniform theory to one probabilistic
+statement.  Let $G$ be a centered Gaussian version of the joint field in
+\eqref{eq:joint-empirical-field} with the same covariance, and let
+$L_S(G)$ and $Q_S(G)$ denote the polynomial in
+\eqref{eq:linear-field}--\eqref{eq:quadratic-field} evaluated at $G$.
+For a deterministic scale $r_{n,s}>0$, the coupling statement has the form
+\begin{equation}\label{eq:desired-approximation}
+ \max_{S\in\mathcal S_s}\hat\theta_S
+ =\max_{S\in\mathcal S_s}
+\left\{\theta_S^\star+\frac{L_S(G)}{\sqrt n}
+                         +\frac{Q_S(G)}n\right\}
+ +o_{\Prob}(r_{n,s}),
+\end{equation}
+where $r_{n,s}$ must match the order of the searched Gaussian fluctuation.
+The covariance of $G$ retains the
+dependence among propensity scores, outcome scores, and their derivatives;
+no independent-coordinate reduction is built into
+\eqref{eq:desired-approximation}.
+
+A proof of \eqref{eq:desired-approximation} needs uniform localization of
+all sparse nuisance fits, sparse conditioning of their information
+matrices, positivity, moment bounds for the score and derivative classes,
+and an invariance theorem for the maximum of the resulting degree-two
+field.  Logistic separation must be excluded on the same event that gives
+localization.  These are the nonlinear counterparts of
+sparse overlap, moment concentration, and covariance matching in the
+linear-regression theory.
+
+The expansion also identifies the computational object.  For IPW it is a
+shifted covariance-aware product of the logistic treatment score and a
+weighted outcome score, with $J_S^{-1}$ coupling their coordinates.  For
+orthogonal AIPW it is a mixed propensity--outcome polynomial, together with
+the empirical derivative field in \eqref{eq:aipw-quadratic-field}.  Any
+top-$s$ reduction requires
+additional separability of these fitted-score geometries; the matched
+Gaussian polynomial is the target approximation without that reduction.
+
+\end{document}
