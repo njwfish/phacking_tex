@@ -15,7 +15,6 @@
 \newcommand{\Prob}{\mathbb P}
 \newcommand{\norm}[1]{\left\lVert #1\right\rVert}
 \newcommand{\R}{\mathbb R}
-\newcommand{\1}{\mathbf 1}
 
 \setlength{\emergencystretch}{3em}
 
@@ -31,15 +30,17 @@
 Specification search over inverse-probability-weighted and augmented
 inverse-probability-weighted estimators is a search over fitted nuisance
 models as well as reported targets.  A support-indexed estimating equation
-gives a common expansion for both estimators.  Its linear term is the usual
-influence function corrected for nuisance estimation, while its quadratic
-term is a covariance-aware polynomial in the nuisance score and derivative
-fields.  Logistic IPW generally retains the linear nuisance channel.  At the
-true propensity and outcome regressions, AIPW is orthogonal, its influence
-function is common to every correctly specified support, and searched
-contrasts begin with mixed propensity--outcome errors.  This note develops
-the deterministic expansion and the exact AIPW remainder that form the basis
-for a uniform stochastic approximation.
+gives a common linear--quadratic expansion for both estimators.  Under
+random assignment and linear potential outcomes, logistic IPW and AIPW with
+one joint support have the same leading search field.  Its coordinate-search
+maximum is bounded at scale
+$\Psi_s\sqrt{s\log(ep/s)/n}+\sigma_Ys\log(ep/s)/n$, where $\Psi_s$ measures
+sparse prognostic signal and $\sigma_Y$ is the outcome scale.  Search over
+arbitrary covariate subspaces replaces
+$s\log(ep/s)$ by $p$ and admits an exact rank reduction: one fitted direction
+for IPW and at most two joint nuisance directions for AIPW.  Thus the same
+Taylor field yields both support and extended-hacking bounds, while exposing
+the additional localization needed for logistic fitting.
 \end{abstract}
 
 \section{A support-indexed M-estimator}
@@ -280,47 +281,52 @@ and a nuisance score.  The second records the curvature of the target map.
 Orthogonality removes the remaining nuisance-curvature terms because they
 are multiplied by $a_S$.
 
-\section{Logistic propensity scores and IPW}
+\section{Linear outcomes and logistic propensities}
 
-Let $A\in\{0,1\}$ be treatment, $Y=A Y(1)+(1-A)Y(0)$ the observed
-outcome, and $X\in\R^p$ the candidate covariates.  Suppose treatment is
-unconfounded given $X$ and the true propensity
-$e_0(X)=\Prob(A=1\mid X)$ is bounded away from zero and one.  Write
-\begin{equation*}
-        \mu_a(X)=\E\{Y(a)\mid X\},
-        \qquad
-        \theta_0=\E\{\mu_1(X)-\mu_0(X)\}.
-\end{equation*}
-For a support $S$, let $Z_S=(1,X_S^\top)^\top$ and fit the logistic model
-\begin{equation}\label{eq:logistic-propensity}
-        e_S(X;\gamma)=\Lambda(Z_S^\top\gamma),
-        \qquad
-        \Lambda(t)=\frac{e^t}{1+e^t}.
-\end{equation}
-The population and empirical logistic scores are
-\begin{equation}\label{eq:logistic-score}
- P\{Z_S(A-e_S(X;\gamma_S^\star))\}=0,
+Let $A\in\{0,1\}$, let $Y=AY(1)+(1-A)Y(0)$, and let $X\in\R^p$ satisfy
+$\E X=0$ with covariance $C=\E(XX^\top)$.  The estimand is
+$\theta_0=\E\{Y(1)-Y(0)\}$.  We begin with the additive linear outcome
+model
+\begin{equation}\label{eq:linear-potential-outcomes}
+ Y(a)=\alpha_0+\tau_0a+X^\top b+\varepsilon_a,
  \qquad
+ \E(\varepsilon_a\mid X)=0,
+ \qquad a\in\{0,1\}.
+\end{equation}
+Thus $\theta_0=\tau_0$.  For $S\in\mathcal S_s$, put
+$Z_S=(1,X_S^\top)^\top$ and
+$W_S=(1,A,X_S^\top)^\top$.  The canonical outcome fit is the pooled
+additive regression
+\begin{equation}\label{eq:linear-outcome-models}
+ \mu_S(a,X;\alpha_S)=\alpha_S^{(0)}+\tau_Sa+X_S^\top\beta_S,
+ \qquad
+ P_n[W_S\{Y-\mu_S(A,X;\hat\alpha_S)\}]=0.
+\end{equation}
+The propensity model on the same covariates is
+\begin{equation}\label{eq:logistic-propensity}
+ e_S(X;\gamma_S)=\Lambda(Z_S^\top\gamma_S),
+ \qquad
+ \Lambda(t)=\frac{e^t}{1+e^t},
+\end{equation}
+with empirical score
+\begin{equation}\label{eq:logistic-score}
  P_n\{Z_S(A-e_S(X;\hat\gamma_S))\}=0.
 \end{equation}
-Define
-\begin{equation}\label{eq:ipw-map}
- q_S^{\mathrm{IPW}}(O;\gamma)
- =\frac{AY}{e_S(X;\gamma)}
-  -\frac{(1-A)Y}{1-e_S(X;\gamma)},
- \qquad
- \hat\theta_S^{\mathrm{IPW}}
- =P_nq_S^{\mathrm{IPW}}(O;\hat\gamma_S).
-\end{equation}
-This is the Horvitz--Thompson form; normalized weights are covered by
-adding their two normalizing equations to the stacked estimating system.
-The corresponding population target is
-\begin{equation*}
-        \theta_S^{\mathrm{IPW},\star}
-        =Pq_S^{\mathrm{IPW}}(O;\gamma_S^\star).
-\end{equation*}
+For AIPW, the restriction is joint: the single support $S$ is used for the
+outcome slope and the propensity slope.  No sample splitting is imposed.
 
-Put $e_S^\star(X)=e_S(X;\gamma_S^\star)$ and
+\section{IPW and AIPW}
+
+The Horvitz--Thompson IPW estimator is
+\begin{equation}\label{eq:ipw-map}
+ \hat\theta_S^{\mathrm{IPW}}
+ =P_n\left\{
+ \frac{AY}{e_S(X;\hat\gamma_S)}
+ -\frac{(1-A)Y}{1-e_S(X;\hat\gamma_S)}\right\}.
+\end{equation}
+Normalized weights can instead be included by stacking their two
+normalizing equations with the logistic score.  If $e_S^\star$ denotes the
+population logistic fit, then
 \begin{align}
  J_S&=P\{e_S^\star(X)(1-e_S^\star(X))Z_SZ_S^\top\},
  \label{eq:fisher-information}\\
@@ -331,43 +337,14 @@ Put $e_S^\star(X)=e_S(X;\gamma_S^\star)$ and
        \right\}\right].
  \label{eq:ipw-derivative}
 \end{align}
-The logistic nuisance Jacobian is $H_S=-J_S$, while
-$a_S^{\mathrm{IPW}}$ is the population derivative of the IPW target.
-Proposition~\ref{prop:first-order} therefore gives the uniform influence
-representation
-\begin{equation}\label{eq:ipw-influence}
-\begin{split}
- \sqrt n(\hat\theta_S^{\mathrm{IPW}}
-             -\theta_S^{\mathrm{IPW},\star})
- ={}&\mathbb G_n
- \{q_S^{\mathrm{IPW}}(O;\gamma_S^\star)
-       -\theta_S^{\mathrm{IPW},\star}\}\\
- &+(a_S^{\mathrm{IPW}})^\top J_S^{-1}
-       \mathbb G_n\{Z_S(A-e_S^\star)\}+o_{\Prob}(1),
-\end{split}
-\end{equation}
-provided the remainders in Proposition~\ref{prop:first-order} are
-$o_{\Prob}(n^{-1/2})$ uniformly over the searched supports.  If the
-logistic model contains $e_0$, then
-$\theta_S^{\mathrm{IPW},\star}=\theta_0$.  The second term in
-\eqref{eq:ipw-influence} nevertheless remains unless the IPW target is
-orthogonal to propensity estimation.
+The nuisance Jacobian is $-J_S$.  Proposition~\ref{prop:first-order}
+therefore adds
+$(a_S^{\mathrm{IPW}})^\top J_S^{-1}
+\mathbb G_n\{Z_S(A-e_S^\star)\}$ to the empirical IPW score.  This is the
+linear channel through which propensity search responds to prognostic
+covariates.
 
-Under random assignment with probability $\pi$, every support contains
-the true intercept-only propensity and
-\begin{equation}\label{eq:randomized-information}
-        J_S=\pi(1-\pi)P(Z_SZ_S^\top).
-\end{equation}
-Thus the inverse sparse covariance blocks in the linear-regression theory
-become inverse sparse Fisher-information blocks here.  The covariance-aware
-product in \eqref{eq:orthogonal-quadratic-field} is recovered when the
-linear derivative $a_S^{\mathrm{IPW}}$ vanishes; with prognostic covariates,
-the shifted product retains the signal-dominated linear channel in
-\eqref{eq:ipw-influence}.
-
-\section{AIPW and orthogonality}
-
-For candidate functions $e,\bar\mu_0,\bar\mu_1$, define the augmented map
+For candidate functions $e,\bar\mu_0,\bar\mu_1$, define
 \begin{equation}\label{eq:aipw-map}
 \begin{split}
  q^{\mathrm{AIPW}}(O;e,\bar\mu_0,\bar\mu_1)
@@ -376,20 +353,23 @@ For candidate functions $e,\bar\mu_0,\bar\mu_1$, define the augmented map
  &-\frac{1-A}{1-e(X)}\{Y-\bar\mu_0(X)\}.
 \end{split}
 \end{equation}
-The same support may index the propensity and outcome-regression models.
-When the nuisances use different supports, $S$ denotes their tuple.  Their
-estimating equations can be stacked into $m_S$, so
-Propositions~\ref{prop:first-order} and \ref{prop:second-order} apply
-without changing the generic object.
+The joint-support estimator is
+\begin{equation}\label{eq:in-sample-aipw}
+ \hat\theta_S^{\mathrm{AIPW}}
+ =P_nq^{\mathrm{AIPW}}
+ \{O;e_S(\,\cdot\,;\hat\gamma_S),
+       \mu_S(0,\,\cdot\,;\hat\alpha_S),
+       \mu_S(1,\,\cdot\,;\hat\alpha_S)\}.
+\end{equation}
 
-The AIPW population map has an exact mixed remainder that does not depend
-on parametric models.
+The population AIPW map has an exact mixed remainder.  Write
+$e_0(X)=\Prob(A=1\mid X)$ and
+$\mu_a(X)=\E\{Y(a)\mid X\}$.
 
 \begin{proposition}[Exact mixed remainder]
 \label{prop:aipw-mixed-remainder}
-Let $\bar e$ be bounded away from zero and one, and let
-$\bar\mu_0,\bar\mu_1$ be arbitrary square-integrable functions.  Under
-unconfoundedness,
+Suppose treatment is unconfounded given $X$.  If $\bar e$ is bounded away
+from zero and one, then
 \begin{equation}\label{eq:aipw-bias-identity}
 \begin{split}
  &Pq^{\mathrm{AIPW}}(O;\bar e,\bar\mu_0,\bar\mu_1)-\theta_0\\
@@ -400,175 +380,262 @@ unconfoundedness,
  \right\}\right].
 \end{split}
 \end{equation}
-Consequently, the population map equals $\theta_0$ if either the
-propensity is correct or both outcome regressions are correct.  At
-$(e_0,\mu_0,\mu_1)$ its derivative in every nuisance direction is zero.
+Thus the population target is correct if either nuisance component is
+correct.  At $(e_0,\mu_0,\mu_1)$ every population nuisance derivative
+vanishes.
 \end{proposition}
 
 \begin{proof}
-Conditional expectation of \eqref{eq:aipw-map} given $X$ replaces
-$A\{Y-\bar\mu_1(X)\}$ by
-$e_0(X)\{\mu_1(X)-\bar\mu_1(X)\}$ and the corresponding control term by
-$(1-e_0(X))\{\mu_0(X)-\bar\mu_0(X)\}$.  Subtraction of
-$\mu_1(X)-\mu_0(X)$ and collection of the two outcome-regression errors
-gives \eqref{eq:aipw-bias-identity}.  The identity is bilinear at the
-truth, which proves both conclusions.
+Take the conditional expectation of \eqref{eq:aipw-map} given $X$ and
+collect the two outcome-regression errors.  This gives
+\eqref{eq:aipw-bias-identity}.  The right side is mixed at the truth, which
+proves the remaining claims.
 \end{proof}
 
-The parametric case fits directly into the same-sample expansion.  For
-$a\in\{0,1\}$, let
-\begin{equation}\label{eq:linear-outcome-models}
-        \mu_{a,S}(X;\alpha_{a,S})=Z_S^\top\alpha_{a,S}
-\end{equation}
-and take
-\begin{equation*}
- \eta_S=(\gamma_S^\top,\alpha_{0,S}^\top,\alpha_{1,S}^\top)^\top.
-\end{equation*}
-Write $q^{\mathrm{AIPW}}(O;\eta_S)$ for the augmented map obtained from
-these three models and $\1(\cdot)$ for the indicator function.  The
-stacked empirical estimator solves
-\begin{equation}\label{eq:stacked-aipw-scores}
-\begin{split}
- P_n\{Z_S(A-e_S(X;\hat\gamma_S))\}&=0,\\
- P_n\{\1(A=a)Z_S(Y-Z_S^\top\hat\alpha_{a,S})\}&=0,
- \qquad a\in\{0,1\}.
-\end{split}
-\end{equation}
-The in-sample AIPW estimator is
-\begin{equation}\label{eq:in-sample-aipw}
- \hat\theta_S^{\mathrm{AIPW}}
- =P_nq^{\mathrm{AIPW}}
- \{O;e_S(\,\cdot\,;\hat\gamma_S),
-       \mu_{0,S}(\,\cdot\,;\hat\alpha_{0,S}),
-       \mu_{1,S}(\,\cdot\,;\hat\alpha_{1,S})\}.
-\end{equation}
+Stacking \eqref{eq:linear-outcome-models} and
+\eqref{eq:logistic-score} places \eqref{eq:in-sample-aipw} directly in the
+generic expansion.  When every fitted nuisance is correct, the linear term
+is common across supports and searched contrasts begin with the quadratic
+field \eqref{eq:orthogonal-quadratic-field}.  More generally, the fitted
+outcome regression itself changes the AIPW score.  The next result shows
+that this change is exactly the leading search channel in the randomized
+linear model.
 
-The quadratic field is explicit when every searched support contains the
-true nuisance functions.  Put
+\section{Coordinate-search bounds}
+
+Suppose now that treatment is randomized independently of
+$(X,Y(0),Y(1))$ with probability
+$\pi\in[\epsilon,1-\epsilon]$.  Put
+\begin{equation}\label{eq:outcome-signal}
+ h_S=(Cb)_S,
+\end{equation}
+and define the leading search field
+\begin{equation}\label{eq:common-leading-field}
+ \ell_S=-\frac{1}{\pi(1-\pi)}
+ h_S^\top C_{SS}^{-1}
+ \frac1{\sqrt n}\sum_{i=1}^nX_{i,S}(A_i-\pi),
+ \qquad \ell_\varnothing=0.
+\end{equation}
+Its signal scale is
+\begin{equation}\label{eq:sparse-signal}
+ \Psi_s=\max_{S\in\mathcal S_s}
+ \{h_S^\top C_{SS}^{-1}h_S\}^{1/2}.
+\end{equation}
+The inverse is taken on the range of $C_{SS}$.  In particular,
+$\Psi_s\le\norm{b}_C=(b^\top Cb)^{1/2}$.
+
+Let
+\begin{equation*}
+ m_s=s\log(ep/s),
+ \qquad
+ \delta_s=\sqrt{m_s/n},
+ \qquad
+ \sigma_Y=\max_{a\in\{0,1\}}
+ \norm{Y(a)}_{\psi_2}.
+\end{equation*}
+For the nonlinear fits, we use the localization quantities in
+Proposition~\ref{prop:first-order}.  The regular search event is the event
+on which all empirical roots exist and, for the IPW and joint AIPW systems
+separately,
+\begin{equation}\label{eq:regular-search-event}
+ r_n\le K_0\delta_s,
+ \qquad
+ \epsilon_{m,n}\le K_0\delta_s,
+ \qquad
+ \epsilon_{q,n}\le K_0\sigma_Y\delta_s,
+ \qquad
+ \max_{S\in\mathcal S_s}\norm{a_S}\le K_0\sigma_Y.
+\end{equation}
+Sparse conditioning and relative moment concentration give the score and
+Jacobian parts of this event.  Uniform control of the inverse propensity
+weights supplies the remaining target-derivative condition.
+
+\begin{proposition}[A common coordinate-search field]
+\label{prop:coordinate-upper-bound}
+Suppose \eqref{eq:linear-potential-outcomes} holds, all $2s$-sparse
+eigenvalues of $C$ lie in $[\kappa^{-1},\kappa]$, and the centered augmented
+row
+\begin{equation*}
+ V=\bigl(Y(0)-\E Y(0),Y(1)-\E Y(1),X^\top\bigr)^\top
+\end{equation*}
+obeys $\norm{u^\top V}_{\psi_2}\le K(u^\top\E VV^\top u)^{1/2}$ for every
+$u$.  Suppose the regular search event \eqref{eq:regular-search-event} has
+probability at least $1-C_0e^{-c_0m_s}$ for fixed $c_0,C_0>0$.
+There are constants $c,C>0$, depending only on
+$(\epsilon,\kappa,K,K_0,c_0,C_0)$, such that if $m_s\le cn$, then, with
+probability at least $1-Ce^{-cm_s}$,
 \begin{align}
- K_{1,S}&=P\{e_0(X)Z_SZ_S^\top\},
- &
- K_{0,S}&=P\{(1-e_0(X))Z_SZ_S^\top\},
- \label{eq:outcome-information}\\
- \xi_{\gamma,S}
- &=J_S^{-1}\mathbb G_n\{Z_S(A-e_0(X))\},
- &
- \xi_{a,S}
- &=K_{a,S}^{-1}\mathbb G_n
-   [\1(A=a)Z_S\{Y-\mu_a(X)\}].
- \label{eq:nuisance-score-fields}
+ \max_{S\in\mathcal S_s}
+ \left|\hat\theta_S^{\mathrm{IPW}}
+ -\hat\theta_\varnothing^{\mathrm{IPW}}
+ -\frac{\ell_S}{\sqrt n}\right|
+ &\le C\sigma_Y\delta_s^2,
+ \label{eq:ipw-coordinate-expansion}\\
+ \max_{S\in\mathcal S_s}
+ \left|\hat\theta_S^{\mathrm{AIPW}}
+ -\hat\theta_\varnothing^{\mathrm{AIPW}}
+ -\frac{\ell_S}{\sqrt n}\right|
+ &\le C\sigma_Y\delta_s^2.
+ \label{eq:aipw-coordinate-expansion}
 \end{align}
-Let $\dot q_{\gamma,S}^\star,\dot q_{0,S}^\star,\dot q_{1,S}^\star$
-denote the derivatives of the AIPW map with respect to
-$\gamma,\alpha_0,\alpha_1$, evaluated at the true nuisance functions.
-
-\begin{proposition}[In-sample AIPW field]
-\label{prop:aipw-field}
-Suppose every searched logistic and linear model contains
-$e_0,\mu_0,\mu_1$, and suppose the conditions of
-Proposition~\ref{prop:second-order} hold for the stacked equations in
-\eqref{eq:stacked-aipw-scores}.  Then, uniformly over $S$,
-\begin{equation}\label{eq:aipw-quadratic-expansion}
- \hat\theta_S^{\mathrm{AIPW}}-\theta_0
- =(P_n-P)q_0+\frac{Q_S^{\mathrm{AIPW}}}{n}
- +O_{\Prob}\left(\frac{c_n^3}{n^{3/2}}\right),
-\end{equation}
-where $q_0=q^{\mathrm{AIPW}}(O;e_0,\mu_0,\mu_1)$ and
-\begin{equation}\label{eq:aipw-quadratic-field}
-\begin{split}
- Q_S^{\mathrm{AIPW}}
- ={}&(\mathbb G_n\dot q_{\gamma,S}^\star)^\top\xi_{\gamma,S}
-    +(\mathbb G_n\dot q_{0,S}^\star)^\top\xi_{0,S}
-    +(\mathbb G_n\dot q_{1,S}^\star)^\top\xi_{1,S}\\
- &+\xi_{\gamma,S}^\top
-   (K_{0,S}\xi_{1,S}+K_{1,S}\xi_{0,S}).
-\end{split}
+Consequently, for $r\in\{\mathrm{IPW},\mathrm{AIPW}\}$,
+\begin{equation}\label{eq:coordinate-upper-bound}
+ \max_{S\in\mathcal S_s}
+ |\hat\theta_S^r-\hat\theta_\varnothing^r|
+ \le C\left\{
+ \frac{\Psi_s}{\sqrt{\pi(1-\pi)}}\delta_s
+ +\sigma_Y\delta_s^2\right\}.
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-The stacked population Jacobian is
-$-\operatorname{diag}(J_S,K_{0,S},K_{1,S})$, so
-\eqref{eq:nuisance-second-order} gives
+Random assignment makes the population propensity equal to $\pi$ for
+every support.  The population slope in the additive outcome regression is
 \begin{equation*}
- \sqrt n
- \begin{pmatrix}
- \hat\gamma_S-\gamma_S^\star\\
- \hat\alpha_{0,S}-\alpha_{0,S}^\star\\
- \hat\alpha_{1,S}-\alpha_{1,S}^\star
- \end{pmatrix}
- =
- \begin{pmatrix}
- \xi_{\gamma,S}\\ \xi_{0,S}\\ \xi_{1,S}
- \end{pmatrix}
- +O_{\Prob}\left(\frac{c_n^2}{\sqrt n}\right).
+ \beta_S=C_{SS}^{-1}(Cb)_S.
 \end{equation*}
-At the truth, Proposition~\ref{prop:aipw-mixed-remainder} gives
-$a_S=0$, and $q_S^\star=q_0$ for every support.  The empirical derivative
-term in \eqref{eq:orthogonal-quadratic-field} gives the first line of
-\eqref{eq:aipw-quadratic-field}.  Applying
-\eqref{eq:aipw-bias-identity} to the first-order nuisance expansions gives
+For IPW, the empirical score in \eqref{eq:ipw-map} is common across
+supports at the population propensity.  After subtracting the
+intercept-only fit, its nuisance-estimation correction is
 \begin{equation*}
- n\{Pq^{\mathrm{AIPW}}(O;\hat\eta_S)-\theta_0\}
- =\xi_{\gamma,S}^\top
-  (K_{0,S}\xi_{1,S}+K_{1,S}\xi_{0,S})
-  +O_{\Prob}\left(\frac{c_n^3}{\sqrt n}\right),
+ -\frac{1}{\pi(1-\pi)}h_S^\top C_{SS}^{-1}
+ \mathbb G_n\{X_S(A-\pi)\}=\ell_S.
 \end{equation*}
-which is the remaining term in \eqref{eq:aipw-quadratic-field}.
+
+For AIPW, the population outcome fits obey their projection equations.
+Hence the population derivative with respect to the propensity coefficient
+is zero on $Z_S$, while the derivatives with respect to the outcome
+coefficients vanish because the propensity is correct.  Direct subtraction
+of the two population AIPW maps gives
+\begin{equation}\label{eq:aipw-score-difference}
+ q_S^{\mathrm{AIPW},\star}-q_\varnothing^{\mathrm{AIPW},\star}
+ =-\frac{A-\pi}{\pi(1-\pi)}
+ X_S^\top C_{SS}^{-1}h_S.
+\end{equation}
+Thus IPW and joint-support AIPW have the same linear field $\ell_S$.
+
+On the regular search event, Proposition~\ref{prop:first-order} bounds both
+Taylor remainders by $C\sigma_Y\delta_s^2$, proving
+\eqref{eq:ipw-coordinate-expansion} and
+\eqref{eq:aipw-coordinate-expansion}.  Finally, a union bound over at most
+$(ep/s)^s$ supports applied to \eqref{eq:common-leading-field} gives
+\begin{equation*}
+ \max_{S\in\mathcal S_s}|\ell_S|
+ \le C\frac{\Psi_s}{\sqrt{\pi(1-\pi)}}\sqrt{m_s},
+\end{equation*}
+which proves \eqref{eq:coordinate-upper-bound}.
 \end{proof}
 
-The common empirical mean in \eqref{eq:aipw-quadratic-expansion} cancels
-from every searched contrast.  The full same-sample dependence remains in
-the joint score field
-$(\xi_{\gamma,S},\xi_{0,S},\xi_{1,S},
-\mathbb G_n\dot q_{\gamma,S}^\star,
-\mathbb G_n\dot q_{0,S}^\star,
-\mathbb G_n\dot q_{1,S}^\star)$.  Its covariance is retained by the matched
-Gaussian field.  If only one nuisance model is correct, double robustness
-still fixes the population target, but a support-dependent first-order
-field can remain through the misspecified nuisance.  Double robustness and
-orthogonality are therefore distinct for specification search.
-When supports have different pseudo-true nuisance functions, the general
-expansion in \eqref{eq:target-second-order} retains their population
-landscape and support-dependent linear field without further changes.
+The two terms in \eqref{eq:coordinate-upper-bound} separate the regimes.
+Prognostic signal produces the first-order scale
+$\Psi_s\sqrt{m_s/n}$; when $b=0$, searched contrasts begin at the
+quadratic scale $m_s/n$.  Joint AIPW fitting does not remove the first term:
+the support changes the outcome component of its score by exactly
+\eqref{eq:aipw-score-difference}.
 
-\section{Uniform stochastic approximation}
+\section{Extended search over covariate subspaces}
 
-The generic expansion reduces the uniform theory to one probabilistic
-statement.  Let $G$ be a centered Gaussian version of the joint field in
-\eqref{eq:joint-empirical-field} with the same covariance, and let
-$L_S(G)$ and $Q_S(G)$ denote the polynomial in
-\eqref{eq:linear-field}--\eqref{eq:quadratic-field} evaluated at $G$.
-For a deterministic scale $r_{n,s}>0$, the coupling statement has the form
-\begin{equation}\label{eq:desired-approximation}
- \max_{S\in\mathcal S_s}\hat\theta_S
- =\max_{S\in\mathcal S_s}
-\left\{\theta_S^\star+\frac{L_S(G)}{\sqrt n}
-                         +\frac{Q_S(G)}n\right\}
- +o_{\Prob}(r_{n,s}),
+The support search has a basis-free extension.  Let $\mathfrak V_s$ be the
+collection of subspaces $V\subseteq\R^p$ with $\dim(V)\le s$.  In model
+$V$, each covariate slope is restricted to $V$.  For AIPW the same $V$ is
+imposed jointly on the propensity and additive outcome regressions.
+Write $\hat\theta_V^r$ for the resulting estimator and
+$\hat\theta_0^r$ for its intercept-only value.
+
+\begin{proposition}[Exact rank reduction]
+\label{prop:rank-reduction}
+Fix a sample on which every fitted model below has a finite, unique fitted
+linear predictor.  For every $s\ge1$,
+\begin{align}
+ \sup_{V\in\mathfrak V_s}\hat\theta_V^{\mathrm{IPW}}
+ &=\sup_{V\in\mathfrak V_1}\hat\theta_V^{\mathrm{IPW}},
+ \label{eq:ipw-rank-reduction}\\
+ \sup_{V\in\mathfrak V_s}\hat\theta_V^{\mathrm{AIPW}}
+ &=\sup_{V\in\mathfrak V_{\min(s,2)}}
+   \hat\theta_V^{\mathrm{AIPW}}.
+ \label{eq:aipw-rank-reduction}
+\end{align}
+\end{proposition}
+
+\begin{proof}
+Given $V$, the fitted logistic slope spans a subspace of dimension at most
+one.  Restricting the logistic problem to this span preserves its fitted
+predictor and its score equations, proving \eqref{eq:ipw-rank-reduction}.
+For AIPW, take the span of the fitted logistic and outcome slopes.  Its
+dimension is at most two.  Both fitted predictors remain feasible, the
+logistic score remains zero, and the OLS residual remains orthogonal to the
+smaller space.  The AIPW value is
+unchanged, which proves \eqref{eq:aipw-rank-reduction}; the reverse
+inequalities follow by inclusion.
+\end{proof}
+
+The rank reduction is exact, but it does not by itself evaluate the
+continuum search.  In the local regime the common field does.  Suppose now
+that $C$ is positive definite and define
+\begin{equation}\label{eq:whitened-field}
+ g_n=\frac1{\sqrt n}\sum_{i=1}^nX_i(A_i-\pi),
+ \qquad
+ z_n=C^{-1/2}g_n.
 \end{equation}
-where $r_{n,s}$ must match the order of the searched Gaussian fluctuation.
-The covariance of $G$ retains the
-dependence among propensity scores, outcome scores, and their derivatives;
-no independent-coordinate reduction is built into
-\eqref{eq:desired-approximation}.
 
-A proof of \eqref{eq:desired-approximation} needs uniform localization of
-all sparse nuisance fits, sparse conditioning of their information
-matrices, positivity, moment bounds for the score and derivative classes,
-and an invariance theorem for the maximum of the resulting degree-two
-field.  Logistic separation must be excluded on the same event that gives
-localization.  These are the nonlinear counterparts of
-sparse overlap, moment concentration, and covariance matching in the
-linear-regression theory.
+\begin{proposition}[Local extended-hacking bound]
+\label{prop:extended-upper-bound}
+Suppose the randomized linear model and relative sub-Gaussian condition of
+Proposition~\ref{prop:coordinate-upper-bound} hold, the eigenvalues of $C$
+are bounded away from zero and infinity, and $p=o(n)$.  Suppose the
+unpenalized logistic fits are finite and the analogue of
+\eqref{eq:regular-search-event} holds uniformly over
+$V\in\mathfrak V_s$, with $\delta_s$ replaced by $\sqrt{p/n}$ and bounded
+constants interpreted in probability.  Then, for either
+$r\in\{\mathrm{IPW},\mathrm{AIPW}\}$ and every $s\ge1$,
+\begin{equation}\label{eq:extended-expansion}
+ \sup_{V\in\mathfrak V_s}
+ (\hat\theta_V^r-\hat\theta_0^r)
+ =\frac{\norm{b}_C\norm{z_n}-b^\top g_n}
+ {2\pi(1-\pi)\sqrt n}
+ +O_{\Prob}\left(\frac{\sigma_Yp}{n}\right).
+\end{equation}
+In particular,
+\begin{equation}\label{eq:extended-upper-bound}
+ \sup_{V\in\mathfrak V_s}
+ (\hat\theta_V^r-\hat\theta_0^r)
+ =O_{\Prob}\left\{
+ \frac{\norm{b}_C}{\sqrt{\pi(1-\pi)}}\sqrt{\frac pn}
+ +\frac{\sigma_Yp}{n}\right\}.
+\end{equation}
+\end{proposition}
 
-The expansion also identifies the computational object.  For IPW it is a
-shifted covariance-aware product of the logistic treatment score and a
-weighted outcome score, with $J_S^{-1}$ coupling their coordinates.  For
-orthogonal AIPW it is a mixed propensity--outcome polynomial, together with
-the empirical derivative field in \eqref{eq:aipw-quadratic-field}.  Any
-top-$s$ reduction requires
-additional separability of these fitted-score geometries; the matched
-Gaussian polynomial is the target approximation without that reduction.
+\begin{proof}
+For $V\subseteq\R^p$, let $P_V$ denote the Euclidean projector onto
+$C^{1/2}V$.  The population outcome projection replaces $C^{1/2}b$ by
+$P_VC^{1/2}b$.  The calculation in
+Proposition~\ref{prop:coordinate-upper-bound} therefore gives the common
+leading contrast
+\begin{equation*}
+ -\frac{(C^{1/2}b)^\top P_Vz_n}{\pi(1-\pi)\sqrt n}.
+\end{equation*}
+Uniform full-block localization gives a remainder
+$O_{\Prob}(\sigma_Yp/n)$.  Maximizing the leading term over projectors of
+rank at most $s$ reduces to the largest positive eigenvalue of
+$-\{(C^{1/2}b)z_n^\top+z_n(C^{1/2}b)^\top\}/2$.  This matrix has at most
+one positive eigenvalue, equal to
+$(\norm{b}_C\norm{z_n}-b^\top g_n)/2$; a rank-one subspace attains it.
+This proves \eqref{eq:extended-expansion}.  Since
+$\norm{z_n}=O_{\Prob}(\sqrt{\pi(1-\pi)p})$, the upper bound follows.
+\end{proof}
+
+The extended result replaces the coordinate complexity
+$s\log(ep/s)$ by $p$.  Its first-order maximizer is one-dimensional even
+though exact joint AIPW fitting may require two directions.  Unlike
+least squares, unpenalized logistic fitting can fail under separation, so
+\eqref{eq:extended-expansion} is a local theorem rather than a global
+proportional-limit formula.  A strictly convex, basis-invariant penalty on
+the fitted linear predictor preserves Proposition~\ref{prop:rank-reduction}
+and supplies a well-defined alternative beyond that event.
+
+The fully interacted outcome fit, with a separate slope in each arm, is a
+direct extension rather than the canonical construction.  Under
+$Y(a)=\mu_a+X^\top b_a+\varepsilon_a$, the same bounds hold after replacing
+$b$ by $(1-\pi)b_1+\pi b_0$; the exact AIPW rank bound becomes three.
 
 \end{document}
