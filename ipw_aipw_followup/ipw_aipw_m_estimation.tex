@@ -13,6 +13,7 @@
 
 \newcommand{\E}{\mathbb E}
 \newcommand{\Prob}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}
 \newcommand{\norm}[1]{\left\lVert #1\right\rVert}
 \newcommand{\R}{\mathbb R}
 
@@ -36,11 +37,15 @@ one joint support have the same leading search field.  Its coordinate-search
 maximum is bounded at scale
 $\Psi_s\sqrt{s\log(ep/s)/n}+\sigma_Ys\log(ep/s)/n$, where $\Psi_s$ measures
 sparse prognostic signal and $\sigma_Y$ is the outcome scale.  Search over
-arbitrary covariate subspaces replaces
-$s\log(ep/s)$ by $p$ and admits an exact rank reduction: one fitted direction
-for IPW and at most two joint nuisance directions for AIPW.  Thus the same
-Taylor field yields both support and extended-hacking bounds, while exposing
-the additional localization needed for logistic fitting.
+irrelevant Gaussian covariates has a sharper product form.  At balance,
+outcome regression and AIPW have the same residual-noise field, while IPW
+also searches over predictable outcome variation.  In a planted
+Gaussian--logistic confounding model, all three methods have the same local
+omitted-variable bias, determined by the conditional covariance alignment
+of the omitted propensity and outcome directions.  Search over arbitrary
+covariate subspaces replaces $s\log(ep/s)$ by $p$ and admits an exact rank
+reduction: one fitted direction for IPW and at most two joint nuisance
+directions for AIPW.
 \end{abstract}
 
 \section{A support-indexed M-estimator}
@@ -532,6 +537,326 @@ $\Psi_s\sqrt{m_s/n}$; when $b=0$, searched contrasts begin at the
 quadratic scale $m_s/n$.  Joint AIPW fitting does not remove the first term:
 the support changes the outcome component of its score by exactly
 \eqref{eq:aipw-score-difference}.
+
+\section{Quadratic packing over irrelevant covariates}
+
+The preceding bound does not distinguish the quadratic terms of outcome
+regression, IPW, and AIPW.  A residual experiment makes that distinction
+explicit.  Suppose every outcome model contains a fixed-dimensional,
+correctly specified base and write the residual potential outcomes as
+\begin{equation}\label{eq:residual-outcomes}
+ Y(a)=\mu_a+M+\varepsilon_a,
+ \qquad
+ \E(M)=0,
+ \qquad
+ \E(\varepsilon_a\mid M)=0.
+\end{equation}
+The base spans $M$.  The search adds
+$Z\sim N(0,I_{p_0})$, independent of
+$(A,M,\varepsilon_0,\varepsilon_1)$.  Treatment is randomized with known
+probability $\pi$, and the searched propensity is
+\begin{equation*}
+ e_S(Z)=\Lambda\{\operatorname{logit}(\pi)+Z_S^\top\gamma_S\}.
+\end{equation*}
+Let $\hat\theta_S^{\mathrm{OR}}$ be the treatment coefficient from pooled
+least squares on the base, $A$, and $Z_S$.  In addition to the AIPW
+estimator, consider the H\'ajek estimator
+\begin{equation}\label{eq:hajek-ipw}
+ \hat\theta_S^{\mathrm{IPW,H}}
+ =\frac{P_n\{AY/e_S(Z;\hat\gamma_S)\}}
+        {P_n\{A/e_S(Z;\hat\gamma_S)\}}
+ -\frac{P_n[\{1-A\}Y/\{1-e_S(Z;\hat\gamma_S)\}]}
+        {P_n[\{1-A\}/\{1-e_S(Z;\hat\gamma_S)\}]}.
+\end{equation}
+Normalization removes outcome-level terms that are unrelated to covariate
+packing.
+
+Put $w=\pi(1-\pi)$,
+$\varepsilon=A\varepsilon_1+(1-A)\varepsilon_0$, and
+\begin{equation}\label{eq:residual-packing-scores}
+\begin{split}
+ U_S&=\mathbb G_n\{Z_S(A-\pi)\},\\
+ V_S^{\mathrm{OR}}&=\mathbb G_n(Z_S\varepsilon),\\
+ V_S^{\mathrm{AIPW}}&=\mathbb G_n\{Z_S\varepsilon\omega_\pi(A)\},\\
+ V_S^{\mathrm{IPW,H}}&=\mathbb G_n\{Z_S(M+\varepsilon)\omega_\pi(A)\},
+\end{split}
+\qquad
+ \omega_\pi(A)=A\frac{1-\pi}{\pi}
+ +(1-A)\frac{\pi}{1-\pi}.
+\end{equation}
+
+\begin{proposition}[Quadratic residual packing]
+\label{prop:residual-packing}
+Let $1\le q\le p_0/4$,
+$m_0=q\log(ep_0/q)\to\infty$, and $m_0=o(n)$.  Suppose $M$ and the errors
+in \eqref{eq:residual-outcomes} are sub-Gaussian, the error variances are
+nonzero, and the conditions of Proposition~\ref{prop:second-order} hold for
+the three fitted systems with $c_n=O(\sqrt{m_0})$.  Then, uniformly over
+these supports,
+\begin{equation}\label{eq:three-product-fields}
+ \hat\theta_S^r-\hat\theta_\varnothing^r
+ =-\frac{U_S^\top V_S^r}{nw}
+ +o_{\Prob}(m_0/n),
+ \qquad
+ r\in\{\mathrm{OR},\mathrm{AIPW},\mathrm{IPW,H}\}.
+\end{equation}
+Define
+\begin{align*}
+ v_{\mathrm{OR}}
+ &=\pi\Var(\varepsilon_1)+(1-\pi)\Var(\varepsilon_0),\\
+ v_{\mathrm{AIPW}}
+ &=\frac{(1-\pi)^2}{\pi}\Var(\varepsilon_1)
+   +\frac{\pi^2}{1-\pi}\Var(\varepsilon_0),\\
+ v_{\mathrm{IPW,H}}
+ &=\frac{(1-\pi)^2}{\pi}\Var(M+\varepsilon_1)
+   +\frac{\pi^2}{1-\pi}\Var(M+\varepsilon_0),
+ \qquad
+ \kappa_r=\sqrt{v_r/w}.
+\end{align*}
+Then
+\begin{equation}\label{eq:residual-packing-rate}
+ \max_{|S|\le q}
+ (\hat\theta_S^r-\hat\theta_\varnothing^r)
+ \asymp_{\Prob}\kappa_r\frac{m_0}{n}.
+\end{equation}
+Here $\asymp_{\Prob}$ means that the ratio is bounded above and bounded
+away from zero in probability.
+If the two errors have variance $\sigma_\varepsilon^2$, then
+$\kappa_{\mathrm{OR}}\le\kappa_{\mathrm{AIPW}}$.  If also
+$\Var(M+\varepsilon_a)=\sigma_M^2+\sigma_\varepsilon^2$, then
+$\kappa_{\mathrm{AIPW}}\le\kappa_{\mathrm{IPW,H}}$.  At balance,
+\begin{equation}\label{eq:balanced-packing-constants}
+ \kappa_{\mathrm{OR}}=\kappa_{\mathrm{AIPW}}
+ =2\sigma_\varepsilon,
+ \qquad
+ \kappa_{\mathrm{IPW,H}}
+ =2\sqrt{\sigma_M^2+\sigma_\varepsilon^2}.
+\end{equation}
+When $\pi=1/2$, the OR and AIPW fields in
+\eqref{eq:three-product-fields} are identical.
+\end{proposition}
+
+\begin{proof}
+The logistic score gives
+\begin{equation*}
+ \hat\gamma_S=\frac{U_S}{w\sqrt n}+o_{\Prob}(\sqrt{m_0/n})
+\end{equation*}
+uniformly in $S$.  Frisch--Waugh--Lovell applied after the fixed base gives
+the OR contrast $-U_S^\top V_S^{\mathrm{OR}}/(nw)$.
+
+For AIPW, the empirical derivative with respect to the propensity slope at
+the truth is $-V_S^{\mathrm{AIPW}}/\sqrt n$.  The empirical derivative with
+respect to the common outcome slope contributes
+$-U_S^\top V_S^{\mathrm{OR}}/(nw)$.  The population cross-derivative between
+the two slopes contributes the opposite quantity.  These two terms cancel,
+leaving the AIPW field in \eqref{eq:three-product-fields}.  Differentiating
+the two normalized ratios in \eqref{eq:hajek-ipw} centers the outcome in
+each arm and gives the IPW,H field.  The assumed Taylor remainder completes
+\eqref{eq:three-product-fields}.
+
+Conditional on $(A_i,M_i,\varepsilon_{0i},\varepsilon_{1i})_{i=1}^n$, the
+coordinate pairs $(U_j,V_j^r)$ are independent Gaussian pairs across $j$.
+Their variances converge to $(w,v_r)$ and their correlations converge to
+zero.  Hence $-U_jV_j^r/w$ has two-sided exponential tails at scale
+$\kappa_r$, uniformly on events whose probability tends to one.  The sum of
+the largest $q$ positive values among $p_0$ such products is of order
+$\kappa_rq\log(ep_0/q)$.  The upper bound follows by
+truncating each product at a constant multiple of
+$\kappa_r\log(ep_0/q)$ and summing its exponential tail.  For the lower
+bound, a smaller multiple of this threshold is exceeded by at least $q$
+coordinates with probability tending to one, by a binomial concentration
+bound.  This proves \eqref{eq:residual-packing-rate}.  The variance formulas
+follow from \eqref{eq:residual-packing-scores}.  Under homoskedasticity,
+\begin{equation*}
+ \frac{v_{\mathrm{AIPW}}}{\sigma_\varepsilon^2}
+ =\frac{(1-\pi)^2}{\pi}+\frac{\pi^2}{1-\pi}\ge1,
+\end{equation*}
+with equality only at balance.  Substitution gives the remaining
+comparisons and \eqref{eq:balanced-packing-constants}.
+\end{proof}
+
+At balance, AIPW reduces the IPW packing constant by
+\begin{equation*}
+ \frac{\sigma_\varepsilon}
+ {\sqrt{\sigma_M^2+\sigma_\varepsilon^2}}=\sqrt{1-R_M^2},
+ \qquad
+ R_M^2=\frac{\sigma_M^2}
+ {\sigma_M^2+\sigma_\varepsilon^2}.
+\end{equation*}
+This is the precise residualization advantage.  It does not change the
+$m_0/n$ rate.  Under unequal treatment probabilities, AIPW pays the factor
+\begin{equation*}
+ \left\{\frac{(1-\pi)^2}{\pi}
+ +\frac{\pi^2}{1-\pi}\right\}^{1/2}
+\end{equation*}
+relative to OR under homoskedasticity.
+
+\section{Planted confounding and deliberate omission}
+
+The quadratic comparison leaves open how the researcher chooses among
+population-misspecified supports.  Consider
+\begin{equation}\label{eq:planted-confounding-model}
+ X\sim N(0,C),
+ \qquad
+ e_0(X)=\Lambda(\alpha+X^\top\gamma),
+ \qquad
+ Y(a)=\mu+\tau a+X^\top\beta+\varepsilon_a,
+\end{equation}
+where $C$ is positive definite, treatment is unconfounded given $X$, and
+$\E(\varepsilon_a\mid X)=0$.  Put
+$K=\operatorname{supp}(\gamma)\cup\operatorname{supp}(\beta)$.  For a
+support $T$, let $U=K\setminus T$ and define
+\begin{equation*}
+ C_{UU\cdot T}=C_{UU}-C_{UT}C_{TT}^{-1}C_{TU}.
+\end{equation*}
+Let $\theta_T^{\mathrm{OR}}$ be the population coefficient on $A$ in the
+pooled regression on $(1,A,X_T)$.  Let $e_T^\star$ be the population
+logistic fit on $(1,X_T)$, and let
+$\bar\mu_{a,T}^\star$ be the population pooled additive outcome fit on
+$(1,A,X_T)$.
+
+\begin{proposition}[Omitted-variable objective]
+\label{prop:omitted-variable-objective}
+Put $\pi=\E e_0(X)$, $w=\pi(1-\pi)$, and
+$c_\gamma=\E\Lambda'(\alpha+X^\top\gamma)$.  If the residual variance of
+$A$ after its linear projection on $X_T$ is positive, then
+\begin{equation}\label{eq:exact-or-ovb}
+ \theta_T^{\mathrm{OR}}-\tau
+ =\frac{c_\gamma\,
+ \gamma_U^\top C_{UU\cdot T}\beta_U}
+ {w-c_\gamma^2(C\gamma)_T^\top
+ C_{TT}^{-1}(C\gamma)_T}.
+\end{equation}
+Consequently, omission raises the population OR estimand above $\tau$ if
+and only if
+\begin{equation}\label{eq:ovb-alignment}
+ \gamma_U^\top C_{UU\cdot T}\beta_U>0.
+\end{equation}
+
+The corresponding population IPW bias obeys the exact identity
+\begin{equation}
+ \theta_T^{\mathrm{IPW}}-\tau
+ =\E\left[(e_0(X)-e_T^\star(X))\left\{
+ \frac{\mu_1(X)}{e_T^\star(X)}
+ +\frac{\mu_0(X)}{1-e_T^\star(X)}
+ \right\}\right],
+ \label{eq:exact-ipw-ovb}
+\end{equation}
+Here the label $\theta_T^{\mathrm{IPW}}$ denotes the Horvitz--Thompson
+population functional.  The exact AIPW bias is
+\eqref{eq:aipw-bias-identity} with
+$(\bar e,\bar\mu_0,\bar\mu_1)
+=(e_T^\star,\bar\mu_{0,T}^\star,\bar\mu_{1,T}^\star)$.
+
+For the local propensity model
+$e_{0,t}(X)=\Lambda\{\alpha_t+tX^\top\bar\gamma\}$, choose $\alpha_t$ so
+that $\E e_{0,t}(X)=\pi$.  For every fixed $T$, as $t\to0$,
+\begin{equation}\label{eq:common-local-ovb}
+ \theta_T^r-\tau
+ =t\,\bar\gamma_U^\top C_{UU\cdot T}\beta_U+O(t^2),
+ \qquad
+ r\in\{\mathrm{OR},\mathrm{IPW},\mathrm{AIPW}\}.
+\end{equation}
+Thus the three estimators have the same first local omitted-variable
+objective when the propensity and outcome models use the same support.
+\end{proposition}
+
+\begin{proof}
+Gaussian integration by parts gives
+\begin{equation*}
+ d:=\operatorname{Cov}(X,A)=\E\{Xe_0(X)\}=c_\gamma C\gamma.
+\end{equation*}
+Frisch--Waugh--Lovell therefore gives
+\begin{equation*}
+ \theta_T^{\mathrm{OR}}-\tau
+ =\frac{(d_U-C_{UT}C_{TT}^{-1}d_T)^\top\beta_U}
+ {w-d_T^\top C_{TT}^{-1}d_T},
+\end{equation*}
+which is \eqref{eq:exact-or-ovb}.  Its denominator is positive and
+$c_\gamma>0$, proving \eqref{eq:ovb-alignment}.  Conditioning the IPW
+functional on $X$ gives \eqref{eq:exact-ipw-ovb}; the AIPW identity is
+Proposition~\ref{prop:aipw-mixed-remainder}.
+
+Write
+\begin{equation*}
+ R_{U\mid T}=X_U-C_{UT}C_{TT}^{-1}X_T.
+\end{equation*}
+The population logistic score and a first-order expansion at $t=0$ give
+\begin{equation*}
+ e_T^\star-e_{0,t}
+ =-wt\,\bar\gamma_U^\top R_{U\mid T}+O_{L_2}(t^2).
+\end{equation*}
+At $t=0$, the pooled outcome projection gives, for both arms,
+\begin{equation*}
+ \bar\mu_{a,T}^\star-\mu_a
+ =-\beta_U^\top R_{U\mid T}+O_{L_2}(t).
+\end{equation*}
+Substitution in \eqref{eq:exact-ipw-ovb} and
+\eqref{eq:aipw-bias-identity} gives
+$t\E\{(\bar\gamma_U^\top R_{U\mid T})
+(\beta_U^\top R_{U\mid T})\}+O(t^2)$, which is
+\eqref{eq:common-local-ovb}.  The OR expansion follows directly from
+\eqref{eq:exact-or-ovb}.
+\end{proof}
+
+Under $C=I$, put $c_j=\bar\gamma_j\beta_j$.  The local upward-bias
+objective becomes
+\begin{equation}\label{eq:independent-omission-objective}
+ t\sum_{j\notin T}c_j.
+\end{equation}
+With a budget $|T|\le s$, a population hacker therefore includes up to
+$s$ active variables with the most negative $c_j$, omits every variable
+with $c_j>0$, and is indifferent among null variables.  If the planted
+support has size $k\le s$, correct specification is feasible but need not
+maximize the estimand: any positive $c_j$ is deliberately omitted.  If
+$k>s$, the budget is spent on the most negative signed products, not the
+largest coefficients in absolute value.  In particular, if every $c_j$ is
+positive and enough null variables are available, the maximizing support
+contains no planted variable.
+
+Away from the local regime, even the OR denominator affects the support
+choice.  Under $C=I$, adding $j\notin T$ raises its population estimand
+exactly when
+\begin{equation}\label{eq:exact-add-variable-rule}
+ c_\gamma^2\gamma_j^2
+ \sum_{\ell\notin T}\gamma_\ell\beta_\ell
+ >\{w-c_\gamma^2\norm{\gamma_T}^2\}\gamma_j\beta_j.
+\end{equation}
+For $\gamma=t\bar\gamma$, this reduces to $c_j<0$ at first order.  There is
+no corresponding global ordering of OR, IPW, and AIPW without further
+restrictions: \eqref{eq:exact-ipw-ovb} and
+\eqref{eq:aipw-bias-identity} weight the same misspecification differently.
+
+The alignment criterion also connects directly to sparse isotropy.  If
+$J=T\cup U$ satisfies
+$\norm{C_{JJ}-I}_{\mathrm{op}}\le\rho<1$, then
+\begin{equation}\label{eq:rip-ovb-stability}
+ \left|\gamma_U^\top(C_{UU\cdot T}-I)\beta_U\right|
+ \le\frac{\rho}{1-\rho}\norm{\gamma_U}\norm{\beta_U}.
+\end{equation}
+Thus the independent-coordinate sign rule is stable whenever its signed
+margin exceeds the right side.  More generally, the Schur complement in
+\eqref{eq:ovb-alignment} shows that correlated proxies act as groups:
+including $X_T$ removes exactly the component of each omitted direction
+linearly explained by $X_T$.
+
+Propositions~\ref{prop:residual-packing} and
+\ref{prop:omitted-variable-objective} describe different regimes.  Within
+a fixed active model, irrelevant covariates generate quadratic packing and
+residualization orders the constants.  Across active models, deliberate
+omission creates a population objective.  In the weak-confounding limit
+that objective is common to OR, IPW, and AIPW, so AIPW's need for aligned
+nuisance errors does not create an additional combinatorial barrier.  Its
+advantage appears after the shared confounding signal has been removed:
+the outcome residual replaces the raw outcome in the product field.
+For a fixed collection of active supports, an omitted-variable gap larger
+than $n^{-1/2}$ determines the selected population model asymptotically;
+for a growing collection, $n^{-1/2}$ is replaced by the corresponding
+uniform linear-field scale.  Conditional on that active model, irrelevant
+fillers contribute the smaller quadratic scale in
+\eqref{eq:residual-packing-rate}.  These statements concern maximization of
+the point estimate.  Searching a studentized statistic also changes its
+estimated denominator and requires a separate expansion.
 
 \section{Extended search over covariate subspaces}
 

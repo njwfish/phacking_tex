@@ -5,8 +5,10 @@ estimated propensity and outcome models.  The note begins with a uniform
 support-indexed M-estimation expansion and then specializes it to logistic IPW
 and joint-support AIPW estimators with logistic propensity and a pooled
 additive linear outcome model.  It gives coordinate-search upper bounds,
-exact rank reductions for basis-free search, and a local extended-hacking
-bound.
+an exact comparison of residual-noise packing for outcome regression, IPW,
+and AIPW, and a Gaussian--logistic characterization of deliberate omitted
+variable bias.  It also gives exact rank reductions for basis-free search
+and a local extended-hacking bound.
 
 Build the note from the repository root with
 
