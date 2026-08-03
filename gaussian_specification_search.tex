@@ -289,8 +289,7 @@ $\delta\le\delta_0$.
 \end{lemma}
 
 The proof uses whitened nets on the ranges of the sparse blocks and
-Bernstein's inequality; the details are Technical Lemma~2.1 in
-\emph{Technical Proofs for Unified Moment Approximation}.  Equation
+Bernstein's inequality; Appendix~\ref{app:schur-proof} gives the details.  Equation
 \eqref{eq:master-relative-rip} compares $\hat C$ with $C$; it is distinct
 from the local-isotropy condition that later compares $C$ with $I$.
 
@@ -386,7 +385,7 @@ $\Phi_{*,S_0}=\Phi_*-\Phi_{S_0}(\Gamma_U)$.  Then
 \end{equation}
 \end{theorem}
 
-Technical Theorem~3.2 proves the result.
+Appendix~\ref{app:schur-proof} proves the result.
 
 We now return to the coefficient field of Section~1.  For $z\in\R^p$ put
 \[
@@ -717,9 +716,24 @@ Direct substitution into the coefficient functional gives
 \end{equation}
 The leading term is
 $-a_S^\top C_{SS}^{-1}b_S/\sigma_0^2$.
-Technical Lemma~3.3 applies relative inverse bounds to this identity and
-gives \eqref{eq:score-reduction}, together with the fixed-moment error
-needed below.
+On $|H|_s\le c$, relative inverse bounds make the uniform remainder at
+most a constant times
+\begin{equation*}
+\begin{split}
+ \frac{\sigma_r}{\sigma_0}
+ &(\sqrt{\phi_{2s}}+|H|_s)
+ \left(\frac{\Psi_s^r}{\sigma_r}+|H|_s\right)
+ \{ |H|_s+(\sqrt{\phi_{2s}}+|H|_s)^2\}\\
+ &+\frac{\sigma_r}{\sigma_0}
+ (\sqrt{\phi_{2s}}+|H|_s)^2|H|_s.
+\end{split}
+\end{equation*}
+Take $H=\hat\Gamma-\Gamma$ and $H=G/\sqrt n$; for the Gaussian Taylor
+field, add the cubic Taylor remainder.  Lemma~\ref{lem:master-concentration}
+and $\sqrt{\phi_{2s}}\lesssim\delta$ bound both errors by
+$C\delta a_n^{\mathrm{score}}$ with the probability in
+\eqref{eq:score-reduction}.  Lemma~\ref{lem:score-product-error} gives the
+fixed-moment version needed below.
 
 Under \eqref{eq:local-treatment}, the scales in
 \eqref{eq:coefficient-master-scales} and
@@ -727,8 +741,9 @@ Under \eqref{eq:local-treatment}, the scales in
 $a_n^{\mathrm{score}}\le a_n\le C a_n^{\mathrm{score}}$.
 Equation~\eqref{eq:coefficient-master-matched} therefore compares the
 empirical and matched Taylor maxima at the score scale.
-Technical Lemma~3.3 replaces the latter by
-$T_C(Z_1,Z_2)/(n\sigma_0^2)$ at $O(\delta)$ in $d_3$.  The triangle
+Lemma~\ref{lem:score-product-error} replaces the Gaussian Taylor field and
+the empirical coefficient field by their score-product forms at
+$O(\delta)$ in $d_3$.  The triangle
 inequality proves
 \eqref{eq:local-treatment-stochastic-approximation}.
 \end{proof}
@@ -1137,10 +1152,8 @@ The two top-$s$ functionals admit a coupling for which
 \end{equation}
 \end{theorem}
 
-\begin{proof}
-Technical Lemma~3.4 proves the claim by Gaussian interpolation and
-Poincar\'e concentration.
-\end{proof}
+Appendix~\ref{app:product-proofs} proves the claim by Gaussian
+interpolation and Poincar\'e concentration.
 
 The independent-product form is expressed in the residual scores
 $(h,\sigma_r)$.  Under the linear model \eqref{eq:model}, these satisfy
@@ -1367,11 +1380,11 @@ The population difference is $O(1)$ by
 absorbs $\sqrt{\phi_s}$.
 
 On the same event,
-$\max_{|S|\le s}|\tau_S(\hat\Gamma_y)|\le C\delta$.  If
-$r_S=\operatorname{rank}(\mathbf X_S)$, then
+$\max_{|S|\le s}|\tau_S(\hat\Gamma_y)|\le C\delta$.  Moreover,
 \begin{equation*}
- \left|\sqrt{n-r_S-1}-\sqrt{n-|S|-1}\right|
- \le\frac{C(|S|-r_S)}{\sqrt n},
+ \left|\sqrt{n-\operatorname{rank}(\mathbf X_S)-1}
+ -\sqrt{n-|S|-1}\right|
+ \le\frac{C\{|S|-\operatorname{rank}(\mathbf X_S)\}}{\sqrt n},
  \qquad
  |(1-u^2)^{-1/2}-1|\le Cu^2.
 \end{equation*}
@@ -1560,14 +1573,15 @@ holds for $\hat t^{\mathrm{LS}}$.
 Independence and the linear model give $d=0$, $\beta_0=0$, and
 $\tau_S(\Gamma_y)=0$ for every $S$, so the null and local testing
 conditions used below hold automatically.
-Technical Lemmas~4.2--4.3 convert
+Lemmas~\ref{lem:score-direction-packing} and
+\ref{lem:conditional-studentized-direction} convert
 \eqref{eq:studentized-score-packing} into direction separation and radius
 of order $d_n/\norm{\mathbf y}_2$, and reduce the studentized field to the
 common positive factor $\sigma_0/\hat\sigma_0$ times the linear multiplier
 process indexed by the normalized residual directions, with error
 $C\sqrt m\,\delta^2$.  Apply uniform exponential minoration to this
-linear process and use $\hat\sigma_0\asymp\sigma_0$ from Technical
-Lemma~4.3.  Its maximum is at least
+linear process and use $\hat\sigma_0\asymp\sigma_0$ from
+Lemma~\ref{lem:conditional-studentized-direction}.  Its maximum is at least
 $c\{d_n/\norm{\mathbf y}_2\}\sqrt{\log M}$, except with probability
 $Ce^{-c\log M}$.  This proves
 \eqref{eq:studentized-score-packing-lower}; the least-squares transfer
@@ -1576,5 +1590,9 @@ follows from \eqref{eq:least-squares-transfer}.  Under
 matching order and absorbs the remainder for sufficiently small
 $\delta_0$.
 \end{proof}
+
+\clearpage
+\appendix
+\input{gaussian_specification_search_appendix}
 
 \end{document}

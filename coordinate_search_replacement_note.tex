@@ -35,21 +35,21 @@ what remains valid, what fails, what the unified results recover, and
 which additional conditions are necessary.
 \end{abstract}
 
-Write \emph{Main} for the first document, \emph{Unified} for the
-second, and \emph{Technical} for
-\emph{Technical Proofs for Unified Moment Approximation}.  Result and
-equation numbers refer to their current numbered versions.  The scope
+Write \emph{Main} for the first document and \emph{Unified} for the
+second.  Result and equation numbers refer to their current numbered
+versions.  The scope
 ends with Main Proposition~1; Main Theorems~6--7
-and Appendix~C concern basis search and are unchanged.  All notation is
+and Main Appendix~C concern basis search and are unchanged.  All notation is
 that of Unified, in particular $m=s\log(ep/s)$ and
 $\delta=(m/n)^{1/2}$.
 
 The common replacement spine is Unified Lemma~1.1, the exact
 Schur-complement representation; Lemma~2.1, sparse relative moment
 concentration; Theorem~2.2, the residual Schur-field approximation; and
-Corollary~2.3, its coefficient specialization.  Technical
-Lemmas~2.1--3.1 and Theorem~3.2 contain the shared proof engine.  The
-table below identifies the endpoint used for each Main claim.
+Corollary~2.3, its coefficient specialization.  Unified Appendix~A
+contains the concentration and Gaussian-replacement proofs, with
+Lemma~A.1 supplying the residual row bounds.  The table below identifies
+the endpoint used for each Main claim.
 
 \section{Numbered crosswalk}
 
@@ -81,7 +81,7 @@ Main Assumption~2 is unnecessary, and the bound is uniform over
 $|S|\le s$. \\
 \addlinespace
 
-Theorem~1, lower half of (12); Appendix Lemma~7, (35) &
+Theorem~1, lower half of (12); Main Appendix Lemma~7, (35) &
 \emph{False without multiplicity.}  The norm $\Psi_s$ can be carried by
 one support and does not supply a $\sqrt m$ search gain.  Lemma~7's
 inverse-Gram greedy transfer is also false; see
@@ -96,7 +96,7 @@ is genuine additional structure; Gaussian treatment supplies the
 minoration. \\
 \addlinespace
 
-Theorem~2, (14); Appendix Lemma~10, (37) &
+Theorem~2, (14); Main Appendix Lemma~10, (37) &
 \emph{False as written.}  The bound omits the treatment-projection
 fluctuation already visible in Lemma~10; see
 Proposition~\ref{prop:obstructions}(ii). &
@@ -123,7 +123,7 @@ on it, the replacement is covariance-adaptive.  The Gaussian transfer
 uses $m=o(n)$. \\
 \addlinespace
 
-Theorem~4, upper half of (19); Appendix Lemma~14, (72) &
+Theorem~4, upper half of (19); Main Appendix Lemma~14, (72) &
 \emph{False in general.}  The rate omits the treatment channel, the
 statement lacks the treatment and outcome floors needed by a valid
 denominator argument, and the proof invokes hypotheses absent from the theorem.
@@ -146,15 +146,15 @@ $\theta_s$ does not separate the normalized residual directions that
 index the multiplier process; see
 Proposition~\ref{prop:obstructions}(i). &
 Corollary~5.3, (87), gives matched-field transfer.  Corollary~5.4,
-(88)--(91), gives the score-packing lower bound.  Technical
-Lemmas~4.2--4.3 give the score-to-direction bridge. &
+(88)--(91), gives the score-packing lower bound.  Unified
+Lemmas~C.2--C.3 give the score-to-direction bridge. &
 Replace the lower half.  The old rate becomes conditional on direction
 packing, a radius bound, and multiplier minoration.  The direct
 critical-regime result is randomized; the general transfer uses
 $m=o(n)$. \\
 \addlinespace
 
-Theorem~5, (21); Appendix Lemmas~19--20 &
+Theorem~5, (21); Main Appendix Lemmas~19--20 &
 \emph{Not established under Main Assumption~6.}  Entrywise fourth-
 cumulant decay does not control sparse score-covariance blocks in
 operator norm when $s$ grows, and marginal tail matching does not give
@@ -170,7 +170,7 @@ score isotropy (66), the mean cap (67), $m\to\infty$, and $m=o(n)$.
 The route needs neither $m^4=o(n)$ nor $\log p=o(n^{1/3})$. \\
 \addlinespace
 
-Appendix Proposition~1, (78) &
+Main Appendix Proposition~1, (78) &
 \emph{Not recovered, but not shown false.}  The proof has neither an
 approximation with $o_{\Prob}(n^{-1})$ error nor the joint point-process
 control needed for its Poisson/Gumbel limit. &
@@ -192,22 +192,22 @@ it from the refactor. \\
 \toprule
 Main material & Replacement \\
 \midrule
-Appendix~A.1--A.3 common machinery &
+Main Appendix~A.1--A.3 common machinery &
 Unified Lemma~1.1, Lemma~2.1, Theorem~2.2, and Corollary~2.3;
-Technical Lemmas~2.1--3.1 and Theorem~3.2. \\
+Unified Appendix~A, especially Lemma~A.1. \\
 \addlinespace
 Theorems~1--3 and their proofs &
 Unified Theorems~3.1--3.3 and 4.2, and Corollary~4.4. \\
 \addlinespace
-Theorem~4 and Appendix~A.3 &
+Theorem~4 and Main Appendix~A.3 &
 Unified Section~5, especially Theorem~5.1 and
-Corollaries~5.2--5.4; Technical Lemmas~4.2--4.3. \\
+Corollaries~5.2--5.4 and Lemmas~C.2--C.3. \\
 \addlinespace
-Theorem~5 and Appendix~B &
+Theorem~5 and Main Appendix~B &
 Unified Section~4, Theorems~4.1 and 4.5--4.7 and Corollary~4.8;
-Technical Lemmas~3.3--3.4. \\
+Unified Lemma~B.1 and the Unified Appendix~B proof of Theorem~4.7. \\
 \addlinespace
-Theorems~6--7 and Appendix~C &
+Theorems~6--7 and Main Appendix~C &
 No change; these basis-search results lie outside this refactor. \\
 \bottomrule
 \end{tabular}
@@ -217,7 +217,7 @@ The old proof chain should not be ported piecemeal.  Main Lemma~6 leaves
 the exceedance concentration open; Lemma~7 is false; Lemma~10 exposes
 the term omitted from Theorem~2; Lemma~14 uses assumptions missing from
 Theorem~4; and Lemmas~19--20 do not prove a joint extreme-value
-comparison.  Appendix~B's fixed-factor extension also leaves Lemma~22
+comparison.  Main Appendix~B's fixed-factor extension also leaves Lemma~22
 explicitly unproved.  The unified spine replaces their roles directly.
 
 Three numbered introduction displays should be regenerated only after
@@ -311,8 +311,8 @@ $\lambda_{\min}(R)=1-\rho$, but
  a^\top R^{-1}b
  =\frac{2M-\rho(M^2+1)}{1-\rho^2}<0
 \]
-for large $M$.  A block eigenvalue floor cannot justify Main
-Appendix Lemma~7.
+for large $M$.  A block eigenvalue floor cannot justify Main Appendix
+Lemma~7.
 \end{enumerate}
 \end{proposition}
 
@@ -320,8 +320,8 @@ Appendix Lemma~7.
 For (i), Unified Theorem~4.1 reduces the coefficient field to score
 products: the unique signal coordinate contributes
 $O_{\Prob}(|b|/\sqrt n)$, while the largest null products contribute
-$O_{\Prob}(L/n)$.  The exact normalized-residual identity in Technical
-Lemma~4.1 similarly gives $O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1)$
+$O_{\Prob}(L/n)$.  The exact normalized-residual identity in Unified
+Lemma~C.1 similarly gives $O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1)$
 for the studentized search.
 
 For (ii), every size-$s$ support has residual treatment variance

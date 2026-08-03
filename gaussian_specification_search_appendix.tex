@@ -1,0 +1,626 @@
+\section{Proof of the Schur-field approximation}\label{app:schur-proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:master-concentration}]
+Fix a support $J$ and work on the range of $C_{JJ}$.  Every scalar
+functional needed to net the support-specific terms in
+\eqref{eq:master-sparse-norm} is a centered product of two linear forms
+standardized by their population variances.  It therefore has uniformly
+bounded $\psi_1$ norm.  A $1/4$-net in each support-specific whitened
+sphere, followed by a union over $|J|\le2s$, has logarithmic size
+$O(m)$.  Bernstein's inequality and the usual net approximation of
+Euclidean and operator norms give \eqref{eq:master-concentration-tail},
+including its linear term, for every $t\ge0$.  A matched Gaussian scalar functional
+has the same variance as the corresponding original functional and is
+sub-Gaussian, so the argument applies to every deterministic hybrid
+pattern.
+
+Integrating this Bernstein tail gives
+\eqref{eq:master-concentration-moments} for each fixed $q\le6$ when
+$\delta\le\delta_0$.  Taking the control-block component gives
+\eqref{eq:master-relative-rip}.
+\end{proof}
+\begin{lemma}[Residual-field row bounds]
+\label{lem:residual-field-row-bounds}
+Use the notation and assumptions of
+Theorem~\ref{thm:master-schur-field}, and put
+\[
+ L_S=C_{SS}^{-1}\Xi_S,\qquad
+ w_S=U-L_S^\top X_S,\qquad
+ R_S=\E(w_Sw_S^\top).
+\]
+Then
+\begin{equation}\label{eq:residual-field-derivative-bound}
+ \sup_{|S|\le s}\sup_{|H|_{U,s}\le1}
+ |D\Phi_S(\Gamma_U)[H]|
+ \lesssim\kappa_\varphi
+ \left\{\lambda_s+\sup_{|S|\le s}|c_S-c_0|\right\}.
+\end{equation}
+If $Y=VV^\top-\Gamma_U$, $Y^G$ is a centered Gaussian matrix with the
+covariance of $Y$, and $H$ is independent of both $Y$ and $Y^G$, then
+\begin{align}
+ \sup_{|S|\le s}
+ \norm{D\Phi_S(\Gamma_U)[Y]+D^2\Phi_S(\Gamma_U)[H,Y]}_{\psi_1\mid H}
+ &\lesssim\kappa_\varphi\left\{
+ \lambda_s+\sup_{|S|\le s}|c_S-c_0|+|H|_{U,s}\right\},
+ \label{eq:residual-field-mixed-row-bound}\\
+ \sup_{|S|\le s}\left\{
+ \norm{D^2\Phi_S(\Gamma_U)[Y,Y]}_{L_q}
+ +\norm{D^2\Phi_S(\Gamma_U)[Y^G,Y^G]}_{L_q}\right\}
+ &\lesssim\kappa_\varphi q(s+q),\qquad q\ge2.
+ \label{eq:residual-field-diagonal-bound}
+\end{align}
+The mixed-row bound also holds with $Y^G$ in place of $Y$, and
+\begin{equation}\label{eq:residual-field-diagonal-mean}
+ \E D^2\Phi_S(\Gamma_U)[Y,Y]
+ =\E D^2\Phi_S(\Gamma_U)[Y^G,Y^G].
+\end{equation}
+If $\varphi$ ignores an entry of its matrix argument, the corresponding
+terms may be omitted from $|H|_{U,s}$.
+\end{lemma}
+
+\begin{proof}
+Fix $S$ and write
+\[
+ H_{Sw}=H_{SU}-H_{SS}L_S,
+ \qquad
+ H_{ww}=H_{UU}-H_{US}L_S-L_S^\top H_{SU}
+ +L_S^\top H_{SS}L_S.
+\]
+Differentiation on the compressed range gives
+\begin{equation}\label{eq:residual-schur-derivatives}
+\begin{split}
+ D\mathcal R_S^U(\Gamma_U)[H]&=H_{ww},\\
+ D^2\mathcal R_S^U(\Gamma_U)[H,Q]
+ &=-H_{Sw}^\top C_{SS}^{-1}Q_{Sw}
+ -Q_{Sw}^\top C_{SS}^{-1}H_{Sw}.
+\end{split}
+\end{equation}
+For a centered row moment,
+\begin{equation}\label{eq:row-residual-blocks}
+ Y_{ww}=w_Sw_S^\top-R_S,
+ \qquad Y_{Sw}=X_Sw_S^\top.
+\end{equation}
+
+Let $F_S=\nabla\varphi(R_S)$ and represent the Hessian by
+$D^2\varphi(R_S)[P,Q]=\langle\mathcal H_S[P],Q\rangle$.  For one
+unanchored support, the relevant row functional is
+\begin{equation*}
+\begin{split}
+ &\langle F_S+\mathcal H_S[H_{ww}],Y_{ww}\rangle\\
+ &-2\langle C_{SS}^{-1/2}H_{Sw}F_S,
+ C_{SS}^{-1/2}Y_{Sw}\rangle_{\mathrm F}\\
+ ={}&w_S^\top\{F_S+\mathcal H_S[H_{ww}]\}w_S
+ -\operatorname{tr}[\{F_S+\mathcal H_S[H_{ww}]\}R_S]\\
+ &-2X_S^\top C_{SS}^{-1}H_{Sw}F_Sw_S.
+\end{split}
+\end{equation*}
+It is a centered quadratic form in $(U,X_S)$ whose coefficient has rank
+at most six.
+
+For the base derivative, put $K_S=(I_2,-L_S^\top)^\top$.  Its coefficient
+in $(U,X_S)$ is
+\[
+ c_SK_SF_SK_S^\top-c_0K_\emptyset F_\emptyset K_\emptyset^\top.
+\]
+After block standardization by $\operatorname{diag}(D_U,C_{SS}^{1/2})$,
+the $UU$, $UX$, and $XX$ blocks have operator norms bounded respectively
+by
+\[
+ C\kappa_\varphi\{\lambda_s^2+|c_S-c_0|\},
+ \qquad C\kappa_\varphi\lambda_s,
+ \qquad C\kappa_\varphi\lambda_s^2.
+\]
+Indeed,
+$R_S-R_\emptyset=-\Xi_S^\top C_{SS}^{-1}\Xi_S$ and
+$C_{SS}^{1/2}L_SD_U^{-1}=C_{SS}^{-1/2}\Xi_SD_U^{-1}$.
+Positive semidefiniteness of the joint covariance gives
+$\lambda_s\le C$.  The standardized nuclear norm of the coefficient is
+therefore bounded by
+$C\kappa_\varphi\{\lambda_s+|c_S-c_0|\}$.  The same calculation and
+\[
+ \norm{C_{SS}^{-1/2}H_{Sw}D_U^{-1}}_{\mathrm F}
+ +\norm{D_U^{-1}H_{ww}D_U^{-1}}_{\mathrm{op}}
+ \le C|H|_{U,s}
+\]
+bound the standardized nuclear norm of the mixed coefficient by
+$C\kappa_\varphi|H|_{U,s}$.  This proves
+\eqref{eq:residual-field-derivative-bound}.  Relative sub-Gaussianity and
+the spectral decomposition of a fixed-rank coefficient give the required
+quadratic-form bound.  To make the standardization explicit, set
+$\mathsf D_S=\operatorname{diag}(D_U,C_{SS}^{1/2})$ and
+$\bar\Sigma_S=\mathsf D_S^{-1}\E[(U,X_S)(U,X_S)^\top]\mathsf D_S^{-1}$.
+Positive semidefiniteness and the assumed target-block bound imply
+$\norm{\bar\Sigma_S}_{\mathrm{op}}\le C$.  Hence, for every symmetric
+coefficient $A$,
+\[
+ \norm{\bar\Sigma_S^{1/2}(\mathsf D_SA\mathsf D_S)
+       \bar\Sigma_S^{1/2}}_*
+ \le C\norm{\mathsf D_SA\mathsf D_S}_*.
+\]
+Applying the relative sub-Gaussian bound after this standardization, with
+$z=(U^\top,X_S^\top)^\top$ and $\Sigma_z=\E(zz^\top)$, yields
+\[
+ \norm{z^\top Az-\E(z^\top Az)}_{\psi_1}
+ \le CK^2\norm{\Sigma_z^{1/2}A\Sigma_z^{1/2}}_*,
+\]
+which proves \eqref{eq:residual-field-mixed-row-bound}.  The corresponding
+functional of $Y^G$ is Gaussian with the same variance and obeys the same
+bound.
+
+For the diagonal term, the chain rule gives the exact identity
+\begin{equation}\label{eq:residual-diagonal-formula}
+\begin{split}
+ D^2(\varphi\circ\mathcal R_S^U)(\Gamma_U)[Y,Y]
+ ={}&D^2\varphi(R_S)[Y_{ww},Y_{ww}]\\
+ &-2D\varphi(R_S)
+ [Y_{Sw}^\top C_{SS}^{-1}Y_{Sw}].
+\end{split}
+\end{equation}
+For an original row,
+\[
+ Y_{Sw}^\top C_{SS}^{-1}Y_{Sw}
+ =(X_S^\top C_{SS}^{-1}X_S)w_Sw_S^\top.
+\]
+Relative sub-Gaussianity gives
+\[
+ \norm{X_S^\top C_{SS}^{-1}X_S}_{L_{2q}}\lesssim s+q,
+ \qquad
+ \norm{D_U^{-1}w_Sw_S^\top D_U^{-1}}_{L_{2q}}\lesssim q.
+\]
+Together with \eqref{eq:master-standardized-derivatives}, this proves the
+first term in \eqref{eq:residual-field-diagonal-bound}.
+
+For the matched Gaussian row, put
+\[
+ \mathcal Z_S=C_{SS}^{-1/2}(Y^G)_{Sw}D_U^{-1}.
+\]
+If $\norm A_{\mathrm F}=1$, covariance matching and a singular-value
+decomposition of the $|S|\times2$ matrix $A$ give
+\[
+ \Var\langle A,\mathcal Z_S\rangle
+ =\Var\langle A,C_{SS}^{-1/2}X_Sw_S^\top D_U^{-1}\rangle
+ \le C.
+\]
+Thus the covariance operator of $\operatorname{vec}(\mathcal Z_S)$ is
+bounded and its trace is $O(s)$.  Gaussian quadratic-form moments yield
+$\norm{\mathcal Z_S^\top\mathcal Z_S}_{L_q}\lesssim s+q$.
+The fixed-dimensional block
+$D_U^{-1}(Y^G)_{ww}D_U^{-1}$ has $L_{2q}$ norm $O(\sqrt q)$, so
+\eqref{eq:residual-diagonal-formula} proves the Gaussian part of
+\eqref{eq:residual-field-diagonal-bound}.  Finally,
+\eqref{eq:residual-field-diagonal-mean} follows because the bilinear form
+$D^2\Phi_S(\Gamma_U)$ is deterministic and $Y,Y^G$ have the same
+covariance.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:master-schur-field}]
+Let $Y_i=V_iV_i^\top-\Gamma_U$, and let $Y_i^G$ be independent centered
+Gaussian matrices with the covariance of $Y_i$.
+Lemma~\ref{lem:master-concentration} supplies the required fixed moments
+and tails uniformly over deterministic hybrid rows
+$\widetilde Y_i\in\{Y_i,Y_i^G,0\}$.
+The same differentiation used in
+\eqref{eq:residual-schur-derivatives}, the derivative neighborhood, and
+\eqref{eq:master-standardized-derivatives} give, for
+$|H|_{U,s}\le c$,
+\begin{equation}\label{eq:generic-higher-derivatives}
+ \sup_{|S|\le s}\sup_{0\le t\le1}
+ \left|D^k\Phi_S(\Gamma_U+tH)[H,\ldots,H]\right|
+ \le C\kappa_\varphi|H|_{U,s}^k,
+ \qquad k=2,3,
+\end{equation}
+and hence
+\begin{equation}\label{eq:generic-taylor-remainder}
+ \sup_{|S|\le s}\left|
+ \Phi_S(\Gamma_U+H)-\Phi_S(\Gamma_U)-D\Phi_S(\Gamma_U)[H]
+ -\frac12D^2\Phi_S(\Gamma_U)[H,H]
+ \right|\le C\kappa_\varphi|H|_{U,s}^3.
+\end{equation}
+The derivative bound in
+\eqref{eq:residual-field-derivative-bound},
+\eqref{eq:generic-higher-derivatives}, and
+\eqref{eq:master-concentration-tail} prove
+\eqref{eq:master-uniform-deviation}--\eqref{eq:master-second-order}.
+For $H$ independent of a centered
+row moment $Y$ and $q\ge2$, Lemma~\ref{lem:residual-field-row-bounds}
+gives
+\begin{align}
+ \sup_{|S|\le s}
+ \norm{D\Phi_S(\Gamma_U)[Y]+D^2\Phi_S(\Gamma_U)[H,Y]}_{\psi_1\mid H}
+ &\lesssim\kappa_\varphi
+ \{\lambda_s+\Delta_c+|H|_{U,s}\},
+ \label{eq:generic-linear-row-bound}\\
+ \sup_{|S|\le s}
+ \norm{D^2\Phi_S(\Gamma_U)[Y,Y]}_{L_q}
+ &\lesssim\kappa_\varphi q(s+q).
+ \label{eq:generic-diagonal-row-bound}
+\end{align}
+Both bounds hold for $Y^G$, and
+\begin{equation}\label{eq:generic-diagonal-mean-matching}
+        \E D^2\Phi_S(\Gamma_U)[Y,Y]
+        =\E D^2\Phi_S(\Gamma_U)[Y^G,Y^G],
+\end{equation}
+by \eqref{eq:residual-field-diagonal-mean}.
+
+We now compare the two Taylor fields.  For either row law, put
+\[
+        \mathsf{Diag}_{n,S}
+        =\frac1{2n^2}\sum_{i=1}^n
+        \{D^2\Phi_S(\Gamma_U)[Y_i,Y_i]
+        -\E D^2\Phi_S(\Gamma_U)[Y,Y]\}.
+\]
+The quadratic Taylor term decomposes exactly as
+\begin{equation}\label{eq:generic-taylor-diagonal-split}
+\begin{split}
+ \frac12D^2\Phi_S(\Gamma_U)\left[\frac1n\sum_iY_i,
+                         \frac1n\sum_iY_i\right]
+ ={}&\frac1{n^2}\sum_{i<j}D^2\Phi_S(\Gamma_U)[Y_i,Y_j]\\
+ &+\frac1{2n}\E D^2\Phi_S(\Gamma_U)[Y,Y]+\mathsf{Diag}_{n,S}.
+\end{split}
+\end{equation}
+For centered independent $Z_i$ with the moment growth in
+\eqref{eq:generic-diagonal-row-bound}, the independent-sum inequality
+\[
+ \norm{\textstyle\sum_{i=1}^n Z_i}_{L_\nu}
+ \lesssim
+ \sup_{2\le q\le\nu}
+ \frac\nu q\left(\frac n\nu\right)^{1/q}\norm{Z_1}_{L_q}
+ \lesssim \kappa_\varphi
+ \{s\sqrt{n\nu}+\nu(s+\nu)\}
+\]
+follows by symmetrization and the standard moment bound for sums.  A
+union over at most $e^m$ supports then gives, for $\nu=m+u\lesssim n$,
+\begin{equation}\label{eq:generic-diagonal-field-concentration}
+ \Prob\left[
+ \max_{|S|=s}|\mathsf{Diag}_{n,S}|
+ >C\kappa_\varphi
+ \left\{\frac{s\sqrt\nu}{n^{3/2}}
+ +\frac{\nu(s+\nu)}{n^2}\right\}
+ \right]\le e^{-c\nu}.
+\end{equation}
+Since there are at most $e^m$ supports, the moment bound preceding
+\eqref{eq:generic-diagonal-field-concentration}, applied with
+$\nu_0=m\vee2$, also gives directly
+\[
+ \left\|\max_{|S|=s}|\mathsf{Diag}_{n,S}|\right\|_{L_{\nu_0}}
+ \lesssim \kappa_\varphi
+ \left\{\frac{s\sqrt{\nu_0}}{n^{3/2}}
+ +\frac{\nu_0(s+\nu_0)}{n^2}\right\}.
+\]
+Here the factor from the maximum is at most
+$e^{m/\nu_0}\le e$.  Because
+$a_{n,\Phi}\ge\kappa_\varphi m/n$, $s\le m$, and
+$\nu_0\asymp m$, division by $a_{n,\Phi}$ bounds the right side by
+\[
+ C\left\{\frac{s}{\sqrt{nm}}+\frac{s+m}{n}\right\}
+ \le C\delta.
+\]
+Thus the centered diagonal field is $O(\delta)$ after normalization in
+$L_1$, and hence also for the truncated loss.  Its retained mean agrees
+for the two row laws by \eqref{eq:generic-diagonal-mean-matching}.
+
+It remains to replace the off-diagonal field.  At the $i$th step of a
+row-by-row replacement, let
+\[
+        H_i=\frac1n\sum_{j\ne i}\widetilde Y_j.
+\]
+Conditional on $H_i$, inserting a row $Y$ changes the normalized
+support value by the linear functional
+\[
+        \Delta_{i,S}(Y)
+        =\frac{D\Phi_S(\Gamma_U)[Y]
+        +D^2\Phi_S(\Gamma_U)[H_i,Y]}{na_{n,\Phi}}.
+\]
+The original and Gaussian increments have the same conditional mean and
+covariance.  Equation~\eqref{eq:generic-linear-row-bound} and the
+definition of $a_{n,\Phi}$ give
+\begin{equation}\label{eq:generic-off-diagonal-row-bound}
+        \sup_{|S|=s}\norm{\Delta_{i,S}(Y)}_{\psi_1\mid H_i}
+        +\sup_{|S|=s}\norm{\Delta_{i,S}(Y^G)}_{\psi_1\mid H_i}
+        \lesssim\frac{\Lambda_i}{\sqrt{mn}},
+        \qquad
+        \Lambda_i=1+\frac{|H_i|_{U,s}}{\delta}.
+\end{equation}
+The bound also holds for signed combinations with bounded total
+variation.  Equations~\eqref{eq:master-concentration-moments} and
+\eqref{eq:master-concentration-tail} imply bounded fixed moments of
+$\Lambda_i$.  Applying the latter with
+$t\asymp n^{2/3}m^{1/3}=o(n)$ also gives
+\[
+        \sum_{i=1}^n\Prob\{\Lambda_i>c(n/m)^{1/3}\}
+        =o\{(m/n)^{1/6}\}.
+\]
+
+Approximate the maximum by log-sum-exp with inverse temperature
+$\lambda m$; the approximation error is at most $1/\lambda$.  A
+second-order Taylor expansion in
+$\Delta_i$ cancels conditionally through order two.  Let $\pi_S$ be the
+Gibbs weights before the insertion and $\pi_S(\theta)$ those after
+inserting $\theta\Delta_i$.  Convexity of the log-partition function gives,
+for $k\le3$,
+\[
+ \prod_{a=1}^k\pi_{S_a}(\theta)
+ \le \prod_{a=1}^k\pi_{S_a}
+ \exp\!\left[\theta\lambda m\left\{
+ \sum_{a=1}^k\Delta_{i,S_a}
+ -k\sum_T\pi_T\Delta_{i,T}\right\}\right].
+\]
+The expression in braces is a signed combination with conditional
+$\psi_1$ norm at most $C\Lambda_i/\sqrt{mn}$.  On
+$\Lambda_i\le c(n/m)^{1/3}$, the choice
+$\lambda=(n/m)^{1/6}$ makes its tilted exponential moment bounded, since
+$\lambda\sqrt{m/n}\,\Lambda_i\le c$.  Conditional H\"older inequalities
+and \eqref{eq:generic-off-diagonal-row-bound} then bound the one-row
+third-order remainder by
+\[
+ C\{1+\lambda m+(\lambda m)^2\}
+ \frac{\Lambda_i^3}{(mn)^{3/2}}.
+\]
+After summing the rows and adding the smoothing error, the bound is
+\[
+        C\left\{
+        \frac1\lambda
+        +\frac1{m^{3/2}\sqrt n}
+        +\frac{\lambda}{\sqrt{mn}}
+        +\lambda^2\sqrt{\frac mn}\right\}.
+\]
+Taking $\lambda=(n/m)^{1/6}$ proves an
+$O\{(m/n)^{1/6}\}$ comparison between the off-diagonal fields.
+
+Finally, take $t$ to be a sufficiently small fixed multiple of $n$ in
+\eqref{eq:master-concentration-tail}, so that
+$H=\hat\Gamma_U-\Gamma_U$ lies in the Taylor neighborhood outside an
+event of probability $Ce^{-cn}$.  On this event,
+\eqref{eq:generic-taylor-remainder} and the fixed-moment form of sparse
+concentration give
+\[
+ \E\left[1\wedge
+ \frac{\kappa_\varphi|H|_{U,s}^3}{a_{n,\Phi}}\right]
+ \le C\delta,
+\]
+because $a_{n,\Phi}\ge\kappa_\varphi\delta^2$; bounded test functions
+absorb the exceptional event.  Together with
+\eqref{eq:generic-diagonal-field-concentration}, this proves
+\eqref{eq:master-matched}.  Subtracting one fixed support changes each
+bound by at most a constant factor and proves \eqref{eq:master-anchored}.
+\end{proof}
+
+\section{Product approximation}\label{app:product-proofs}
+
+\begin{lemma}[Score-product remainder]\label{lem:score-product-error}
+Suppose the assumptions of Theorem~\ref{thm:chaos-degeneration} hold.
+Let $R_n^G$ and $R_n^E$ denote the two suprema on the
+left side of \eqref{eq:score-reduction}.  Then
+\begin{equation}\label{eq:score-product-error-moments}
+ \E\left(1\wedge\frac{R_n^G}{a_n^{\mathrm{score}}}\right)
+ +\E\left(1\wedge\frac{R_n^E}{a_n^{\mathrm{score}}}\right)
+ \lesssim\delta.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The polynomial remainder bound in the proof of
+\eqref{eq:score-reduction}, with the cubic Taylor remainder added for the
+Gaussian field, controls $R_n^G$ and $R_n^E$.  Applying the fixed moments
+and full tail in Lemma~\ref{lem:master-concentration} to these bounds proves
+\eqref{eq:score-product-error-moments}.
+\end{proof}
+
+\begin{proof}[Proof of
+Theorem~\ref{thm:gaussian-top-s-decoupling}]
+In standardized coordinates, set
+\[
+ F(z)=\max_{|S|=s}-z_{1S}^\top z_{2S},
+ \qquad
+ F_\tau(z)=\frac1\tau
+ \log\sum_{|S|=s}\exp\{-\tau z_{1S}^\top z_{2S}\}.
+\]
+The smoothing error is at most $m/\tau$.  Set
+$\Omega_t=(1-t)I_{2p}+t\Omega$.  Gaussian interpolation along
+$\{\Omega_t:0\le t\le1\}$, followed by integration by parts,
+expresses the derivative of $\E F_\tau$ as one half of the inner product
+of $\Omega-I_{2p}$ with $\E\nabla^2F_\tau$.  Each supportwise quadratic
+Hessian is supported on one set of size $s$, and the softmax covariance
+of two supportwise gradients is supported on their union.  Sparse score
+isotropy and \eqref{eq:score-mean-cap} therefore give
+\[
+ \left|\frac{d}{dt}\E F_\tau\right|
+ \lesssim\rho_s^{\mathrm{score}}(s+\tau m).
+\]
+Taking $\tau=(\rho_s^{\mathrm{score}})^{-1/2}$ when the covariance error
+is nonzero shows that the two unsmoothed expectations differ by $o(m)$.
+The almost-everywhere gradient of $F$ is supported on a maximizing set,
+where
+\[
+ \nabla F^\top\Omega\nabla F
+ \le(1+\rho_s^{\mathrm{score}})\norm{\nabla F}^2.
+\]
+Gaussian Poincar\'e and the sparse score bound give variance $O(m)$
+under both laws.  Independent placement of the two fields on one
+probability space therefore gives a difference
+$o_{\Prob}(m)$; restoring the marginal scales proves
+\eqref{eq:gaussian-score-decoupling}.
+\end{proof}
+
+\section{Studentized score geometry}\label{app:studentized-geometry}
+
+For $|S|\le s$, define
+\begin{equation}\label{eq:studentized-directions}
+\begin{gathered}
+        u_{n,S}=\begin{cases}
+        M_S\mathbf y/\norm{M_S\mathbf y}_2,
+        &\norm{M_S\mathbf y}_2>0,\\
+        0,&\norm{M_S\mathbf y}_2=0,
+        \end{cases}
+        \qquad
+        \nu_{n,S}
+        =\sqrt{\frac{n-|S|-1}{n-\operatorname{rank}(\mathbf X_S)}},\\
+        u_{n,S}^{\Delta}
+        =\nu_{n,S}u_{n,S}
+        -\nu_{n,\emptyset}u_{n,\emptyset}.
+\end{gathered}
+\end{equation}
+
+\begin{lemma}[Score-to-direction identity]
+\label{lem:studentized-score-direction}
+For supports $S,T$ with nonzero outcome residuals,
+\begin{align}
+        (I-M_S)\mathbf y&=\frac{\mathbf X\hat q_{n,S}}{\sqrt n}, \notag\\
+        \norm{M_S\mathbf y}_2^2
+        &=\norm{\mathbf y}_2^2-\norm{\hat q_{n,S}}_{\hat C}^2,
+        \label{eq:score-projection-identity}\\
+ \norm{u_{n,S}^{\Delta}-u_{n,T}^{\Delta}}_2^2
+ &= (\nu_{n,S}-\nu_{n,T})^2 \notag\\
+ &\quad+\frac{\nu_{n,S}\nu_{n,T}}
+ {\norm{M_S\mathbf y}_2\norm{M_T\mathbf y}_2}
+ \left[
+ \norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}^2
+ -\{\norm{M_S\mathbf y}_2-\norm{M_T\mathbf y}_2\}^2
+ \right].
+ \label{eq:studentized-score-direction-bridge}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+The Moore--Penrose identity gives
+\[
+        \frac{\mathbf X\hat q_{n,S}}{\sqrt n}
+        =\mathbf X_S(\mathbf X_S^\top\mathbf X_S)^\dagger
+        \mathbf X_S^\top\mathbf y=(I-M_S)\mathbf y.
+\]
+Pythagoras gives the residual-norm identity in
+\eqref{eq:score-projection-identity}.  Moreover,
+\[
+        \norm{M_S\mathbf y-M_T\mathbf y}_2
+        =\norm{\hat q_{n,S}-\hat q_{n,T}}_{\hat C}.
+\]
+For nonzero vectors $a,b$,
+\[
+ \left\|\frac a{\norm a}-\frac b{\norm b}\right\|^2
+ =\frac{\norm{a-b}^2-(\norm a-\norm b)^2}
+ {\norm a\,\norm b}.
+\]
+Apply this identity to $a=M_S\mathbf y$ and $b=M_T\mathbf y$, then use
+\[
+ \norm{\nu_{n,S}u_{n,S}-\nu_{n,T}u_{n,T}}_2^2
+ =(\nu_{n,S}-\nu_{n,T})^2
+ +\nu_{n,S}\nu_{n,T}\norm{u_{n,S}-u_{n,T}}_2^2.\qedhere
+\]
+\end{proof}
+
+\begin{lemma}[Score packing implies direction packing]
+\label{lem:score-direction-packing}
+Suppose \eqref{eq:studentized-score-packing} holds and
+$\delta\le\delta_0$ for a sufficiently small fixed constant.  Then
+\begin{equation}\label{eq:studentized-direction-packing}
+ \min_{\substack{S,T\in\mathcal P\\S\ne T}}
+ \norm{u_{n,S}^{\Delta}-u_{n,T}^{\Delta}}_2
+ \ge c\frac{d_n}{\norm{\mathbf y}_2},
+ \qquad
+ \max_{S\in\mathcal P}\norm{u_{n,S}^{\Delta}}_2
+ \le C\frac{d_n}{\norm{\mathbf y}_2}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+For $|S|\le s$, small $\delta$ gives
+\[
+ 0<c\le\nu_{n,S}\le C,
+ \qquad
+ |\nu_{n,S}-\nu_{n,T}|\le C\frac{s+1}{n}.
+\]
+Equations~\eqref{eq:studentized-score-direction-bridge} and
+the angular condition in \eqref{eq:studentized-score-packing}, together with
+$r_{n,S}r_{n,T}\le\norm{\mathbf y}_2^2$, give the separation in
+\eqref{eq:studentized-direction-packing}.  Taking $T=\emptyset$ in
+\eqref{eq:studentized-score-direction-bridge}, dropping the nonpositive
+radial term in its bracket, and using
+the residual floor in \eqref{eq:studentized-score-packing} gives
+\[
+ \norm{u_{n,S}^{\Delta}}_2
+ \le C\left\{\frac{s+1}{n}
+ +\frac{\norm{\hat q_{n,S}}_{\hat C}}{\norm{\mathbf y}_2}\right\}.
+\]
+The score-radius and rank-scale bounds in
+\eqref{eq:studentized-score-packing} prove the radius bound.
+\end{proof}
+
+\begin{lemma}[Conditional studentized-direction reduction]
+\label{lem:conditional-studentized-direction}
+Let $\mathcal F=\sigma(\mathbf X,\mathbf y)$, and suppose that the entries
+of $\mathbf x_0\in\R^n$ are independent of $\mathcal F$, independent
+across observations, centered, have variance $\sigma_0^2$, and satisfy
+$\norm{x_0^{(i)}}_{\psi_2}\le K\sigma_0$.  Put
+\begin{equation}\label{eq:conditional-treatment-scale}
+        \hat\sigma_0^2=\frac{\mathbf x_0^\top\mathbf x_0}{n},
+        \qquad
+        \Delta^x_{n,S}
+        =\frac{\mathbf x_0^\top M_S\mathbf x_0/
+        \{n-\operatorname{rank}(\mathbf X_S)\}}
+        {\mathbf x_0^\top\mathbf x_0/n}-1.
+\end{equation}
+If $\delta\le\delta_0$, then, outside an event of probability $Ce^{-cm}$,
+\begin{equation}\label{eq:conditional-studentized-direction-reduction}
+ \hat\sigma_0\asymp\sigma_0,
+ \qquad
+ \max_{|S|=s}\left|
+ \hat t_{0,S}-\hat t_{0,\emptyset}
+ -\frac{\mathbf x_0^\top u_{n,S}^{\Delta}}{\hat\sigma_0}
+ \right|
+ \le C\sqrt m\,\delta^2.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+For every support with
+$\mathbf x_0^\top M_S\mathbf x_0>0$ and
+$\norm{M_S\mathbf y}_2>0$, the partial-correlation identity gives exactly
+\begin{equation}\label{eq:exact-studentized-direction}
+        \hat t_{0,S}
+        =\nu_{n,S}\frac{\mathbf x_0^\top u_{n,S}}{\hat\sigma_0}
+        (1+\Delta^x_{n,S})^{-1/2}.
+\end{equation}
+If $M_S\mathbf y=0$, both sides are zero under the stated convention.
+
+Conditional quadratic and linear-form concentration, followed by a union
+over the supports, gives
+\begin{equation}\label{eq:conditional-direction-event}
+        \hat\sigma_0\asymp\sigma_0,
+        \qquad
+        \max_{|S|=s}|\Delta^x_{n,S}|\le C\delta^2,
+        \qquad
+        \max_{|S|=s}|\mathbf x_0^\top u_{n,S}|
+        \le C\sigma_0\sqrt m
+\end{equation}
+outside an event of probability $Ce^{-cm}$.  To see the quadratic bound
+explicitly, let $P_S=I-M_S$.  Since $P_S$ has rank at most $s$, the same
+conditional union bound gives
+\[
+ \max_{|S|=s}\mathbf x_0^\top P_S\mathbf x_0
+ \le C\sigma_0^2m,
+ \qquad
+ \mathbf x_0^\top\mathbf x_0\ge cn\sigma_0^2.
+\]
+One has
+\[
+ 1+\Delta^x_{n,S}
+ =\frac{n}{n-\operatorname{rank}(\mathbf X_S)}\left(1-
+ \frac{\mathbf x_0^\top P_S\mathbf x_0}
+ {\mathbf x_0^\top\mathbf x_0}\right),
+\]
+which proves the middle assertion in
+\eqref{eq:conditional-direction-event}.  The final assertion is the
+corresponding conditional union bound over the unit vectors $u_{n,S}$.
+
+Since $\Delta^x_{n,\emptyset}=0$,
+\eqref{eq:exact-studentized-direction} and
+$|(1+z)^{-1/2}-1|\le C|z|$ for $|z|\le1/2$ give
+\[
+ \max_{|S|=s}\left|
+ \hat t_{0,S}-\hat t_{0,\emptyset}
+ -\frac{\mathbf x_0^\top u_{n,S}^{\Delta}}{\hat\sigma_0}
+ \right|
+ \le C\sqrt m\,\delta^2
+\]
+on the event in \eqref{eq:conditional-direction-event}.
+\end{proof}
