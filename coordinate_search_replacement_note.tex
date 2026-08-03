@@ -35,19 +35,21 @@ what remains valid, what fails, what the unified results recover, and
 which additional conditions are necessary.
 \end{abstract}
 
-Write \emph{Main} for the first document and \emph{Unified} for the
-second.  Result and equation numbers refer to their current numbered
-versions.  The scope ends with Main Proposition~1; Main Theorems~6--7
+Write \emph{Main} for the first document, \emph{Unified} for the
+second, and \emph{Technical} for
+\emph{Technical Proofs for Unified Moment Approximation}.  Result and
+equation numbers refer to their current numbered versions.  The scope
+ends with Main Proposition~1; Main Theorems~6--7
 and Appendix~C concern basis search and are unchanged.  All notation is
 that of Unified, in particular $m=s\log(ep/s)$ and
 $\delta=(m/n)^{1/2}$.
 
-The common replacement spine is Unified Lemma~1.1, which gives the exact
-Schur-complement representation; Theorem~2.1, which gives the critical
-empirical expansion; Theorem~2.2, which gives the covariance-matched
-Gaussian field when $m=o(n)$; and Theorem~2.6, which extends the same
-argument to residual-based statistics.  The table below identifies the
-endpoint result used for each Main claim.
+The common replacement spine is Unified Lemma~1.1, the exact
+Schur-complement representation; Lemma~2.1, sparse relative moment
+concentration; Theorem~2.2, the residual Schur-field approximation; and
+Corollary~2.3, its coefficient specialization.  Technical
+Lemmas~2.1--3.1 and Theorem~3.2 contain the shared proof engine.  The
+table below identifies the endpoint used for each Main claim.
 
 \section{Numbered crosswalk}
 
@@ -60,12 +62,12 @@ endpoint result used for each Main claim.
 >{\raggedright\arraybackslash}p{0.29\textwidth}
 >{\raggedright\arraybackslash}p{0.21\textwidth}@{}}
 \toprule
-Main result & Disposition and exact defect & Unified replacement &
+Main result & Defect & Replacement &
 Net change and refactor action \\
 \midrule
 \endfirsthead
 \toprule
-Main result & Disposition and exact defect & Unified replacement &
+Main result & Defect & Replacement &
 Net change and refactor action \\
 \midrule
 \endhead
@@ -73,7 +75,7 @@ Net change and refactor action \\
 Theorem~1, upper half of (12) &
 \emph{Correct.}  The experimental coefficient upper rate and its
 probability are valid. &
-Theorem~3.1, equations (54)--(55), specialized through (61). &
+Theorem~3.1, (38), specialized through (51). &
 Keep the conclusion and replace its proof.  The rate is unchanged,
 Main Assumption~2 is unnecessary, and the bound is uniform over
 $|S|\le s$. \\
@@ -84,9 +86,10 @@ Theorem~1, lower half of (12); Appendix Lemma~7, (35) &
 one support and does not supply a $\sqrt m$ search gain.  Lemma~7's
 inverse-Gram greedy transfer is also false; see
 Proposition~\ref{prop:obstructions}(i),(iv). &
-Theorem~3.2, (57)--(58), gives the general lower transfer.
-Theorem~3.4, (65)--(68), gives the exact scalar replacement;
-Lemma~3.5 and Corollary~3.6 give the top-$s$ score-pool construction. &
+Theorem~3.2, (39)--(40), gives the general lower transfer.
+Theorem~4.2, (55)--(58), gives the exact scalar replacement;
+Lemma~4.3, (60), and Corollary~4.4 give the top-$s$ score-pool
+construction. &
 Replace the lower half.  The old scalar rate is recovered under an
 exponentially large separated packing and multiplier minoration.  This
 is genuine additional structure; Gaussian treatment supplies the
@@ -97,14 +100,14 @@ Theorem~2, (14); Appendix Lemma~10, (37) &
 \emph{False as written.}  The bound omits the treatment-projection
 fluctuation already visible in Lemma~10; see
 Proposition~\ref{prop:obstructions}(ii). &
-Theorem~3.1, (54)--(55), gives the corrected scale
+Theorem~3.1, (38), gives the corrected scale
 $\frac{\sigma_r}{\sigma_0}\delta
 (\sqrt{\phi_s}+\sqrt{\theta_s^r}+\delta)$. &
 Replace the theorem.  The bound can be larger by the genuine
 $\frac{\sigma_r}{\sigma_0}\sqrt{\phi_s}\,\delta$ term, but it drops
 restricted conditioning, permits singular control blocks, and needs
 only sparse overlap.  The old rate returns when this term is absorbed;
-Unified (74) is a sufficient condition. \\
+Unified (47) is a sufficient condition. \\
 \addlinespace
 
 Theorem~3, (17) &
@@ -112,8 +115,8 @@ Theorem~3, (17) &
 is not the canonical entropy of their fluctuations; many such supports
 may index the same random variable; see
 Proposition~\ref{prop:obstructions}(iii). &
-Theorem~3.2, (57)--(58), transfers matched-field quantiles, and
-Theorem~3.3, (59)--(60), gives the canonical-metric packing lower bound. &
+Theorem~3.2, (39)--(40), transfers matched-field quantiles, and
+Theorem~3.3, (41)--(42), gives the canonical-metric packing lower bound. &
 Replace the theorem.  No unconditional scalar rate follows from
 near-optimal cardinality.  Metric separation is additional; conditional
 on it, the replacement is covariance-adaptive.  The Gaussian transfer
@@ -122,17 +125,19 @@ uses $m=o(n)$. \\
 
 Theorem~4, upper half of (19); Appendix Lemma~14, (72) &
 \emph{False in general.}  The rate omits the treatment channel, the
-statement lacks the treatment floor needed by a valid denominator
-argument, and the proof invokes hypotheses absent from the theorem.
+statement lacks the treatment and outcome floors needed by a valid
+denominator argument, and the proof invokes hypotheses absent from the theorem.
 Its centered studentizer transfer is not proved; see
 Proposition~\ref{prop:obstructions}(ii). &
-Theorem~5.1: corrected upper bound (100), aligned upper bound (101), and
-least-squares transfer (103)--(104).  Corollary~5.2, (109), gives the
+Theorem~5.1: corrected upper bound (79), aligned upper bound (80), and
+least-squares transfer (81)--(82).  Corollary~5.2, (86), gives the
 matched stochastic approximation. &
 Replace the theorem's upper half and its studentization argument.  The
 general rate gains $\sqrt m\sqrt{\phi_s}$ and an explicit treatment
-floor.  Sparse treatment alignment recovers the old rate.  Main
-Assumption~2 is unnecessary for this upper bound. \\
+floor.  Both variance floors are required; the null and local testing
+condition are additionally required for the displayed rate and
+least-squares transfer.  Sparse treatment alignment recovers the old
+rate.  Main Assumption~2 is unnecessary for this upper bound. \\
 \addlinespace
 
 Theorem~4, lower half of (19) &
@@ -140,9 +145,9 @@ Theorem~4, lower half of (19) &
 $\theta_s$ does not separate the normalized residual directions that
 index the multiplier process; see
 Proposition~\ref{prop:obstructions}(i). &
-Corollary~5.3, (110), gives matched-field transfer.  Corollary~5.4,
-(112)--(115), gives direction-packing bounds; Lemmas~5.5--5.6,
-(117)--(123), and Corollary~5.7 give the score-to-direction bridge. &
+Corollary~5.3, (87), gives matched-field transfer.  Corollary~5.4,
+(88)--(91), gives the score-packing lower bound.  Technical
+Lemmas~4.2--4.3 give the score-to-direction bridge. &
 Replace the lower half.  The old rate becomes conditional on direction
 packing, a radius bound, and multiplier minoration.  The direct
 critical-regime result is randomized; the general transfer uses
@@ -154,13 +159,14 @@ Theorem~5, (21); Appendix Lemmas~19--20 &
 cumulant decay does not control sparse score-covariance blocks in
 operator norm when $s$ grows, and marginal tail matching does not give
 the required joint top-$s$ process. &
-Theorem~2.2, (20)--(21), is the general stochastic approximation.
-Theorems~4.1--4.3, (75)--(77), (83), and (85), give covariance-aware and
-observable top-$s$ reductions.  Theorem~4.4, (91), and Corollary~4.5,
-(92), give independent products. &
+Theorem~2.2, (19)--(25), is the general stochastic approximation.
+Theorems~4.1 and 4.5--4.6, (48)--(49), (62), and (64), give
+covariance-aware and observable top-$s$ reductions.  Theorem~4.7, (68),
+and Corollary~4.8,
+(71), give independent products. &
 Replace the theorem by this hierarchy.  The observable empirical sort
 is stronger computationally.  Independent products additionally need
-score isotropy (89), the mean cap (90), $m\to\infty$, and $m=o(n)$.
+score isotropy (66), the mean cap (67), $m\to\infty$, and $m=o(n)$.
 The route needs neither $m^4=o(n)$ nor $\log p=o(n^{1/3})$. \\
 \addlinespace
 
@@ -168,7 +174,7 @@ Appendix Proposition~1, (78) &
 \emph{Not recovered, but not shown false.}  The proof has neither an
 approximation with $o_{\Prob}(n^{-1})$ error nor the joint point-process
 control needed for its Poisson/Gumbel limit. &
-None.  Corollary~4.5, (92), is only a relative-scale approximation and
+None.  Corollary~4.8, (71), is only a relative-scale approximation and
 cannot imply this endpoint. &
 Quarantine Proposition~1 as a separate result to be reproved, or remove
 it from the refactor. \\
@@ -187,17 +193,19 @@ it from the refactor. \\
 Main material & Replacement \\
 \midrule
 Appendix~A.1--A.3 common machinery &
-Unified Lemma~1.1 and Theorems~2.1, 2.2, and 2.6. \\
+Unified Lemma~1.1, Lemma~2.1, Theorem~2.2, and Corollary~2.3;
+Technical Lemmas~2.1--3.1 and Theorem~3.2. \\
 \addlinespace
 Theorems~1--3 and their proofs &
-Unified Section~3, especially Theorems~3.1--3.4 and Corollary~3.6. \\
+Unified Theorems~3.1--3.3 and 4.2, and Corollary~4.4. \\
 \addlinespace
 Theorem~4 and Appendix~A.3 &
 Unified Section~5, especially Theorem~5.1 and
-Corollaries~5.2--5.4 and 5.7, and Lemmas~5.5--5.6. \\
+Corollaries~5.2--5.4; Technical Lemmas~4.2--4.3. \\
 \addlinespace
 Theorem~5 and Appendix~B &
-Unified Section~4, Theorems~4.1--4.4 and Corollary~4.5. \\
+Unified Section~4, Theorems~4.1 and 4.5--4.7 and Corollary~4.8;
+Technical Lemmas~3.3--3.4. \\
 \addlinespace
 Theorems~6--7 and Appendix~C &
 No change; these basis-search results lie outside this refactor. \\
@@ -214,10 +222,10 @@ explicitly unproved.  The unified spine replaces their roles directly.
 
 Three numbered introduction displays should be regenerated only after
 the theorem refactor.  Main (4) should use Unified Theorem~3.1 and state
-matching only through Theorem~3.4 or Corollary~3.6; Main (5) should use
-the corrected scale in Unified (54)--(55); and Main (6) should present
-the hierarchy in Unified Theorems~4.1--4.4 and Corollary~4.5.  Its
-remainder should agree with Unified (92), not claim the stronger
+matching only through Theorem~4.2 or Corollary~4.4; Main (5) should use
+the corrected scale in Unified (38); and Main (6) should present
+the hierarchy in Unified Theorems~4.1 and 4.5--4.7 and Corollary~4.8.  Its
+remainder should agree with Unified (71), not claim the stronger
 $o_{\Prob}\{s\sqrt{\log(ep/s)}/n\}$ scale.  The condition-number
 sentence in Main Section~2.3 should also be deleted or compare matrices
 after the same diagonal normalization; interlacing does not compare a
@@ -312,8 +320,8 @@ Appendix Lemma~7.
 For (i), Unified Theorem~4.1 reduces the coefficient field to score
 products: the unique signal coordinate contributes
 $O_{\Prob}(|b|/\sqrt n)$, while the largest null products contribute
-$O_{\Prob}(L/n)$.  The exact normalized-residual identity in Unified
-(116) similarly gives $O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1)$
+$O_{\Prob}(L/n)$.  The exact normalized-residual identity in Technical
+Lemma~4.1 similarly gives $O_{\Prob}(1+L/\sqrt n)=O_{\Prob}(1)$
 for the studentized search.
 
 For (ii), every size-$s$ support has residual treatment variance
