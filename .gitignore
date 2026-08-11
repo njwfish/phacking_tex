@@ -1,5 +1,12 @@
 .DS_Store
 
+# Local critique, audits, and supplementary research notes
+/local_critique/
+
+# Local editor and build configuration
+/.vscode/
+/.latexmkrc
+
 # LaTeX build products
 /build/
 *.aux

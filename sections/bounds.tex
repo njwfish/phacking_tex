@@ -192,6 +192,97 @@ passes $\norm{\beta_{-0}}_0$, being pinned at that value from there on
 while $\delta_{s,n,p}$ keeps rising with the budget, so the first term
 takes over.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=.32\linewidth]{phacking/results/coefficient_objective_figures_early/coefficient_magnitude_gain/01_randomized/menu_size.pdf}\hfill
+\includegraphics[width=.32\linewidth]{phacking/results/coefficient_objective_figures_early/coefficient_magnitude_gain/01_randomized/prognostic_share.pdf}
+\includegraphics[width=.32\linewidth]{phacking/results/coefficient_objective_figures_early/coefficient_magnitude_gain/01_randomized/sample_size.pdf}
+\caption{Coordinate search under randomization. Treatment is drawn from
+$\operatorname{Bern}(1/2)$ independently of
+$X \sim \mathcal{N}(0,I_p)$. The panels vary the number $p$ of available
+controls (left), the prognostic share $k/p$ (center), and the sample size $n$
+(right), while holding $s$, $\sigma_\varepsilon^2$, and the total prognostic
+signal fixed. The ordinate is the Monte Carlo mean of
+$|\hat\beta_{0,\widehat S}|-|\hat\beta_{0,\emptyset}|$, where forward search
+selects exactly $s$ controls. Increasing $k$ lowers $\theta_s$ by spreading the
+same signal across more coordinates. When a labelled value of $k$ exceeds $p$,
+all $p$ controls are prognostic, so that curve coincides with the dense design.
+At $p=s$, the reported specification is fixed and there is no coordinate
+choice.}
+\label{fig:randomized-coordinate-geometry}
+\end{figure}
+
+Figure~\ref{fig:randomized-coordinate-geometry} is designed to establish a
+clear interpretation of $\theta_s$ in a simple simulation setting. We
+randomize the treatment $x_0^{(i)} \sim \operatorname{Bern}(1/2)$, fixing $s$ and
+$\sigma_\varepsilon^2$, and vary the number $p$ of available controls
+$X_{-0}^{(i)} \sim \mathcal{N}(0,I_p)$ and the sample size $n$. The treatment
+has no effect on the outcome, $\beta_0=0$. The key additional idea is the number
+$k$ of ``prognostic controls'' that actually carry signal for the outcome.
+
+The $k$ nonzero coordinates of $\beta_{-0}$ have equal magnitude and are
+rescaled as $k$ varies so that $\norm{\beta_{-0}}_2^2$ remains fixed. For
+$k>0$, this gives
+\begin{equation*}
+        \theta_s
+        =
+        \frac{\norm{\beta_{-0}}_2^2}
+        {\norm{\beta_{-0}}_2^2+\sigma_\varepsilon^2}
+        \min\left\{1,\frac{s}{k}\right\},
+\end{equation*}
+while $k=0$ gives $\theta_s=0$. Increasing $p$ at fixed $k$ changes
+$\delta_{s,n,p}$ without changing $\theta_s$; increasing $k$ at fixed $p$
+spreads the same outcome signal over more controls and lowers $\theta_s$;
+increasing $n$ lowers $\delta_{s,n,p}$ without changing $\theta_s$.
+
+For each design, we begin with the no-control coefficient
+$\hat\beta_{0,\emptyset}$ and add the control that produces the largest current
+value of $|\hat\beta_{0,S}|$ until exactly $s$ controls have been selected. The
+figure reports the resulting mean increase in coefficient magnitude. This
+forward search is an attainable counterpart to the exhaustive coordinate
+maximum in \eqref{eq:searched-sup}. The rate in
+\eqref{eq:experimental-matching} predicts a displacement of order
+$\delta_{s,n,p}^2$ when $\theta_s=0$ and of order
+$\delta_{s,n,p}\sqrt{\theta_s}$ when the prognostic term dominates. The panels
+show these two regimes directly: enlarging the menu raises the displacement,
+concentrating a fixed prognostic signal raises it further, and increasing $n$
+drives both coefficient displacements toward zero at their respective rates.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.49\linewidth]{phacking/results/final_geometry_figures_20260811_v5/geometry/02_covariance/effective_prognostic_dimension.pdf}\hfill
+\includegraphics[width=.49\linewidth]{phacking/results/coefficient_objective_figures_early/coefficient_magnitude_gain/02_covariance/covariance_alignment.pdf}
+\caption{Covariance orientation and prognostic concentration. For each
+rank-one covariance strength $\rho$, the covariance spectrum, total outcome
+variance, $n$, $p$, and $s$ remain fixed while the leading covariance direction
+rotates from the $k$ prognostic controls ($a=0$) toward the dense direction
+($a=1$). The left panel reports the effective number of prognostic controls;
+the right reports the mean increase in $|\hat\beta|$ attained by forward
+coordinate search. The path separates the creation of prognostic proxies from
+their eventual redundancy.}
+\label{fig:covariance-prognostic-geometry}
+\end{figure}
+
+Figure~\ref{fig:covariance-prognostic-geometry} asks how covariance changes the
+same prognostic structure. We now fix $n$, $p$, $s$, $k$, and the total outcome
+variance, but replace $I_p$ with a covariance matrix containing a rank-one
+component of strength $\rho$. For each value of $\rho$, the covariance spectrum
+is fixed while its leading direction is rotated. At alignment $a=0$, this
+direction is supported on the $k$ prognostic controls; at $a=1$, it is spread
+equally across all $p$ controls.
+
+This rotation leaves the total prognostic signal and the eigenvalues of $C$
+unchanged, but it changes $C\beta_{-0}$ and therefore $\Psi_s$ and $\theta_s$.
+The left panel summarizes the redistribution by the participation ratio of the
+squared marginal outcome correlations, which is the effective number of
+prognostic controls. The right panel reports the corresponding coefficient
+gain. As $a$ increases, correlation first creates additional prognostic proxies
+and then makes those proxies increasingly redundant, producing the observed
+nonmonotonicity. Covariance therefore matters through the sparse outcome
+variation it makes accessible, not through the overall strength of dependence
+alone: designs with the same covariance eigenvalues can have different values
+of $\theta_s$ and different susceptibility to coordinate search.
+
 The theorem is to be compared with the scale of a single fixed
 configuration,
 \begin{equation*}
@@ -337,6 +428,36 @@ by $\rho\, \sigma_0 (\beta_{-0,(s+1)} - \beta_{-0,(s)})
 $\ell_\delta = 0$. In this latter case the potential for hacking through
 stochastic effects is lower, and more accurately described by the lower
 bound.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.72\linewidth]{phacking/results/coefficient_objective_figures_early/coefficient_magnitude_gain/03_confounding/sample_size_fan.pdf}
+\caption{Coordinate search when the treatment is correlated with the controls.
+The figure varies $n$ and the explained treatment share
+$R_T^2=d^\top C^{-1}d/\sigma_0^2$. The treatment and prognostic scores are
+orthogonal without adjustment, but an unbalanced size-$s$ specification creates
+a nonzero $b(S)$. Under randomization this change vanishes with $n$; for fixed 
+positive $R_T^2$, it approaches the population drift available through specification choice.}
+\label{fig:observational-coordinate-geometry}
+\end{figure}
+
+Figure~\ref{fig:observational-coordinate-geometry} introduces the population
+drift that arises when $d \ne 0$. The treatment remains Bernoulli, but its
+assignment probability depends on a score constructed from the controls. We
+index the strength of this dependence by
+$R_T^2=d^\top C^{-1}d/\sigma_0^2$, the population share of treatment variance
+explained by the controls, and vary $R_T^2$ together with $n$. The treatment
+score is orthogonal to the prognostic score, so the no-control coefficient has
+no population omitted-variable bias.
+
+Specification search need not preserve this orthogonality. A balanced set of
+controls does, while an unbalanced set creates a nonzero drift $b(S)$. At the
+randomized endpoint $R_T^2=0$, every specification has the same
+population coefficient and the searched displacement vanishes with $n$. For
+any fixed positive $R_T^2$, the process $\{\beta_{0,S}^\star\}$ has different
+centers across supports, and the searched coefficient converges toward the
+largest of them. The nonzero limit approached by each confounded curve is
+therefore the population drift component of the observational bound.
 
 \subsection{The t-Statistic and Consequences for Replicability}
 \label{sec:tstat}
