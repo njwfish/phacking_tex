@@ -204,8 +204,8 @@ prognostic controls have equal coefficients and together explain the outcome
 share $\theta_p=0.25$. The panels vary
 the search budget $s$ (left), the number $p$ of
 available controls (center), and the sample size $n$ (right); the fixed values
-are $(n,p)=(6400,64)$ on the left, $(n,s)=(1600,1)$ in the center, and
-$(p,s)=(512,1)$ on the right. The ordinate is
+are $(n,p)=(6400,64)$ on the left, $(n,s)=(1600,4)$ in the center, and
+$(p,s)=(512,4)$ on the right. The ordinate is
 $\E[\hat\beta_{0,\widehat S_s}-\hat\beta_{0,\emptyset}]$, estimated by Monte
 Carlo, where $\widehat S_s$ is the forward-search support. The left panel
 follows the entire path $0\le s\le p$ for $k\in\{0,4,8,16,64\}$; the center
@@ -241,10 +241,10 @@ $\theta_s=\theta_p s/p$. The right panel fixes $p$ and $s$, so increasing $n$
 lowers $\delta_{s,n,p}$ without changing $\theta_s$.
 
 The figure follows the one-sided fixed-size objective in
-\eqref{eq:searched-sup} along the forward path. Forward search is exact in the
-center and right panels because $s=1$; on the $p=16$ audit grid, where every
-size-$s$ support can be enumerated, its mean gain stays within $0.01\%$ of the
-exact maximum. The rate in
+\eqref{eq:searched-sup} along the forward path. Exhaustive search is infeasible
+on the larger $s=4$ menus; on the $p=16$ audit grid, where every size-$s$
+support can be enumerated, the forward search's mean gain stays within
+$0.01\%$ of the exact maximum. The rate in
 \eqref{eq:experimental-matching} predicts a displacement of order
 $\delta_{s,n,p}^2$ when $\theta_s=0$ and of order
 $\delta_{s,n,p}\sqrt{\theta_s}$ when the prognostic term dominates. The panels
@@ -255,7 +255,9 @@ curve overtakes it as the budget captures more of that signal. Beyond $p/2$
 the menu contracts, and every curve returns to zero at $s=p$, where there is
 no specification choice. At fixed $k$, a 64-fold increase in $p$
 moves the gain only modestly; along the dense curve, the dilution of
-$\theta_s$ initially outweighs the larger menu. The no-signal curve in the
+$\theta_s$ initially outweighs the larger menu. At $s=4$, the concentrated
+and intermediate curves consequently cluster: spreading the signal lowers
+$\theta_s$ but creates more ways to assemble useful supports. The no-signal curve in the
 right panel contracts on the faster $\delta_{s,n,p}^2$ scale, while the
 concentrated prognostic curves approach the
 $\delta_{s,n,p}\sqrt{\theta_s}$ scale and the less concentrated designs
