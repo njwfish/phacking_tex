@@ -194,31 +194,33 @@ takes over.
 
 \begin{figure}[t]
 \centering
+\includegraphics[width=.32\linewidth]{figures/simulations/coefficient-randomized-budget.pdf}\hfill
 \includegraphics[width=.32\linewidth]{figures/simulations/coefficient-randomized-menu-size.pdf}\hfill
-\includegraphics[width=.32\linewidth]{figures/simulations/coefficient-randomized-prognostic-share.pdf}
 \includegraphics[width=.32\linewidth]{figures/simulations/coefficient-randomized-sample-size.pdf}
 \caption{Coordinate search under randomization. Treatment is drawn from
 $\operatorname{Bern}(1/2)$ independently of
-$X \sim \mathcal{N}(0,I_p)$. The panels vary the number $p$ of available
-controls (left), the prognostic share $k/p$ (center), and the sample size $n$
-(right), while holding $s$, $\sigma_\varepsilon^2$, and the total prognostic
-signal fixed. The ordinate is the Monte Carlo mean of
-$|\hat\beta_{0,\widehat S}|-|\hat\beta_{0,\emptyset}|$, where forward search
-selects exactly $s$ controls. Increasing $k$ lowers $\theta_s$ by spreading the
-same signal across more coordinates. When a labelled value of $k$ exceeds $p$,
-all $p$ controls are prognostic, so that curve coincides with the dense design.
-At $p=s$, the reported specification is fixed and there is no coordinate
-choice.}
+$X \sim \mathcal{N}(0,I_p)$, and the treatment effect is zero. The $k$
+prognostic controls have equal coefficients and together explain the outcome
+share $\theta_p=0.25$. The panels vary
+the search budget $s$ (left), the number $p$ of
+available controls (center), and the sample size $n$ (right); the fixed values
+are $(n,p)=(6400,64)$ on the left, $(n,s)=(1600,1)$ in the center, and
+$(p,s)=(512,1)$ on the right. The ordinate is
+$\E[\hat\beta_{0,\widehat S_s}-\hat\beta_{0,\emptyset}]$, estimated by Monte
+Carlo, where $\widehat S_s$ is the forward-search support. The left panel
+follows the entire path $0\le s\le p$ for $k\in\{0,4,8,16,64\}$; the center
+and right panels vary $k$ from concentrated to dense signal, with $k=p$ on
+the dense curve.}
 \label{fig:randomized-coordinate-geometry}
 \end{figure}
+\FloatBarrier
 
-Figure~\ref{fig:randomized-coordinate-geometry} is designed to establish a
-clear interpretation of $\theta_s$ in a simple simulation setting. We
-randomize the treatment $x_0^{(i)} \sim \operatorname{Bern}(1/2)$, fixing $s$ and
-$\sigma_\varepsilon^2$, and vary the number $p$ of available controls
-$X_{-0}^{(i)} \sim \mathcal{N}(0,I_p)$ and the sample size $n$. The treatment
-has no effect on the outcome, $\beta_0=0$. The key additional idea is the number
-$k$ of ``prognostic controls'' that actually carry signal for the outcome.
+Figure~\ref{fig:randomized-coordinate-geometry} gives a concrete interpretation
+of $\theta_s$ in a simple simulation setting. We
+randomize the treatment $x_0^{(i)} \sim \operatorname{Bern}(1/2)$, draw the
+controls $X_{-0}^{(i)} \sim \mathcal{N}(0,I_p)$, and set $\beta_0=0$. The key
+additional idea is the number $k$ of ``prognostic controls'' that carry signal
+for the outcome.
 
 The $k$ nonzero coordinates of $\beta_{-0}$ have equal magnitude and are
 rescaled as $k$ varies so that $\norm{\beta_{-0}}_2^2$ remains fixed. For
@@ -226,64 +228,76 @@ $k>0$, this gives
 \begin{equation*}
         \theta_s
         =
-        \frac{\norm{\beta_{-0}}_2^2}
-        {\norm{\beta_{-0}}_2^2+\sigma_\varepsilon^2}
-        \min\left\{1,\frac{s}{k}\right\},
+        \theta_p \min\left\{1,\frac{s}{k}\right\},
 \end{equation*}
-while $k=0$ gives $\theta_s=0$. Increasing $p$ at fixed $k$ changes
-$\delta_{s,n,p}$ without changing $\theta_s$; increasing $k$ at fixed $p$
-spreads the same outcome signal over more controls and lowers $\theta_s$;
-increasing $n$ lowers $\delta_{s,n,p}$ without changing $\theta_s$.
+while $k=0$ gives $\theta_s=0$. The left panel follows the full fixed-size
+search path. Its menu contains $\binom{p}{s}$ supports: one at either endpoint
+and the most near $s=p/2$. At small budgets, concentrated outcome signal makes
+$\theta_s$ large; as $s$ grows, concentrated signal saturates while dense
+signal keeps entering the selected model. The center panel fixes $s$ and
+changes $p$, which affects $\delta_{s,n,p}$ only through $\log p$ and leaves
+$\theta_s$ unchanged for each fixed $k$; along the dense curve, $k=p$ and
+$\theta_s=\theta_p s/p$. The right panel fixes $p$ and $s$, so increasing $n$
+lowers $\delta_{s,n,p}$ without changing $\theta_s$.
 
-For each design, we begin with the no-control coefficient
-$\hat\beta_{0,\emptyset}$ and add the control that produces the largest current
-value of $|\hat\beta_{0,S}|$ until exactly $s$ controls have been selected. The
-figure reports the resulting mean increase in coefficient magnitude. This
-forward search is an attainable counterpart to the exhaustive coordinate
-maximum in \eqref{eq:searched-sup}. The rate in
+The figure follows the one-sided fixed-size objective in
+\eqref{eq:searched-sup} along the forward path. Forward search is exact in the
+center and right panels because $s=1$; on the $p=16$ audit grid, where every
+size-$s$ support can be enumerated, its mean gain stays within $0.01\%$ of the
+exact maximum. The rate in
 \eqref{eq:experimental-matching} predicts a displacement of order
 $\delta_{s,n,p}^2$ when $\theta_s=0$ and of order
 $\delta_{s,n,p}\sqrt{\theta_s}$ when the prognostic term dominates. The panels
-show these two regimes directly: enlarging the menu raises the displacement,
-concentrating a fixed prognostic signal raises it further, and increasing $n$
-drives both coefficient displacements toward zero at their respective rates.
+separate changes in the search budget, menu size, and sampling noise. On the
+sparse half of the left panel, the gain rises with both the number of supports
+and $\theta_s$. Concentrated signal therefore leads at small $s$, but the dense
+curve overtakes it as the budget captures more of that signal. Beyond $p/2$
+the menu contracts, and every curve returns to zero at $s=p$, where there is
+no specification choice. At fixed $k$, a 64-fold increase in $p$
+moves the gain only modestly; along the dense curve, the dilution of
+$\theta_s$ initially outweighs the larger menu. The no-signal curve in the
+right panel contracts on the faster $\delta_{s,n,p}^2$ scale, while the
+concentrated prognostic curves approach the
+$\delta_{s,n,p}\sqrt{\theta_s}$ scale and the less concentrated designs
+interpolate between them. The center and right panels share a vertical scale,
+making the logarithmic dependence on $p$ directly comparable with concentration
+in $n$.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=.49\linewidth]{figures/simulations/effective-prognostic-dimension.pdf}\hfill
-\includegraphics[width=.49\linewidth]{figures/simulations/coefficient-covariance-alignment.pdf}
-\caption{Covariance orientation and prognostic concentration. For each
-rank-one covariance strength $\rho$, the covariance spectrum, total outcome
-variance, $n$, $p$, and $s$ remain fixed while the leading covariance direction
-rotates from the $k$ prognostic controls ($a=0$) toward the dense direction
-($a=1$). The left panel reports the effective number of prognostic controls;
-the right reports the mean increase in $|\hat\beta|$ attained by forward
-coordinate search. The path separates the creation of prognostic proxies from
-their eventual redundancy.}
+\includegraphics[width=.49\linewidth]{figures/simulations/coefficient-covariance-capture.pdf}\hfill
+\includegraphics[width=.49\linewidth]{figures/simulations/coefficient-covariance-search-gain.pdf}
+\caption{Covariance changes both explained outcome variation and search. Treatment is
+randomized, $(n,p,s,k)=(1600,64,2,16)$, and $\theta_p=0.25$. We set
+$C=I_p+\gamma vv^\top$ and vary its full condition number
+$1+\gamma$ from $1$ to $65$. The leading direction $v$ is either
+aligned with the prognostic score or spread equally across all controls; the
+outcome coefficients are rescaled to keep $\theta_p$ fixed. The left panel
+reports the outcome share $\theta_s/\theta_p$ explained by the best size-$s$
+support, and the right reports the mean gain from exact size-$s$ search.}
 \label{fig:covariance-prognostic-geometry}
 \end{figure}
+\FloatBarrier
 
-Figure~\ref{fig:covariance-prognostic-geometry} asks how covariance changes the
-same prognostic structure. We now fix $n$, $p$, $s$, $k$, and the total outcome
-variance, but replace $I_p$ with a covariance matrix containing a rank-one
-component of strength $\rho$. For each value of $\rho$, the covariance spectrum
-is fixed while its leading direction is rotated. At alignment $a=0$, this
-direction is supported on the $k$ prognostic controls; at $a=1$, it is spread
-equally across all $p$ controls.
+Figure~\ref{fig:covariance-prognostic-geometry} shows how covariance changes the
+same prognostic structure. At condition number one the controls are independent, both
+paths coincide, and the best two controls explain the share
+$\theta_s/\theta_p=s/k=1/8$. Along the aligned path, a stronger common
+direction makes more of the outcome variation accessible to two controls, so
+the best-support share rises toward one. The search gain first rises with this
+share and then falls as the controls carrying the common direction become
+increasingly redundant.
 
-This rotation leaves the total prognostic signal and the eigenvalues of $C$
-unchanged, but it changes $C\beta_{-0}$ and therefore $\Psi_s$ and $\theta_s$.
-The left panel summarizes the redistribution by the participation ratio of the
-squared marginal outcome correlations, which is the effective number of
-prognostic controls. The right panel reports the corresponding coefficient
-gain. As $a$ increases, correlation first creates additional prognostic proxies
-and then makes those proxies increasingly redundant, producing the observed
-nonmonotonicity. Covariance therefore matters through the sparse outcome
-variation it makes accessible, not through the overall strength of dependence
-alone: designs with the same covariance eigenvalues can have different values
-of $\theta_s$ and different susceptibility to coordinate search.
+Along the spread path, the common direction instead turns controls outside the
+planted prognostic set into proxies. Each size-$s$ support captures less outcome
+variation than on the aligned path, but many more supports become competitive,
+and the exact search gain continues to rise over most of the path. Thus
+$\theta_s$ determines the scale in
+Theorem~\ref{thm:experimental-matching}, while the multiplicity and dependence
+of nearly useful supports determine where a particular covariance design lies
+within its constant factors.
 
-The theorem is to be compared with the scale of a single fixed
+The experimental bound is to be compared with the scale of a single fixed
 configuration,
 \begin{equation*}
         \Var\big( \hat\beta_{0,S} \big)
@@ -429,35 +443,80 @@ $\ell_\delta = 0$. In this latter case the potential for hacking through
 stochastic effects is lower, and more accurately described by the lower
 bound.
 
+To index the design below, write
+$R_T^2=d^\top C^{-1}d/\sigma_0^2$ for the population share of treatment
+variance explained by the controls, and use $\theta_p$ for the corresponding
+full-control outcome share.
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=.72\linewidth]{figures/simulations/coefficient-confounding-sample-size.pdf}
-\caption{Coordinate search when the treatment is correlated with the controls.
-The figure varies $n$ and the explained treatment share
-$R_T^2=d^\top C^{-1}d/\sigma_0^2$. The treatment and prognostic scores are
-orthogonal without adjustment, but an unbalanced size-$s$ specification creates
-a nonzero $b(S)$. Under randomization this change vanishes with $n$; for fixed 
-positive $R_T^2$, it approaches the population drift available through specification choice.}
+\includegraphics[width=.32\linewidth]{figures/simulations/confounding-population-drift.pdf}\hfill
+\includegraphics[width=.32\linewidth]{figures/simulations/coefficient-confounding-premium.pdf}\hfill
+\includegraphics[width=.32\linewidth]{figures/simulations/coefficient-confounding-scaling.pdf}
+\caption{Population drift and stochastic search under confounding. We set
+$p=k=8$ and $s=4$, with orthogonal treatment and prognostic scores before
+adjustment. Here $R_T^2=d^\top C^{-1}d/\sigma_0^2$, and $\theta_p$ is the
+full-control outcome share. The left panel reports
+$\max_{|S|=s}b(S)$ over
+$R_T^2,\theta_p\in\{0,0.1,\ldots,0.9,0.99\}$. The remaining panels restrict
+attention to $R_T^2=\theta_p$ and report the mean premium over a
+population-maximizing support against the gap between the best and second-best
+population supports. The center panel gives both quantities in coefficient
+units; the right divides both by $\delta_{s,n,p}^2$.}
 \label{fig:observational-coordinate-geometry}
 \end{figure}
+\FloatBarrier
 
 Figure~\ref{fig:observational-coordinate-geometry} introduces the population
 drift that arises when $d \ne 0$. The treatment remains Bernoulli, but its
 assignment probability depends on a score constructed from the controls. We
-index the strength of this dependence by
-$R_T^2=d^\top C^{-1}d/\sigma_0^2$, the population share of treatment variance
-explained by the controls, and vary $R_T^2$ together with $n$. The treatment
-score is orthogonal to the prognostic score, so the no-control coefficient has
-no population omitted-variable bias.
+vary the strengths $R_T^2$ and $\theta_p$. The treatment score is orthogonal to
+the prognostic score, so the no-control coefficient has no population
+omitted-variable bias.
 
 Specification search need not preserve this orthogonality. A balanced set of
-controls does, while an unbalanced set creates a nonzero drift $b(S)$. At the
-randomized endpoint $R_T^2=0$, every specification has the same
-population coefficient and the searched displacement vanishes with $n$. For
-any fixed positive $R_T^2$, the process $\{\beta_{0,S}^\star\}$ has different
-centers across supports, and the searched coefficient converges toward the
-largest of them. The nonzero limit approached by each confounded curve is
-therefore the population drift component of the observational bound.
+controls does, while an unbalanced set creates a nonzero drift $b(S)$. For the
+population maximizer $S^\star$ defined above, the left panel reports
+$b(S^\star)$, while the remaining panels are built from
+\begin{equation*}
+        \text{mean stochastic premium}
+        =
+        \E\left[
+        \max_{|S|=s}\hat\beta_{0,S}-\hat\beta_{0,S^\star}
+        \right].
+\end{equation*}
+This difference isolates the finite-sample return to searching beyond the
+best population support while holding the data-generating design fixed.
+
+Because all $p$ controls carry equal outcome signal in this design,
+$\theta_s=(s/p)\theta_p$. Treatment--control dependence also converts that signal
+into population drift; for the balanced-sign design used here,
+\begin{equation*}
+        b(S^\star)
+        =
+        \max_{|S|=s}b(S)
+        =
+        \frac{2(s/p)\sqrt{R_T^2\theta_p}}
+        {1-(s/p)R_T^2}.
+\end{equation*}
+The population surface is zero on either axis and rises through the interior,
+where treatment dependence and prognostic signal interact. In this design the
+runner-up has half the drift of the maximizer, so along
+$R_T^2=\theta_p=r$ the population gap is
+\begin{equation*}
+        \frac{1}{2}b(S^\star)
+        =
+        \frac{(s/p)r}{1-(s/p)r}.
+\end{equation*}
+The center panel shows how this gap extinguishes the return to searching. At
+$r=0$ all supports are tied and the premium is wholly stochastic; as $r$ grows,
+$\tfrac{1}{2}b(S^\star)$ separates $S^\star$ from its rivals. The raw premium
+falls with $n$ and reaches zero at progressively smaller population gaps. In
+this design the relevant stochastic branch has scale
+$\delta_{s,n,p}^2$, and dividing both axes by this scale nearly collapses the
+three sample sizes in the right panel. This is the comparison between the
+population landscape and the stochastic margin that $\ell_\delta$ records in
+Theorem~\ref{thm:observational-lower}.
 
 \subsection{The t-Statistic and Consequences for Replicability}
 \label{sec:tstat}
@@ -491,6 +550,49 @@ $\hat\rho_S$ the sample partial correlation of $x_0$ and $y$ given $X_S$,
 the least-squares $t$-statistic being
 $\hat t_{0,S} / \sqrt{1 - \hat\rho_S^2}$, an increasing function of it
 with the same maximizer.
+
+The coefficient and $t$ objectives necessarily agree when studentization is
+constant across the specifications being compared; otherwise they can diverge.
+To isolate this distinction, let
+$\widehat S_\beta$ maximize $|\hat\beta_{0,S}|$ and let $\widehat S_t$ maximize
+$|\hat t_{0,S}|$ over the same size-$s$ menu. Figure~\ref{fig:objective-geometry}
+reports
+$\E[|\hat t_{0,\widehat S_t}|-|\hat t_{0,\widehat S_\beta}|]$, the mean loss
+in the $t$ objective from optimizing the coefficient, computed by exhaustive
+search as the signal strengthens and its loading concentrates.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=.49\linewidth]{figures/simulations/t-objective-outcome-signal.pdf}\hfill
+\includegraphics[width=.49\linewidth]{figures/simulations/t-objective-treatment-signal.pdf}
+\caption{When coefficient search and $t$-statistic search differ. Both panels
+use $(n,p,s)=(1600,8,4)$ and exhaustive two-sided search under the global
+null, so every population partial correlation is zero: the left panel sets
+$R_T^2=0$ and varies the outcome share $\theta_p$, and the right panel sets
+$\theta_p=0$ and varies the treatment share $R_T^2$. Each curve reports the
+mean difference in $|\hat t_{0,S}|$ between the $t$-maximizing and
+coefficient-maximizing supports. The curves are indexed by the share of the
+explained signal that the best size-$s$ support removes: from $50\%$, where the
+loading spreads equally over all $k=8$ controls, to $100\%$, where it rests on
+$k=4$ of them. Intermediate curves rotate the loading continuously between
+these endpoints while preserving its norm.}
+\label{fig:objective-geometry}
+\end{figure}
+\FloatBarrier
+
+The panels separate the two ingredients that make studentization matter.
+Under the dense loading, every size-$s$ support removes the same population
+share, so the objectives differ only through sample fluctuations and the loss
+stays negligible at every strength. As the loading
+concentrates, different supports remove materially different shares of outcome
+or treatment variation, studentization reorders the menu, and the loss grows
+with both the strength and the concentration: at $R^2=0.99$ under the fully
+concentrated loading the two searches agree on under a third of the draws, and
+optimizing the coefficient loses $0.22$ in mean $|\hat t|$ when the outcome is
+almost explained and $0.59$ when the treatment is. The
+treatment-side loss is larger because the residual treatment variation enters
+the coefficient denominator linearly but the $t$-statistic normalization only
+through its square root.
 
 \begin{assumption}[Testing regime]\label{ass:testing}
 The effect is null, $\beta_0 = 0$, and the following two conditions
@@ -577,7 +679,6 @@ budget give $\theta_s$ that same share times $s / \norm{\beta_{-0}}_0$,
 which passes below $n^{-1/2}$ once $\norm{\beta_{-0}}_0$ exceeds
 $s \sqrt n$ times that share, itself a demand on how many controls there
 are to choose from, and there the $\sqrt n$ budget binds instead.
-
 
 % Simulations and discussion:
 % - show the theory is sharp; conventional inference over-rejects
