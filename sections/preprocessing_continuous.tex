@@ -12,7 +12,7 @@
 % - allow variable representation / preprocessing choices
 % - this changes the available search geometry
 
-\tc{The searches of Sections~\ref{sec:bounds} and~\ref{sec:plugin} select
+The searches of Sections~\ref{sec:bounds} and~\ref{sec:plugin} select
 controls from a pre-determined list, at and below the
 isometry scaling $n \asymp s \log(ep/s)$, which leaves aside two
 observations. First, a researcher may use pre-processing as a means to
@@ -45,7 +45,7 @@ aggregate covariates. However, it does not cover other forms of
 pre-processing, non-linear transforms and changes to the treatment
 covariate among them; the tools developed here may be adapted to those
 cases, which is left to further work and discussed in
-Section~\ref{sec:discussion}.}
+Section~\ref{sec:discussion}.
 
 % AUTHOR NOTE (design assumption): stated as a concrete whitened linear
 % design (independent coordinates) rather than an abstract "quadratic forms
@@ -59,13 +59,13 @@ Section~\ref{sec:discussion}.}
 % condition number. Subscript disambiguates and the intro already lives with
 % it; flag if a rename (e.g. gamma = lim p/n) is wanted.
 
-\tc{In the proportional regime the design of Assumption~\ref{ass:dgp}(i)
+In the proportional regime the design of Assumption~\ref{ass:dgp}(i)
 is taken in coordinate form, the structure under which the projected
 quadratic forms entering the searched ratio self-average to deterministic
-limits.}
+limits.
 
 \begin{assumption}[Continuous-search regime]\label{ass:continuous}
-\tc{The following hold.
+The following hold.
 \begin{enumerate}
 \item[(i)] \emph{Design and treatment.} The controls follow the linear
 model $X_{-0} = Z\, C^{1/2}$, where $Z \in \R^{n \times p}$ has i.i.d.\
@@ -85,16 +85,16 @@ $d^\top \beta_{-0}$ and $d^\top C^{-1} d$ are bounded and converge as
 $n, p \to \infty$; and the treatment keeps variance off the controls,
 $d^\top C^{-1} d \le (1 - c_{\mathrm{ov}})\, \sigma_0^2$ for a constant
 $c_{\mathrm{ov}} \in (0, 1]$.
-\end{enumerate}}
+\end{enumerate}
 \end{assumption}
 
-\tc{Condition (i) specializes Assumption~\ref{ass:dgp}(i), preserving the
+Condition (i) specializes Assumption~\ref{ass:dgp}(i), preserving the
 row second moments while adding the independence across coordinates under
 which the searched quadratic forms self-average, and it is the only place
 that independence is used. Conditions (ii) and (iii) are the usual
 hypotheses of proportional asymptotics in random-matrix theory, amounting
 to a proportional scaling together with a bounded condition number for
-the full covariance of $(x_0, X_{-0})$.}
+the full covariance of $(x_0, X_{-0})$.
 
 \subsection{Scalar Limit}
 
@@ -106,7 +106,7 @@ the full covariance of $(x_0, X_{-0})$.}
 
 \begin{theorem}[Basis search under proportional asymptotics]
 \label{thm:continuous}
-\tc{Let Assumptions~\ref{ass:dgp}(i) and~\ref{ass:continuous} hold. Then
+Let Assumptions~\ref{ass:dgp}(i) and~\ref{ass:continuous} hold. Then
 \begin{equation}\label{eq:continuous-limit}
         \hat\beta_{0,s}^\star
         \;\toP\;
@@ -116,14 +116,14 @@ the full covariance of $(x_0, X_{-0})$.}
         - 1}\;
         \sqrt{\frac{\beta_{-0}^\top C \beta_{-0}
         + \kappa\, \sigma_\varepsilon^2}{4\, \sigma_0^2} - q^2},
-\end{equation}}
+\end{equation}
 where $q = \frac{d^\top \beta_{-0}}{2\, \sigma_0^2}$ is the overlap between
 the confounding and the outcome signal, half the omitted-variable bias
 carried by the no-control estimator, $\hat\beta_{0,\emptyset} \toP
 \beta_0 + 2q$.
 \end{theorem}
 
-\tc{A first interesting case for this theorem is $\kappa = 0$, in low
+A first interesting case for this theorem is $\kappa = 0$, in low
 dimension, where the limit reads
 \begin{equation*}
         \beta_0 + q
@@ -186,7 +186,7 @@ the treatment energy lying inside the control span, that equation is
         + \kappa\, \sigma_\varepsilon^2 \big) \Big)
         \;=\; 0,
 \end{equation}
-so that \eqref{eq:continuous-limit} is $\beta_0$ plus its larger root.}
+so that \eqref{eq:continuous-limit} is $\beta_0$ plus its larger root.
 
 \subsection{The Searched t-Statistic}
 
@@ -198,7 +198,7 @@ so that \eqref{eq:continuous-limit} is $\beta_0$ plus its larger root.}
 % (\hat t^{(P)}_0, \hat t^\star_{0,s}), the projector analogue of the
 % coordinate \hat t_{0,S} of eq:tstat-def. Flag if the intro should own it.
 
-\tc{Searching the studentized statistic over the same projector class,
+Searching the studentized statistic over the same projector class,
 \begin{equation}\label{eq:cont-tstat}
         \hat t_{0,s}^\star
         =
@@ -216,9 +216,9 @@ Section~\ref{sec:tstat}. Studentizing adds the residual outcome energy
 $y^\top (I - P)\, y$ to the denominator, so that the projector acts on
 three quadratic forms rather than two and the optimizer trades the
 numerator against both denominators. This leads to a more complicated fixed-point
-equation, which nonetheless yields some insight.}
+equation, which nonetheless yields some insight.
 
-\tc{To describe it, some notation needs to be introduced, the covariance
+To describe it, some notation needs to be introduced, the covariance
 of the reported pair and the part of it the control span reaches,
 \begin{equation}\label{eq:cont-gram}
         \Omega
@@ -249,10 +249,10 @@ treatment energy lying inside the control span, and
 Here $\Omega_\kappa$ is the limiting Gram matrix of the projections of
 $x_0$ and $y$ onto the control span, and the difference
 $\Omega - \Omega_\kappa$, the geometry search cannot touch, is positive
-definite exactly when the outcome noise is non-degenerate.}
+definite exactly when the outcome noise is non-degenerate.
 
 \begin{theorem}[Studentized basis search]\label{thm:continuous-tstat}
-\tc{Let the assumptions of Theorem~\ref{thm:continuous} hold, with in
+Let the assumptions of Theorem~\ref{thm:continuous} hold, with in
 addition $\sigma_\varepsilon^2 > 0$. Then
 \begin{equation}\label{eq:cont-tstat-limit}
         \frac{\hat t_{0,s}^\star}{\sqrt n}
@@ -272,12 +272,12 @@ $\tau^\star < 1$. It is positive precisely when the limit
 \eqref{eq:continuous-limit} of the searched coefficient is positive, and
 whenever it is, the maximum in \eqref{eq:cont-tstat-limit} is attained,
 and the supremum defining $\hat t_{0,s}^\star$ is attained at a rank-one
-projector.}
+projector.
 \end{theorem}
 
 \begin{remark}[One manufactured control, at the parametric rate]
 \label{rem:cont-tstat-rankone}
-\tc{The maximum in \eqref{eq:cont-tstat-limit} has a concrete reading. A
+The maximum in \eqref{eq:cont-tstat-limit} has a concrete reading. A
 single control built from the span carries one covariance with the
 treatment and one with the outcome, and the pairs of covariances it can
 realize form exactly the ellipse
@@ -288,6 +288,6 @@ the largest partial correlation one manufactured control can produce. The
 searched $t$-statistic therefore grows like $\tau^\star \sqrt n$ with
 $\tau^\star$ fixed, under the null as much as under an effect, so that
 basis search manufactures significance at the parametric rate at any
-budget $s \ge 1$.}
+budget $s \ge 1$.
 \end{remark}
 

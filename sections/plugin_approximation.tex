@@ -8,7 +8,7 @@
 \subsection{A Separable Approximation of Coordinate Search}
 \label{sec:plugin-regression}
 
-\tc{The results of Section~\ref{sec:bounds} take the form of bounds,
+The results of Section~\ref{sec:bounds} take the form of bounds,
 which do not characterize the law of the searched supremum. That law is
 in general hard to reach: the supremum in \eqref{eq:searched-sup} can
 encode combinatorial hardness in $C$, $\beta_{-0}$ and $d$, and even
@@ -38,10 +38,10 @@ can reach,
         \rho_s(C) = \sup_{|J| \le 2s}
         \big\| \diag(C_{JJ})^{-1/2}\, C_{JJ}\, \diag(C_{JJ})^{-1/2}
         - I \big\|_{\mathrm{op}} .
-\end{equation}}
+\end{equation}
 
 \begin{assumption}[Plug-in regularity]\label{ass:plugin}
-\tc{The following hold.
+The following hold.
 \begin{enumerate}
 \item[(i)] \emph{Local isotropy.} The controls are uncorrelated at the
 scale search works on: $\rho_s(C) = o(1)$.
@@ -79,10 +79,10 @@ uniformly over $j, k \le p$,
         = o(\varsigma^2).
 \end{aligned}
 \end{equation*}
-\end{enumerate}}
+\end{enumerate}
 \end{assumption}
 
-\tc{Condition (i) is what supports separability and is the strong
+Condition (i) is what supports separability and is the strong
 assumption of the section. It is not a conditioning assumption: a spike
 whose direction is delocalized carries correlations of order $\theta/p$,
 so that $\rho_s(C) = O(s \theta / p)$ and any strength $\theta = o(p/s)$
@@ -108,10 +108,10 @@ being governed by $d^\top \beta_{-0}$ itself rather than by search, and
 randomization gives it outright. Condition (iv) is a technical
 strengthening of the subgaussian hypothesis of
 Assumption~\ref{ass:dgp}(i), which the vanishing relative error requires
-and which subgaussian tails do not deliver on their own.}
+and which subgaussian tails do not deliver on their own.
 
 \begin{theorem}[Separable approximation]\label{thm:plugin-separable}
-\tc{Let Assumption~\ref{ass:dgp}(i) and Assumption~\ref{ass:plugin} hold,
+Let Assumption~\ref{ass:dgp}(i) and Assumption~\ref{ass:plugin} hold,
 with $s \log(ep/s) = o(n)$, $p/s \to \infty$, and the controls scaled to
 unit variance, which changes no $\hat\beta_{0,S}$. On
 the same probability space as the data one can construct Gaussian
@@ -132,10 +132,10 @@ such that
         + o_{\mathbb P}\!\left( \frac{s \log(ep/s)}{n} \right),
 \end{equation}
 where $\{-\xi_{1k}\, \xi_{2k}\}_{(j)}$ denotes the $j$-th largest of the
-$p$ products.}
+$p$ products.
 \end{theorem}
 
-\tc{The surrogate replaces a search over $\binom{p}{s}$ overlapping
+The surrogate replaces a search over $\binom{p}{s}$ overlapping
 configurations by $p$ independent coordinates, of which the largest $s$
 products are kept. Each coordinate is a product of two Gaussians rather
 than a Gaussian, one carrying the alignment of the treatment with control
@@ -148,9 +148,9 @@ $\log p$ against the $\sqrt{2 \log p}$ of a Gaussian field, so that a
 small budget buys a large displacement. Taking expectations of the
 top-$s$ sum recovers the rate $s\log(ep/s)/n$ of
 Section~\ref{sec:bounds}, and the surrogate refines it by supplying a law
-around that rate.}
+around that rate.
 
-\tc{Computing the surrogate in an application needs four population
+Computing the surrogate in an application needs four population
 quantities, the covariances $d$ and $C\beta_{-0}$ of the treatment and of
 the outcome with each control, and the two variances $\sigma_0^2$ and
 $\varsigma^2$; checking the hypotheses needs in addition the conditioning
@@ -161,7 +161,7 @@ dataset at hand rather than the population surrogate, and a debiased
 estimate would be needed where $p$ is proportional to $n$. What the
 display supports is therefore a sensitivity statement in the sense of
 Section~\ref{sec:discussion}: given a published specification, how far a
-search with budget $s$ could have moved the coefficient.}
+search with budget $s$ could have moved the coefficient.
 
 % Archive anchor: no-hidden-quantities (plug-in) variant,
 % technical-draft.tex 2176-2191 (stated without rate; uniform
