@@ -1,0 +1,999 @@
+\documentclass[a4paper,10pt,english]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{review-mode}
+\reviewon
+\commenton
+\todoon
+
+\theoremstyle{definition}
+\newtheorem{assumption}{Assumption}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}[proposition]{Theorem}
+% Continue the principal-result numbering after the first lemma.
+\setcounter{proposition}{1}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\rank}{rank}
+\setlength{\emergencystretch}{3em}
+\renewcommand{\ReviewRevision}{appendix-new-2026-10-31}
+
+\begin{document}
+\begin{center}
+\Large Appendix: Uniform Moment and Denominator Bounds
+\end{center}
+\medskip
+
+\begin{review}
+We observe
+\begin{equation}\label{eq:new-model}
+ y^{(i)}
+ =\beta_0x_0^{(i)}
+ +{X_{-0}^{(i)}}^\top\beta_{-0}
+ +\varepsilon^{(i)},
+ \qquad i=1,\ldots,n.
+\end{equation}
+\rbreak
+Write
+\[
+ \sigma_0^2=\Var(x_0),\qquad
+ C=\Cov(X_{-0}),\qquad
+ d=\Cov(X_{-0},x_0),\qquad
+ \sigma_\varepsilon^2=\Var(\varepsilon).
+\]
+\rbreak
+Expectations refer to one population observation, and
+\(\|V\|_{\psi_2}
+ =\inf\{a>0:\mathbb E[\exp(V^2/a^2)]\le2\}\).
+
+\begin{assumption}\label{ass:new}
+The following conditions hold.
+\begin{enumerate}
+\renewcommand{\labelenumi}{}
+\item \theenumi.\ Independent observations:
+\begin{equation*}\tag{A1}\label{ass:new-iid}
+ (x_0^{(i)},X_{-0}^{(i)},\varepsilon^{(i)}),
+ \qquad i=1,\ldots,n,
+ \quad\text{are iid.}
+\end{equation*}
+\item \theenumi.\ Subgaussian design:
+\begin{equation*}\tag{A2}\label{ass:new-design}
+ \mathbb E[(x_0,X_{-0})]=0,\qquad
+ \sigma_0^2>0,\qquad
+ \sup_{\substack{u\in\mathbb R^{p+1}\\
+ \mathbb E[\langle(x_0,X_{-0}),u\rangle^2]=1}}
+ \|\langle(x_0,X_{-0}),u\rangle\|_{\psi_2}
+ \le K_X.
+\end{equation*}
+\item \theenumi.\ Independent noise:
+\begin{equation*}\tag{A3}\label{ass:new-noise}
+ \begin{gathered}
+ \varepsilon\perp(x_0,X_{-0}),\qquad
+ \mathbb E[\varepsilon]=0,\qquad
+ \|\varepsilon\|_{\psi_2}\le K_\varepsilon\sigma_\varepsilon,\\
+ \beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2>0.
+ \end{gathered}
+\end{equation*}
+\item \theenumi.\ Local overlap:
+\begin{equation*}\tag{A4}\label{ass:new-overlap}
+ \min_{\substack{S\subseteq[p]\\|S|\le s}}
+ \left(\sigma_0^2-d_S^\top C_{SS}^{-1}d_S\right)
+ \ge c_{\mathrm{ov}}\sigma_0^2.
+\end{equation*}
+\end{enumerate}
+The constants \(K_X,K_\varepsilon\ge1\) and
+\(c_{\mathrm{ov}}>0\) are fixed, and \(1\le s\le p\).
+\rbreak
+Inverses of singular covariance matrices mean Moore--Penrose inverses.
+\end{assumption}
+
+For \(S\subseteq[p]\), the OLS coefficients satisfy
+\begin{equation}\label{eq:new-normal}
+ \begin{pmatrix}
+ x_0^\top x_0&x_0^\top X_S\\
+ X_S^\top x_0&X_S^\top X_S
+ \end{pmatrix}
+ \begin{pmatrix}\hat\beta_{0,S}\\\hat\gamma_S\end{pmatrix}
+ =
+ \begin{pmatrix}x_0^\top y\\X_S^\top y\end{pmatrix}.
+\end{equation}
+\rbreak
+For \(x_0^\top M_Sx_0>0\),
+\begin{equation}\label{eq:new-coefficient}
+ \hat\beta_{0,S}
+ =\frac{x_0^\top M_Sy}{x_0^\top M_Sx_0},
+ \qquad M_S=I-P_S,
+ \qquad P_S=X_S(X_S^\top X_S)^\dagger X_S^\top.
+\end{equation}
+\rbreak
+On the event \(x_0^\top M_Sx_0=0\), the OLS treatment coefficient
+is not uniquely identified.
+
+To bound the numerator and denominator in
+\eqref{eq:new-coefficient}, define
+\begin{equation}\label{eq:new-augmented}
+ \begin{aligned}
+ \widehat\Sigma_J
+ &=\frac1n
+ \begin{pmatrix}x_0&X_J&y\end{pmatrix}^{\!\top}
+ \begin{pmatrix}x_0&X_J&y\end{pmatrix},\\
+ \Sigma_J
+ &=\mathbb E\left[
+ \begin{pmatrix}x_0\\X_J\\y\end{pmatrix}
+ \begin{pmatrix}x_0\\X_J\\y\end{pmatrix}^{\!\top}
+ \right],
+ \end{aligned}
+\end{equation}
+and, for \(k=\min(2s,p)\) and \(t\ge1\), set
+\begin{equation}\label{eq:new-radius}
+ r_t=C_0(K_X^2+K_\varepsilon^2)
+ \left[
+ \sqrt{\frac{k+2}{n}}
+ +\sqrt{\frac{\log\binom pk+t}{n}}
+ \right],
+\end{equation}
+where \(C_0\) is a universal constant, and let
+\begin{equation}\label{eq:new-event}
+ \mathcal E_t
+ =\bigcap_{\substack{J\subseteq[p]\\|J|\le k}}
+ \left\{
+ (1-r_t)\Sigma_J\preceq\widehat\Sigma_J
+ \preceq(1+r_t)\Sigma_J
+ \right\},
+\end{equation}
+where the order \(A\preceq B\) means
+\(u^\top Au\le u^\top Bu\) for every vector \(u\).
+\rbreak
+The leading block and last column of \(\widehat\Sigma_J\) contain,
+respectively, the matrix and right-hand side of \eqref{eq:new-normal}.
+\rbreak
+The augmented matrix \([x_0,X_{-0},y]\) has \(p+2\) columns,
+of which \(|J|+2\) remain after selecting the controls in \(J\).
+
+\begin{lemma}[Uniform moment and denominator bounds]\label{lem:new-uniform}
+There are universal constants \(C_0,C_1\) such that, under
+Assumption~\ref{ass:new} and
+\begin{equation}\label{eq:new-sample-size}
+ n\ge C_1(K_X^2+K_\varepsilon^2)^2
+ \left[k+2+\log\binom pk+t\right],
+\end{equation}
+with probability at least \(1-2e^{-t}\), the event \(\mathcal E_t\)
+holds and, simultaneously for every \(|J|\le s\),
+\begin{equation}\label{eq:new-denominator}
+ \begin{aligned}
+ &(1-r_t)\left(\sigma_0^2-d_J^\top C_{JJ}^{-1}d_J\right)\\
+ &\qquad\le\frac{x_0^\top M_Jx_0}{n}
+ \le(1+r_t)\left(\sigma_0^2-d_J^\top C_{JJ}^{-1}d_J\right).
+ \end{aligned}
+\end{equation}
+The radius satisfies \(r_t\le1/2\), so every searched coefficient
+is uniquely identified on this event.
+\end{lemma}
+
+\begin{proof}
+Fix \(J\).
+\rbreak
+Adding and subtracting \(c\beta_0x_0\), and using
+\eqref{eq:new-model}, gives
+\[
+ \begin{aligned}
+ a x_0+X_J^\top v+cy
+ &=(a+c\beta_0)x_0+X_J^\top v+c(y-\beta_0x_0)\\
+ &=(a+c\beta_0)x_0+X_J^\top v
+ +cX_{-0}^\top\beta_{-0}+c\varepsilon.
+ \end{aligned}
+\]
+\rbreak
+With \(K_*=(K_X^2+K_\varepsilon^2)^{1/2}\),
+\[
+ \begin{aligned}
+ &\|a x_0+X_J^\top v+cy\|_{\psi_2}\\
+ &\le
+ \|(a+c\beta_0)x_0+X_J^\top v
+ +cX_{-0}^\top\beta_{-0}\|_{\psi_2}
+ +|c|\|\varepsilon\|_{\psi_2}\\
+ &\le
+ K_X\|(a+c\beta_0)x_0+X_J^\top v
+ +cX_{-0}^\top\beta_{-0}\|_{L_2}
+ +K_\varepsilon|c|\sigma_\varepsilon\\
+ &\le
+ K_*\left(
+ \mathbb E\left[
+ \bigl((a+c\beta_0)x_0+X_J^\top v
+ +cX_{-0}^\top\beta_{-0}\bigr)^2
+ \right]+c^2\sigma_\varepsilon^2
+ \right)^{1/2}\\
+ &=K_*\|a x_0+X_J^\top v+cy\|_{L_2}.
+ \end{aligned}
+\]
+The first inequality is the triangle inequality for the subgaussian norm;
+the second uses \eqref{ass:new-design}--\eqref{ass:new-noise};
+the third is Cauchy--Schwarz in \(\mathbb R^2\);
+and the final equality uses
+\(\varepsilon\perp(x_0,X_{-0})\) and
+\(\mathbb E[\varepsilon]=0\).
+\rbreak
+We have therefore shown that the augmented row
+\((x_0,X_{-0}^\top,y)^\top\), and each selected row
+\((x_0,X_J^\top,y)^\top\), are subgaussian relative to their
+population covariances, with constant at most \(K_*\).
+\rbreak
+This is the bound needed to apply a covariance estimate to
+\(\widehat\Sigma_J\), whose population counterpart is \(\Sigma_J\).
+
+We now apply \citet[Theorem~4.6.1 and equation~(4.22)]{vershynin2018hdp},
+which gives
+\begin{equation}\label{eq:new-fixed-support}
+ \mathbb P\left(
+ \begin{gathered}
+ (1-\rho)\Sigma_J\preceq\widehat\Sigma_J
+ \preceq(1+\rho)\Sigma_J\\[-2pt]
+ \text{fails}
+ \end{gathered}
+ \right)\le2e^{-u},
+\end{equation}
+where
+\(\rho=CK_*^2[\sqrt{(|J|+2+u)/n}+(|J|+2+u)/n]\).
+\rbreak
+In that result, \(m\) is our sample size \(n\), the column dimension
+\(n\) is \(\rank(\Sigma_J)\le |J|+2\), \(A\) is the
+population-normalized augmented matrix \([x_0,X_J,y]\) on its covariance
+range, \(K\le K_*\), and the tail parameter \(t\) is our \(\sqrt u\).
+\rbreak
+Choose \(C_0\ge\max\{1,2C\}\) and \(C_1=8C_0^2\), where \(C\)
+is the universal constant in the displayed expression for \(\rho\).
+\rbreak
+The reference leaves the numerical value of \(C\) unspecified;
+all dependence on the subgaussian norms is explicit in
+\eqref{eq:new-radius} and \eqref{eq:new-sample-size}.
+
+It suffices to consider sets with \(|J|=k\), because every smaller
+augmented matrix is a principal submatrix of one of these.
+\rbreak
+Choose \(u=t+\log\binom pk\).
+\rbreak
+Using \eqref{eq:new-sample-size}, the threshold on the right-hand side
+of the comparison in \eqref{eq:new-fixed-support} satisfies
+\begin{equation}\label{eq:new-threshold}
+ \begin{aligned}
+ \rho
+ &\le CK_*^2\left[
+ \sqrt{\frac{k+2+\log\binom pk+t}{n}}
+ +\frac{k+2+\log\binom pk+t}{n}
+ \right]\\
+ &\le2CK_*^2\sqrt{\frac{k+2+\log\binom pk+t}{n}}\\
+ &\le C_0K_*^2\left[
+ \sqrt{\frac{k+2}{n}}
+ +\sqrt{\frac{\log\binom pk+t}{n}}
+ \right],
+ \end{aligned}
+\end{equation}
+where the right-hand side of \eqref{eq:new-threshold} is \(r_t\)
+by \eqref{eq:new-radius}.
+\rbreak
+A union bound gives
+\begin{equation}\label{eq:new-probability}
+ \mathbb P(\mathcal E_t^c)
+ \le\sum_{|J|=k}2e^{-t-\log\binom pk}
+ =2e^{-t},
+\end{equation}
+which proves the probability bound in the lemma.
+
+Focus now on the value of \(r_t\).
+\rbreak
+Using \((a+b)^2\le2(a^2+b^2)\) in \eqref{eq:new-radius}, followed by
+\eqref{eq:new-sample-size} and \(C_1=8C_0^2\), gives
+\begin{equation}\label{eq:new-radius-small}
+ \begin{aligned}
+ r_t^2
+ &\le\frac{2C_0^2K_*^4}{n}
+ \left[k+2+\log\binom pk+t\right]\\
+ &\le\frac{2C_0^2}{C_1}=\frac14.
+ \end{aligned}
+\end{equation}
+
+Assume now that we are on the event \(\mathcal E_t\), and fix
+\(|J|\le s\) and \(a\in\mathbb R^{|J|}\).
+\rbreak
+The coefficient vector \((1,-a^\top,0)^\top\) gives
+\begin{equation}\label{eq:new-residual-comparison}
+ \begin{aligned}
+ &(1-r_t)\mathbb E[(x_0-X_J^\top a)^2]\\
+ &\qquad\le\frac{\|x_0-X_Ja\|^2}{n}
+ \le(1+r_t)\mathbb E[(x_0-X_J^\top a)^2].
+ \end{aligned}
+\end{equation}
+\rbreak
+We now use
+\[
+ \min_a\frac{\|x_0-X_Ja\|^2}{n}
+ =\frac{x_0^\top M_Jx_0}{n},
+\]
+by the definition of the orthogonal projection onto the column span of
+\(X_J\).
+\rbreak
+The population minimum is attained at \(a_*=C_{JJ}^{-1}d_J\), since
+\[
+ \mathbb E[(x_0-X_J^\top a)^2]
+ =\sigma_0^2-d_J^\top C_{JJ}^{-1}d_J
+ +(a-a_*)^\top C_{JJ}(a-a_*).
+\]
+\rbreak
+Minimizing the lower inequality in
+\eqref{eq:new-residual-comparison}, and evaluating its upper inequality
+at \(a_*\), proves the two-sided bound \eqref{eq:new-denominator}.
+\rbreak
+Applying \eqref{ass:new-overlap} to its lower bound gives
+\[
+ \inf_{|J|\le s}\frac{x_0^\top M_Jx_0}{n}
+ \ge(1-r_t)c_{\mathrm{ov}}\sigma_0^2>0.\qedhere
+\]
+\end{proof}
+
+For the subsequent coefficient bounds, define
+\begin{equation}\label{eq:new-delta}
+ \delta_{s,n,p}=\sqrt{\frac{s\log(ep/s)}n}.
+\end{equation}
+\rbreak
+Some elementary algebra
+(\(k+2+\log\binom pk\le6s\log(ep/s)\)) then yields
+\begin{equation}\label{eq:new-radius-rate}
+ r_t\le C_0(K_X^2+K_\varepsilon^2)
+ \left(\sqrt{12}\,\delta_{s,n,p}+\sqrt{\frac{2t}{n}}\right).
+\end{equation}
+
+Write
+\[
+ w=y-\beta_0x_0,\qquad
+ \sigma_w^2=\mathbb E[w^2]
+ =\beta_{-0}^\top C\beta_{-0}+\sigma_\varepsilon^2,\qquad
+ \eta(S)=\sigma_0^2-d_S^\top C_{SS}^{-1}d_S.
+\]
+\rbreak
+The quantity \(\eta(S)\) is the population residual variance of the
+treatment after linear adjustment on \(X_S\).
+\rbreak
+Assumption~\eqref{ass:new-overlap} requires
+\(\eta(S)\ge c_{\mathrm{ov}}\sigma_0^2\) for every \(|S|\le s\).
+
+The coefficient of \(x_0\) in the population linear projection of \(y\)
+on \((x_0,X_S)\) is
+\begin{equation}\label{eq:new-population-coefficient}
+ \beta^\star_{0,S}=\beta_0+b(S),\qquad
+ b(S)=
+ \frac{
+ d^\top\beta_{-0}
+ -d_S^\top C_{SS}^{-1}(C\beta_{-0})_S
+ }{\eta(S)},
+\end{equation}
+with \(b(\emptyset)=d^\top\beta_{-0}/\sigma_0^2\).
+\rbreak
+Consequently,
+\begin{equation}\label{eq:new-population-change}
+ \eta(S)\bigl(b(S)-b(\emptyset)\bigr)
+ =
+ -d_S^\top C_{SS}^{-1}(C\beta_{-0})_S
+ +b(\emptyset)d_S^\top C_{SS}^{-1}d_S.
+\end{equation}
+
+\begin{proposition}\label{prop:new-coefficient}
+Under Assumption~\ref{ass:new} and the sample-size condition
+\eqref{eq:new-sample-size}, on the event \(\mathcal E_t\), simultaneously
+for every \(S\subseteq[p]\) with \(|S|\le s\),
+\begin{equation}\label{eq:new-coefficient-bound}
+ \begin{aligned}
+ &\left|
+ (\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S)-b(\emptyset)\bigr)
+ \right|\\
+ &\quad\le
+ \frac{A r_t}{\eta(S)}
+ \left[
+ \sigma_0
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +\sigma_w\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ +r_t\sigma_0\sigma_w
+ \right],
+ \end{aligned}
+\end{equation}
+where \(A\) is a universal numerical constant.
+\end{proposition}
+
+\begin{proof}
+Fix \(S\) and work on \(\mathcal E_t\).
+\rbreak
+By the definition of \(w\) and the OLS formula
+\eqref{eq:new-coefficient},
+\begin{equation}\label{eq:new-sample-change}
+ \begin{aligned}
+ \hat\beta_{0,S}-\hat\beta_{0,\emptyset}
+ &=(\hat\beta_{0,S}-\beta_0)
+ -(\hat\beta_{0,\emptyset}-\beta_0)\\
+ &=
+ \frac{x_0^\top M_Sw}{x_0^\top M_Sx_0}
+ -(\hat\beta_{0,\emptyset}-\beta_0)\\
+ &=
+ \frac{
+ x_0^\top w-x_0^\top P_Sw
+ -(\hat\beta_{0,\emptyset}-\beta_0)
+ (x_0^\top x_0-x_0^\top P_Sx_0)
+ }{x_0^\top M_Sx_0}\\
+ &=
+ \frac{
+ -x_0^\top P_Sw
+ +(\hat\beta_{0,\emptyset}-\beta_0)x_0^\top P_Sx_0
+ }{x_0^\top M_Sx_0}.
+ \end{aligned}
+\end{equation}
+The last equality uses the normal equation
+\(x_0^\top w=(\hat\beta_{0,\emptyset}-\beta_0)x_0^\top x_0\).
+
+Multiply \eqref{eq:new-sample-change} by \(x_0^\top M_Sx_0/n\),
+subtract \eqref{eq:new-population-change}, and add and subtract
+\((\hat\beta_{0,\emptyset}-\beta_0)d_S^\top C_{SS}^{-1}d_S\).
+\rbreak
+This yields
+\begin{equation}\label{eq:new-four-terms}
+ \begin{aligned}
+ &(\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S)-b(\emptyset)\bigr)\\
+ &=\frac{1}{x_0^\top M_Sx_0/n}
+ \Bigg[
+ \underbrace{
+ -\left\{\frac{x_0^\top P_Sw}{n}
+ -d_S^\top C_{SS}^{-1}(C\beta_{-0})_S\right\}
+ }_{(T_1)}\\
+ &\qquad+
+ \underbrace{
+ (\hat\beta_{0,\emptyset}-\beta_0)
+ \left\{\frac{x_0^\top P_Sx_0}{n}
+ -d_S^\top C_{SS}^{-1}d_S\right\}
+ }_{(T_2)}\\
+ &\qquad+
+ \underbrace{
+ (\hat\beta_{0,\emptyset}-\beta_0-b(\emptyset))
+ d_S^\top C_{SS}^{-1}d_S
+ }_{(T_3)}\\
+ &\qquad-
+ \underbrace{
+ \bigl(b(S)-b(\emptyset)\bigr)
+ \left\{\frac{x_0^\top M_Sx_0}{n}-\eta(S)\right\}
+ }_{(T_4)}
+ \Bigg].
+ \end{aligned}
+\end{equation}
+
+We now control each of the \(T\) terms and the denominator
+\(x_0^\top M_Sx_0/n\).
+\rbreak
+Lemma~\ref{lem:new-uniform} gives
+\[
+ \frac{x_0^\top M_Sx_0}{n}
+ \ge(1-r_t)\eta(S)\ge\frac{\eta(S)}2,\qquad
+ \left|\frac{x_0^\top M_Sx_0}{n}-\eta(S)\right|
+ \le r_t\eta(S).
+\]
+\rbreak
+Using \eqref{eq:new-population-change},
+\begin{equation}\label{eq:new-fourth-term}
+ \begin{aligned}
+ |T_4|
+ &\le r_t\eta(S)|b(S)-b(\emptyset)|\\
+ &=r_t\left|
+ d_S^\top C_{SS}^{-1}
+ \bigl((C\beta_{-0})_S-b(\emptyset)d_S\bigr)
+ \right|\\
+ &\le r_t\left[
+ \sqrt{d_S^\top C_{SS}^{-1}d_S}\,
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +|b(\emptyset)|\,d_S^\top C_{SS}^{-1}d_S
+ \right]\\
+ &\le r_t\left[
+ \sigma_0
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +\sigma_w\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ \right],
+ \end{aligned}
+\end{equation}
+where the penultimate inequality is Cauchy--Schwarz and the triangle
+inequality, and the last uses
+\(\sqrt{d_S^\top C_{SS}^{-1}d_S}\le\sigma_0\) and
+\(|b(\emptyset)|\le\sigma_w/\sigma_0\).
+
+For \(T_1\) and the projected moment
+\((x_0^\top P_Sx_0/n)\) in \(T_2\), apply
+Lemma~\ref{lem:new-projected}(b) with \(z=w\) and \(z=x_0\), respectively.
+\rbreak
+Apply Lemma~\ref{lem:new-projected}(a) to the coefficient factors in
+\(T_2\) and \(T_3\).
+\rbreak
+Thus
+\begin{equation}\label{eq:new-assembly}
+ \begin{aligned}
+ &\left|
+ (\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S)-b(\emptyset)\bigr)
+ \right|\\
+ &\le
+ \frac{2}{\eta(S)}
+ \bigl(|T_1|+|T_2|+|T_3|+|T_4|\bigr)\\
+ &\le
+ \frac{2r_t}{\eta(S)}
+ \Bigg[
+ 4\sigma_0
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +4\sigma_w\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ +4r_t\sigma_0\sigma_w\\
+ &\hspace{22mm}
+ +12\sigma_w
+ \left(2\sqrt{d_S^\top C_{SS}^{-1}d_S}+r_t\sigma_0\right)
+ +4\frac{\sigma_w}{\sigma_0}d_S^\top C_{SS}^{-1}d_S\\
+ &\hspace{22mm}
+ +\sigma_0
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +\sigma_w\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ \Bigg]\\
+ &\le
+ \frac{A r_t}{\eta(S)}
+ \left[
+ \sigma_0
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ +\sigma_w\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ +r_t\sigma_0\sigma_w
+ \right].
+ \end{aligned}
+\end{equation}
+The last inequality uses
+\(d_S^\top C_{SS}^{-1}d_S
+\le\sigma_0\sqrt{d_S^\top C_{SS}^{-1}d_S}\).
+\end{proof}
+
+\begin{lemma}\label{lem:new-projected}
+On \(\mathcal E_t\), with \(r_t\le1/2\), the following bounds hold
+simultaneously for every \(|S|\le s\).
+
+\textup{(a)} The unadjusted coefficient satisfies
+\begin{equation}\label{eq:new-baseline-bounds}
+ \begin{aligned}
+ |\hat\beta_{0,\emptyset}-\beta_0-b(\emptyset)|
+ &\le4r_t\frac{\sigma_w}{\sigma_0},\\
+ |\hat\beta_{0,\emptyset}-\beta_0|
+ &\le3\frac{\sigma_w}{\sigma_0}.
+ \end{aligned}
+\end{equation}
+
+\textup{(b)} For \(z=x_0\) and \(z=w\),
+\begin{equation}\label{eq:new-projected-bound}
+ \begin{aligned}
+ &\left|
+ \frac{x_0^\top P_Sz}{n}
+ -d_S^\top C_{SS}^{-1}\mathbb E[X_Sz]
+ \right|\\
+ &\quad\le
+ 4r_t\left[
+ \sigma_0
+ \sqrt{\mathbb E[X_Sz]^\top C_{SS}^{-1}\mathbb E[X_Sz]}
+ +\|z\|_{L_2}\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ +r_t\sigma_0\|z\|_{L_2}
+ \right].
+ \end{aligned}
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:new-uniform}, on \(\mathcal E_t\),
+\begin{equation}\label{eq:new-augmented-operator}
+ \left\|
+ \Sigma_S^{-1/2}
+ (\widehat\Sigma_S-\Sigma_S)
+ \Sigma_S^{-1/2}
+ \right\|_{\mathrm{op}}
+ \le r_t.
+\end{equation}
+\rbreak
+For every deterministic pair \(u,v\in\mathbb R^{|S|+2}\),
+Cauchy--Schwarz therefore gives
+\begin{equation}\label{eq:new-bilinear}
+ \begin{aligned}
+ \left|u^\top(\widehat\Sigma_S-\Sigma_S)v\right|
+ &=
+ \left|
+ (\Sigma_S^{1/2}u)^\top
+ \left[
+ \Sigma_S^{-1/2}(\widehat\Sigma_S-\Sigma_S)\Sigma_S^{-1/2}
+ \right]
+ (\Sigma_S^{1/2}v)
+ \right|\\
+ &\le
+ r_t\sqrt{u^\top\Sigma_Su}\,
+ \sqrt{v^\top\Sigma_Sv}.
+ \end{aligned}
+\end{equation}
+
+For part (a), take \(u=(1,0_{|S|}^\top,0)^\top\) and
+\(v=(-\beta_0,0_{|S|}^\top,1)^\top\).
+\rbreak
+Then \([x_0,X_S,y]u=x_0\), \([x_0,X_S,y]v=w\),
+\(u^\top\Sigma_Su=\sigma_0^2\), and
+\(v^\top\Sigma_Sv=\sigma_w^2\).
+\rbreak
+Applying \eqref{eq:new-bilinear} to \(u,v\) and to \(u,u\) gives
+\begin{equation}\label{eq:new-scalar-moments}
+ \begin{aligned}
+ \left|\frac{x_0^\top w}{n}-\mathbb E[x_0w]\right|
+ &=
+ \left|u^\top(\widehat\Sigma_S-\Sigma_S)v\right|
+ \le r_t\sigma_0\sigma_w,\\
+ \left|\frac{x_0^\top x_0}{n}-\sigma_0^2\right|
+ &=
+ \left|u^\top(\widehat\Sigma_S-\Sigma_S)u\right|
+ \le r_t\sigma_0^2.
+ \end{aligned}
+\end{equation}
+
+By the triangle inequality,
+\[
+ \begin{aligned}
+ &|\hat\beta_{0,\emptyset}-\beta_0-b(\emptyset)|\\
+ &=
+ \frac{
+ |x_0^\top w/n-b(\emptyset)x_0^\top x_0/n|
+ }{x_0^\top x_0/n}\\
+ &\le
+ \frac{
+ |x_0^\top w/n-\mathbb E[x_0w]|
+ +|b(\emptyset)|\,|x_0^\top x_0/n-\sigma_0^2|
+ }{x_0^\top x_0/n}\\
+ &\le
+ \frac{
+ r_t\sigma_0\sigma_w+r_t|b(\emptyset)|\sigma_0^2
+ }{(1-r_t)\sigma_0^2}
+ \le4r_t\frac{\sigma_w}{\sigma_0}.
+ \end{aligned}
+\]
+\rbreak
+Also, Cauchy--Schwarz gives
+\(|\mathbb E[x_0w]|\le\sigma_0\sigma_w\), so
+\[
+ \begin{aligned}
+ |\hat\beta_{0,\emptyset}-\beta_0|
+ &=
+ \frac{|x_0^\top w/n|}{x_0^\top x_0/n}\\
+ &\le
+ \frac{|\mathbb E[x_0w]|+r_t\sigma_0\sigma_w}
+ {(1-r_t)\sigma_0^2}\\
+ &\le
+ \frac{1+r_t}{1-r_t}\frac{\sigma_w}{\sigma_0}
+ \le3\frac{\sigma_w}{\sigma_0}.
+ \end{aligned}
+\]
+
+For part (b), apply \eqref{eq:new-bilinear} with first vector
+\((0,a^\top,0)^\top\), and second vector \(u\) when \(z=x_0\) or \(v\)
+when \(z=w\).
+\rbreak
+Taking the supremum over \(a^\top C_{SS}a\le1\) gives
+\begin{equation}\label{eq:new-vector-moments}
+ \left\|
+ C_{SS}^{-1/2}
+ \left(\frac{X_S^\top z}{n}-\mathbb E[X_Sz]\right)
+ \right\|
+ \le r_t\|z\|_{L_2}.
+\end{equation}
+
+For the term involving the matrix inverse
+\((X_S^\top X_S/n)^\dagger\), work on
+\(\mathcal V_S=\{C_{SS}a:a\in\mathbb R^{|S|}\}\),
+the span of the columns of \(C_{SS}\), with \(I\) the identity on
+\(\mathcal V_S\), and set
+\[
+ G_S=C_{SS}^{-1/2}\frac{X_S^\top X_S}{n}C_{SS}^{-1/2}.
+\]
+\rbreak
+Lemma~\ref{lem:new-uniform} gives
+\(\|G_S-I\|_{\mathrm{op}}\le r_t\).
+\rbreak
+Hence, for every \(a\in\mathcal V_S\),
+\begin{equation}\label{eq:new-inverse-norm}
+ \begin{aligned}
+ \|G_Sa\|
+ &\ge\|a\|-\|(G_S-I)a\|
+ \ge(1-r_t)\|a\|,\\
+ \|G_S^{-1}\|_{\mathrm{op}}
+ &\le\frac1{1-r_t}\le2.
+ \end{aligned}
+\end{equation}
+
+The resolvent identity, applied with \(A=G_S\) and \(B=I\)
+(\citeauthor{couilletLiao2022rmt}, Lemma~2.1), gives
+\begin{equation}\label{eq:new-inverse-difference}
+ \begin{aligned}
+ G_S^{-1}-I&=G_S^{-1}(I-G_S),\\
+ \|G_S^{-1}-I\|_{\mathrm{op}}
+ &\le
+ \|G_S^{-1}\|_{\mathrm{op}}\,
+ \|I-G_S\|_{\mathrm{op}}
+ \le\frac{r_t}{1-r_t}\le2r_t.
+ \end{aligned}
+\end{equation}
+\rbreak
+Further, on the same span \(\mathcal V_S\),
+\[
+ C_{SS}^{1/2}
+ \left(\frac{X_S^\top X_S}{n}\right)^\dagger
+ C_{SS}^{1/2}=G_S^{-1},\qquad
+ C_{SS}^{1/2}C_{SS}^{-1}C_{SS}^{1/2}=I.
+\]
+
+Now write
+\[
+ \frac{x_0^\top P_Sz}{n}
+ =
+ \left(\frac{X_S^\top x_0}{n}\right)^\top
+ \left(\frac{X_S^\top X_S}{n}\right)^\dagger
+ \frac{X_S^\top z}{n}.
+\]
+\rbreak
+Compare \(X_S^\top x_0/n\) with \(d_S\), the empirical inverse with
+\(C_{SS}^{-1}\), and \(X_S^\top z/n\) with \(\mathbb E[X_Sz]\),
+replacing one factor at a time.
+\rbreak
+Applying \(|a^\top B b|\le\|a\|\|B\|_{\mathrm{op}}\|b\|\)
+to the resulting three differences gives the first inequality:
+\begin{equation}\label{eq:new-projected-assembly}
+ \begin{aligned}
+ &\left|
+ \frac{x_0^\top P_Sz}{n}
+ -d_S^\top C_{SS}^{-1}\mathbb E[X_Sz]
+ \right|\\
+ &\le
+ \left\|
+ C_{SS}^{-1/2}\left(\frac{X_S^\top x_0}{n}-d_S\right)
+ \right\|
+ \|G_S^{-1}\|_{\mathrm{op}}
+ \left\|C_{SS}^{-1/2}\frac{X_S^\top z}{n}\right\|\\
+ &\quad+
+ \|C_{SS}^{-1/2}d_S\|\,
+ \|G_S^{-1}(I-G_S)\|_{\mathrm{op}}
+ \left\|C_{SS}^{-1/2}\frac{X_S^\top z}{n}\right\|\\
+ &\quad+
+ \|C_{SS}^{-1/2}d_S\|
+ \left\|
+ C_{SS}^{-1/2}\left(\frac{X_S^\top z}{n}-\mathbb E[X_Sz]\right)
+ \right\|\\
+ &\le
+ 2r_t\left(\sigma_0+\sqrt{d_S^\top C_{SS}^{-1}d_S}\right)
+ \left[
+ \sqrt{\mathbb E[X_Sz]^\top C_{SS}^{-1}\mathbb E[X_Sz]}
+ +r_t\|z\|_{L_2}
+ \right]\\
+ &\quad+
+ r_t\|z\|_{L_2}\sqrt{d_S^\top C_{SS}^{-1}d_S}\\
+ &\le
+ 4r_t\left[
+ \sigma_0
+ \sqrt{\mathbb E[X_Sz]^\top C_{SS}^{-1}\mathbb E[X_Sz]}
+ +\|z\|_{L_2}\sqrt{d_S^\top C_{SS}^{-1}d_S}
+ +r_t\sigma_0\|z\|_{L_2}
+ \right],
+ \end{aligned}
+\end{equation}
+where the second inequality uses
+\eqref{eq:new-vector-moments}--\eqref{eq:new-inverse-difference}
+and the triangle inequality, and the last uses
+\(\sqrt{d_S^\top C_{SS}^{-1}d_S}\le\sigma_0\) and \(2r_t\le1\).
+\end{proof}
+
+Define
+\begin{equation}\label{eq:new-psi}
+ \Psi_s
+ =
+ \sqrt{
+ \max_{\substack{J\subseteq[p]\\|J|\le s}}
+ (C\beta_{-0})_J^\top C_{JJ}^{-1}(C\beta_{-0})_J
+ }.
+\end{equation}
+
+\begin{theorem}\label{thm:new-search}
+There exist a universal constant \(C_{\mathrm n}>0\) and a constant
+\(C_{\mathrm u}>0\), depending only on \(K_X,K_\varepsilon\),
+such that the following holds under Assumption~\ref{ass:new} and
+\begin{equation}\label{eq:new-search-sample-size}
+ n\ge
+ C_{\mathrm n}(K_X^2+K_\varepsilon^2)^2
+ s\log(ep/s).
+\end{equation}
+
+If \(d=0\), then, with probability at least
+\(1-2\exp[-s\log(ep/s)]\),
+\begin{equation}\label{eq:new-experimental}
+ \max_{|S|\le s}
+ |\hat\beta_{0,S}-\hat\beta_{0,\emptyset}|
+ \le
+ C_{\mathrm u}\frac{\delta_{s,n,p}}{\sigma_0}
+ \left(\Psi_s+\delta_{s,n,p}\sigma_w\right).
+\end{equation}
+
+For general \(d\), let
+\(S^\star\in\operatorname*{arg\,max}_{|S|=s}\beta^\star_{0,S}\).
+With the same probability,
+\begin{equation}\label{eq:new-observational}
+ \begin{aligned}
+ 0
+ &\le
+ \max_{|S|=s}\hat\beta_{0,S}-\hat\beta_{0,S^\star}\\
+ &\le
+ C_{\mathrm u}\frac{\delta_{s,n,p}}{c_{\mathrm{ov}}\sigma_0}
+ \left[
+ \Psi_s+
+ \sigma_w\left(
+ \delta_{s,n,p}
+ +\sqrt{
+ \max_{|J|\le s}
+ \frac{d_J^\top C_{JJ}^{-1}d_J}{\sigma_0^2}
+ }
+ \right)
+ \right].
+ \end{aligned}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Work on \(\mathcal E_t\).
+\rbreak
+If \(d=0\), then \(b(S)=0\) and \(\eta(S)=\sigma_0^2\) for every \(S\).
+\rbreak
+Proposition~\ref{prop:new-coefficient} and \eqref{eq:new-psi} give
+\begin{equation}\label{eq:new-experimental-radius}
+ \max_{|S|\le s}
+ |\hat\beta_{0,S}-\hat\beta_{0,\emptyset}|
+ \le
+ \frac{A r_t}{\sigma_0}
+ \left(\Psi_s+r_t\sigma_w\right).
+\end{equation}
+
+For general \(d\), Assumption~\eqref{ass:new-overlap} and the definition
+of \(\Psi_s\) give, for every \(|S|\le s\),
+\[
+ \begin{gathered}
+ \eta(S)\ge c_{\mathrm{ov}}\sigma_0^2,\\
+ \sqrt{(C\beta_{-0})_S^\top C_{SS}^{-1}(C\beta_{-0})_S}
+ \le\Psi_s,\\
+ \frac{\sqrt{d_S^\top C_{SS}^{-1}d_S}}{\sigma_0}
+ \le
+ \sqrt{
+ \max_{|J|\le s}
+ \frac{d_J^\top C_{JJ}^{-1}d_J}{\sigma_0^2}
+ }.
+ \end{gathered}
+\]
+\rbreak
+Substituting these inequalities in
+Proposition~\ref{prop:new-coefficient} yields, uniformly over \(|S|\le s\),
+\begin{equation}\label{eq:new-observational-uniform}
+ \begin{aligned}
+ &\left|
+ (\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S)-b(\emptyset)\bigr)
+ \right|\\
+ &\quad\le
+ \frac{A r_t}{c_{\mathrm{ov}}\sigma_0}
+ \left[
+ \Psi_s+
+ \sigma_w\left(
+ r_t+
+ \sqrt{
+ \max_{|J|\le s}
+ \frac{d_J^\top C_{JJ}^{-1}d_J}{\sigma_0^2}
+ }
+ \right)
+ \right].
+ \end{aligned}
+\end{equation}
+
+By definition, \(S^\star\subseteq[p]\) and \(|S^\star|=s\), so
+\[
+ \max_{\substack{S\subseteq[p]\\|S|=s}}\hat\beta_{0,S}
+ \ge\hat\beta_{0,S^\star}.
+\]
+\rbreak
+Also, \(b(S)\le b(S^\star)\) whenever \(|S|=s\).
+\rbreak
+The triangle inequality and \eqref{eq:new-observational-uniform}
+therefore imply
+\begin{equation}\label{eq:new-observational-radius}
+ \begin{aligned}
+ 0
+ &\le
+ \max_{|S|=s}\hat\beta_{0,S}-\hat\beta_{0,S^\star}\\
+ &\le
+ \max_{|S|=s}
+ \left|
+ (\hat\beta_{0,S}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S)-b(\emptyset)\bigr)
+ \right|\\
+ &\quad+
+ \left|
+ (\hat\beta_{0,S^\star}-\hat\beta_{0,\emptyset})
+ -\bigl(b(S^\star)-b(\emptyset)\bigr)
+ \right|\\
+ &\le
+ \frac{2A r_t}{c_{\mathrm{ov}}\sigma_0}
+ \left[
+ \Psi_s+
+ \sigma_w\left(
+ r_t+
+ \sqrt{
+ \max_{|J|\le s}
+ \frac{d_J^\top C_{JJ}^{-1}d_J}{\sigma_0^2}
+ }
+ \right)
+ \right].
+ \end{aligned}
+\end{equation}
+
+Choose \(t=s\log(ep/s)\), which is at least one.
+\rbreak
+The dimension bound preceding \eqref{eq:new-radius-rate} gives
+\[
+ k+2+\log\binom pk+t
+ \le7s\log(ep/s).
+\]
+\rbreak
+Hence \eqref{eq:new-search-sample-size}, with
+\(C_{\mathrm n}\ge7C_1\), implies the sample-size condition of
+Lemma~\ref{lem:new-uniform}.
+\rbreak
+Moreover,
+\begin{equation}\label{eq:new-radius-specialized}
+ \begin{aligned}
+ r_t^2
+ &\le
+ \frac{2C_0^2(K_X^2+K_\varepsilon^2)^2}{n}
+ \left[k+2+\log\binom pk+t\right]\\
+ &\le
+ 14C_0^2(K_X^2+K_\varepsilon^2)^2
+ \delta_{s,n,p}^2.
+ \end{aligned}
+\end{equation}
+\rbreak
+Substituting this bound for \(r_t\) and \(r_t^2\) in
+\eqref{eq:new-experimental-radius} and
+\eqref{eq:new-observational-radius} proves
+\eqref{eq:new-experimental} and \eqref{eq:new-observational},
+with \(C_{\mathrm u}\) depending only on \(K_X,K_\varepsilon\).
+\rbreak
+Finally, Lemma~\ref{lem:new-uniform} gives
+\[
+ \mathbb P(\mathcal E_t)
+ \ge1-2e^{-t}
+ =
+ 1-2\exp[-s\log(ep/s)].\qedhere
+\]
+\end{proof}
+\end{review}
+
+\begin{thebibliography}{2}
+\bibitem[Vershynin(2018)]{vershynin2018hdp}
+Roman Vershynin.
+\newblock \emph{High-Dimensional Probability: An Introduction with
+Applications in Data Science}.
+\newblock Cambridge University Press, 2018.
+\newblock First edition, Theorem~4.6.1 and equation~(4.22).
+\newblock \href{https://webapps.math.uci.edu/~rvershyn/papers/HDP-book/HDP-1.pdf}{Author's online edition}.
+\bibitem[Couillet and Liao(2022)]{couilletLiao2022rmt}
+Romain Couillet and Zhenyu Liao.
+\newblock \emph{Random Matrix Methods for Machine Learning}.
+\newblock Cambridge University Press, 2022.
+\newblock Lemma~2.1.
+\newblock \href{https://polaris.imag.fr/romain.couillet/docs/RMT_ML_Book.pdf}{Authors' online edition}.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,162 @@
+\NeedsTeXFormat{LaTeX2e}[2021-06-01]
+\ProvidesPackage{review-mode}[2026/09/06 Single-source passage review]
+
+\RequirePackage{alphalph}
+\RequirePackage{comment}
+\RequirePackage{etoolbox}
+\RequirePackage{xcolor}
+
+\makeatletter
+
+\newif\ifreviewmode
+\reviewmodefalse
+\DeclareRobustCommand{\reviewon}{\reviewmodetrue}
+\DeclareRobustCommand{\reviewoff}{\reviewmodefalse}
+\ifdefined\ReviewMode
+  \reviewon
+\fi
+
+\newif\ifreview@active
+\newif\ifreview@continuation
+\newif\ifreview@suspended
+\newif\ifreview@mapopen
+\newcounter{reviewparagraph}
+\newcounter{reviewunit}
+\newwrite\review@map
+
+\DeclareRobustCommand{\commenton}{%
+  \specialcomment{notecomment}{%
+    \begingroup\color{red}\review@suspendedtrue
+  }{\endgroup}%
+}
+\DeclareRobustCommand{\commentoff}{\excludecomment{notecomment}}
+\commentoff
+
+\newif\ifreview@todomode
+\review@todomodefalse
+\definecolor{todocolor}{rgb}{0.75,0.30,0.00}
+\DeclareRobustCommand{\todoon}{\review@todomodetrue}
+\DeclareRobustCommand{\todooff}{\review@todomodefalse}
+\DeclareRobustCommand{\todo}[1]{%
+  \ifreview@todomode
+    \ifmmode
+      \mbox{\color{todocolor}\bfseries[TODO: #1]}%
+    \else
+      {\color{todocolor}\bfseries[TODO: #1]}%
+    \fi
+  \fi
+}
+\todooff
+
+\providecommand{\ReviewRevision}{untracked}
+\providecommand{\ReviewSourceFile}{\jobname.tex}
+\newcommand{\ReviewUnitCode}{%
+  \AlphAlph{\value{reviewparagraph}}-\arabic{reviewunit}%
+}
+
+\definecolor{reviewcodecolor}{rgb}{0.10,0.25,0.40}
+
+\AtBeginDocument{%
+  \ifreviewmode
+    \immediate\openout\review@map=\jobname.reviewmap
+    \immediate\write\review@map{revision|\ReviewRevision}%
+    \review@mapopentrue
+  \fi
+}
+\AtEndDocument{%
+  \ifreview@mapopen\immediate\closeout\review@map\fi
+}
+
+  \newcommand{\review@recordunit}{%
+    \begingroup
+      \edef\review@code{\ReviewUnitCode}%
+      \immediate\write\review@map{%
+        \review@code|\ReviewSourceFile|\the\inputlineno|\thepage
+      }%
+      \typeout{POLISH-REVIEW-UNIT|\review@code|\ReviewSourceFile|\the\inputlineno|\thepage}%
+      \llap{%
+        \smash{%
+          \raisebox{0pt}{%
+            \color{reviewcodecolor}\scriptsize\ttfamily
+            \review@code\hspace{0.8em}%
+          }%
+        }%
+      }%
+      % Keep LaTeX's post-heading indentation cleanup from removing the marker.
+      \kern\z@
+    \endgroup
+  }
+
+  \AddToHook{para/before}[polish-review-spacing]{%
+    \ifreviewmode
+    \ifreview@active
+      \ifreview@suspended
+      \else
+        \ifreview@continuation
+          \vskip-\parskip
+        \fi
+      \fi
+    \fi
+    \fi
+  }
+
+  \AddToHook{para/begin}[polish-review-units]{%
+    \ifreviewmode
+    \ifreview@active
+      \ifreview@suspended
+      \else
+        \ifdim\hangindent=\z@
+          \ifreview@continuation
+            \stepcounter{reviewunit}%
+          \else
+            \stepcounter{reviewparagraph}%
+            \setcounter{reviewunit}{1}%
+          \fi
+          \review@continuationfalse
+          \OmitIndent
+          \review@recordunit
+        \else
+        \fi
+      \fi
+    \fi
+    \fi
+  }
+
+  \newcommand{\review@suspend}{%
+    \ifreview@active\review@suspendedtrue\fi
+  }
+  \AtBeginEnvironment{figure}{\review@suspend}
+  \AtBeginEnvironment{figure*}{\review@suspend}
+  \AtBeginEnvironment{table}{\review@suspend}
+  \AtBeginEnvironment{table*}{\review@suspend}
+
+  \newenvironment{review}{%
+    \ifreviewmode
+      \par
+      \review@activetrue
+      \review@continuationfalse
+      \review@suspendedfalse
+      \setcounter{reviewparagraph}{0}%
+      \setcounter{reviewunit}{0}%
+    \fi
+  }{%
+    \ifreviewmode\par\fi
+    \review@activefalse
+  }
+
+  \DeclareRobustCommand{\rbreak}{%
+    \ifreviewmode
+      \ifreview@active
+        \par
+        \review@continuationtrue
+        \noindent
+      \else
+        \PackageError{review-mode}{\string\rbreak\space used outside review environment}%
+          {Place \string\rbreak\space between \string\begin{review} and \string\end{review}.}%
+      \fi
+    \else
+      \relax
+    \fi
+  }
+
+\makeatother
